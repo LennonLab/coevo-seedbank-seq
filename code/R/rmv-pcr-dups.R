@@ -49,8 +49,8 @@ fastuniq.path <- "/N/u/danschw/Carbonate/my_tools/FastUniq/FastUniq/source/fastu
   # parse file name
   reads <-
     tibble(f = list.files(here("data", "ddup-fastq", input.arg), pattern = "fastq"))%>%
-    separate(1,into=c("run","num","trt", "line", "sufx"), sep="-", remove = F) %>% 
-    mutate(unq.sample = interaction(trt, line, sep = '-'))
+    separate(1,into=c("run","num","trt", "line", "transfer", "bc", "read", "sufx"), sep=regex("-|_"), remove = F) %>% 
+    mutate(unq.sample = interaction(trt, line, transfer, sep = '-'))
   
   # make list files
   if (!dir.exists(here("data", "ddup-lists")))
@@ -67,16 +67,23 @@ fastuniq.path <- "/N/u/danschw/Carbonate/my_tools/FastUniq/FastUniq/source/fastu
 
 
 ############################
-# Run FastUniq 
+# make FastUniq commands for batch job
 ############################
-  # save list of files to be removed (before duplication)
-  fastq <- list.files(here("data", "ddup-fastq", input.arg), pattern = "fastq", full.names = T)
+  # file to save the fastuniq commands 
+  path.sh <- here("code/bash", paste0("deduplicate-", input.arg, ".sh"))
   
-  #save the fastuniq commands as they are passed to system
-  path.sh <- here("data/ddup-lists", paste0("deduplicate-", input.arg, ".sh"))
-  
+  #slrum header
+  write_lines("#!/bin/bash
+#SBATCH --mail-user=danschw@iu.edu
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=8
+#SBATCH --time=06:00:00
+#SBATCH --mail-type=FAIL,BEGIN,END
+#SBATCH --job-name=de-dup-pcr", 
+              path.sh)
 
-  setwd(here("data", "ddup-fastq", input.arg))
+  write_lines(paste("cd ", here("data", "ddup-fastq", input.arg), "\n\n"),
+              path.sh, append = TRUE)
 
   inputs <-  list.files( here("data", "ddup-lists", input.arg), pattern = ".txt", full.names = T)
 
@@ -93,18 +100,7 @@ fastuniq.path <- "/N/u/danschw/Carbonate/my_tools/FastUniq/FastUniq/source/fastu
     "-c 1") # New serial numbers assigned by FastUniq
 
   write_lines(paste(sys.cmd,"\n"), path.sh, append = T)
-  
-  #run fastuniq
-  system(sys.cmd)
-  }
 
-############################ 
-# clean up
-############################
-  # remove the copies of the original fastq files
-  file.remove(fastq)
-  
-  #zip dduplicated files
-  system("ls | grep \"ddup\" | xargs gzip")
+  }
 
 quit(save = "no")

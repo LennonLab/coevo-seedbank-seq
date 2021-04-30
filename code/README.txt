@@ -17,5 +17,11 @@ $ sbatch deduplicate-phage.sh
 
 clean up after fastuniq:
 $ cd coevo-seedbank-seq/data/ddup-fastq/
-$ find | grep -v "ddup" | grep "fastq" | xargs rm # delete copied fastq files
-$ find | grep "ddup" | xargs gzip # compress deduplicated files
+delete copied fastq files
+$ find | grep -v "ddup" | grep "fastq" | xargs rm 
+compress deduplicated files
+$ find | grep "ddup" | xargs gzip 
+
+(3) Construct ancestral reference genomes
+Run bash script on slurm to map reads of ancestors to published reference
+$ sbatch code/bash/map-anc-phage.sh

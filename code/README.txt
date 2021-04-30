@@ -25,3 +25,6 @@ $ find | grep "ddup" | xargs gzip
 (3) Construct ancestral reference genomes
 Run bash script on slurm to map reads of ancestors to published reference
 $ sbatch code/bash/map-anc-phage.sh
+
+(4) Map reads of evolved samples to ANC
+$sbatch map-evolved-phage.sh

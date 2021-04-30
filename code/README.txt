@@ -26,14 +26,16 @@ $ find | grep "ddup" | xargs gzip
 Run bash script on slurm to map reads of ancestors to published reference
 $ sbatch code/bash/map-anc-phage.sh
 
-(4) Map reads of evolved samples to ANC
-First breseq round
+(4) Initial breseq round. Map reads of evolved samples to ANC
 $sbatch map-evolved-phage.sh
 
 (5) Compile merged list of candidate junctions per population. 
 $ bash breseq_jc_phage.sh
 
-(6)
+(6) Second round of breseq. Map reads of evolved samples to ANC 
+The following bash script write and submits sbatch jobs for all samples
+$ bash rebreseq_phage.sh
+
 
 #----------#
 #  Credit  #

@@ -27,4 +27,22 @@ Run bash script on slurm to map reads of ancestors to published reference
 $ sbatch code/bash/map-anc-phage.sh
 
 (4) Map reads of evolved samples to ANC
+First breseq round
 $sbatch map-evolved-phage.sh
+
+(5) Compile merged list of candidate junctions per population. 
+$ bash breseq_jc_phage.sh
+
+(6)
+
+#----------#
+#  Credit  #
+#----------#
+The pipeline above is based on, and many scripts directly copied from:
+
+Ben Good's repo
+https://github.com/benjaminhgood/LTEE-metagenomic
+
+Will Shoemaker's repos:
+https://github.com/MURI2/Phylo_Evol_Timeseries
+https://github.com/MURI2/Bacillus_Evol_Timeseries

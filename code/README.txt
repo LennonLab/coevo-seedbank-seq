@@ -33,8 +33,11 @@ $sbatch map-evolved-phage.sh
 $ bash breseq_jc_phage.sh
 
 (6) Second round of breseq. Map reads of evolved samples to ANC 
-The following bash script write and submits sbatch jobs for all samples
+The following bash script writes and submits sbatch jobs for all samples
 $ bash rebreseq_phage.sh
+
+(7) pileup and merge time courses
+$ bash create_timecourse_phage.sh
 
 
 #----------#

@@ -39,6 +39,10 @@ $ bash rebreseq_phage.sh
 (7) pileup and merge time courses
 $ bash create_timecourse_phage.sh
 
+(8) Create junction timecourses, and final merged timecourse file per
+population
+$ bash create_merged_timecourse_phage.sh
+
 
 #----------#
 #  Credit  #

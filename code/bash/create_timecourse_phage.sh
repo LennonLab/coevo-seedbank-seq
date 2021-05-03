@@ -38,20 +38,18 @@ do
     rm $bash_out
   fi
 
-  declare -a times=()
-  for pop_sample in `find ${data_rebreseq} -type d -name  *${pop}*`
-  do
-    #time="$(echo "$pop_sample" | cut -d "/" -f10-10 | cut -d "_" -f2-2)"
-    time="$(echo $pop_sample | sed 's|.*-T||')"
-    times+=("${time}")
-  done
-	# sort time array (not sure if required)
-	TIMES="$(echo ${times[@]} | xargs -n1| sort -n | cut -d " " -f1-100 |xargs)"
-	TIMES=($TIMES)
-
-
   bam_files="${PARENT}/data/map-EVOL/phage/breseq2/${pop}"-*"/data/reference.bam"
-  
+
+  declare -a TIMES=()
+  #collect time in same order as ban files passed to pileup
+    for pop_sample in ${bam_files[@]}
+	do
+    # extract time from bam file path
+    time="$(echo "$pop_sample" | sed s/.*-T//g | sed s/.data.reference.bam//g )"
+    TIMES+=("${time}")
+  done
+
+ 
   #all samples have the same reference, so only keep one
   ref="${PARENT}/data/map-EVOL/phage/breseq2/${pop}-T1/data/reference.fasta"
 

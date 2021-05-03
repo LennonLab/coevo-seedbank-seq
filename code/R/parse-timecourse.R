@@ -4,9 +4,10 @@ setwd("/N/slate/danschw/coevo-seedbank-seq/")
 library(here)
 library(tidyverse)
 
-pop <- "SNO-L1"
+pop <- "WSO-L3"
 
-d.raw <-  read_csv(here("data/timecourses/phage/timecourse_merged/SNO-L2_timecourse.txt"),
+d.raw <-  read_csv(paste0(here("data/timecourses/phage/timecourse_merged"),"/",
+                          pop, "_timecourse.txt"),
                     col_names = c("chromosome", "position", "alt_allele", "times", "n.allele", "n.depth"))
 
 time.key <- strsplit(d.raw$times[1], " ", fixed = T) %>%

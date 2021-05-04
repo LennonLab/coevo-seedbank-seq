@@ -43,6 +43,16 @@ $ bash create_timecourse_phage.sh
 population
 $ bash create_merged_timecourse_phage.sh
 
+(9) make annotate_pvalues
+based on BG's response to WRS (https://github.com/benjaminhgood/LTEE-metagenomic/issues/3)
+replaced clang++ with g++ in make file.
+in code/cpp folder run
+$ make all
+and moved resultant program "annotate_pvalues" to the base directory.
+
+
+
+
 
 #----------#
 #  Credit  #

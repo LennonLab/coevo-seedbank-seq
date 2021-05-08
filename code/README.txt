@@ -22,9 +22,16 @@ $ find | grep -v "ddup" | grep "fastq" | xargs rm
 compress deduplicated files
 $ find | grep "ddup" | xargs gzip 
 
+Run FastQC and summarize with multiQC
+$ sbatch code/bash/qc-host.sh
+$ sbatch code/bash/qc-phage.sh
+
+(tested need for trimming host to remove adapter sequences, this does not seem to have any effect. Skipping. to run test code: bash code/bash/trim_adapters-test.sh)
+
 (3) Construct ancestral reference genomes
 Run bash script on slurm to map reads of ancestors to published reference
 $ sbatch code/bash/map-anc-phage.sh
+$ sbatch code/bash/map-anc-hosts.sh
 
 (4) Initial breseq round. Map reads of evolved samples to ANC
 $sbatch map-evolved-phage.sh

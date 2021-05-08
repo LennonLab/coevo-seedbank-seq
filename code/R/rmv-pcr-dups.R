@@ -47,10 +47,19 @@ fastuniq.path <- "/N/u/danschw/Carbonate/my_tools/FastUniq/FastUniq/source/fastu
 # Each list file should contain the file names of paired sequencing files
   
   # parse file name
+
+if (input.arg =="phage"){
   reads <-
     tibble(f = list.files(here("data", "ddup-fastq", input.arg), pattern = "fastq"))%>%
     separate(1,into=c("run","num","trt", "line", "transfer", "bc", "read", "sufx"), sep=regex("-|_"), remove = F) %>% 
     mutate(unq.sample = interaction(trt, line, transfer, sep = '-'))
+}
+if (input.arg =="host"){
+  reads <-
+    tibble(f = list.files(here("data", "ddup-fastq", input.arg), pattern = "fastq"))%>%
+    separate(1,into=c("run","trt", "line", "transfer", "extract", "bc", "read", "sufx"), sep=regex("-|_"), remove = F) %>% 
+    mutate(unq.sample = interaction(trt, line, transfer,extract, sep = '-'))
+}
   
   # make list files
   if (!dir.exists(here("data", "ddup-lists")))

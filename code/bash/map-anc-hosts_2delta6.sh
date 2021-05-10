@@ -19,9 +19,9 @@ PARENT=/N/slate/danschw/coevo-seedbank-seq
 cd $PARENT/data
 
 #get host reference geneome (delta6)
-#%wget  https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/660/525/GCF_001660525.1_ASM166052v1/GCF_001660525.1_ASM166052v1_genomic.gbff.gz
+wget  https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/660/525/GCF_001660525.1_ASM166052v1/GCF_001660525.1_ASM166052v1_genomic.gbff.gz
 #unzip ref genome
-#%gunzip GCF*.gz
+gunzip GCF*.gz
 
 # for the spoIIE deletion strain we have manually edited the Delta6 genome
 # the CDS of spoIIE (except for start and stop codons was replaced with the
@@ -44,13 +44,13 @@ mutR1=$(find $PARENT/data/ddup-fastq/host/ -name "ddup*dSpoIIE-ANC*R1*.gz")
 mutR2=$(find $PARENT/data/ddup-fastq/host/ -name "ddup*dSpoIIE-ANC*R2*.gz")
 
 #make directory for results
-#%wtODIR=$PARENT/data/map-ANC/host2delta6/delta6
-#%mkdir -p ${wtODIR}
+wtODIR=$PARENT/data/map-ANC/host2delta6/delta6
+mkdir -p ${wtODIR}
 mutODIR=$PARENT/data/map-ANC/host2delta6/dSPOIIE
 mkdir -p ${mutODIR}
 
 # run breseq in clonal mode 
-#%$BRESEQ/breseq -r $wtHREF -l 500 -j 12 -n "delta6_ANC" -o $wtODIR $wtR1 $wtR2
+$BRESEQ/breseq -r $wtHREF -l 500 -j 12 -n "delta6_ANC" -o $wtODIR $wtR1 $wtR2
 
 $BRESEQ/breseq -r $mutHREF -l 500 -j 12 -n "dSpoIIE_ANC" -o $mutODIR $mutR1 $mutR2
 
@@ -61,9 +61,9 @@ $BRESEQ/breseq -r $mutHREF -l 500 -j 12 -n "dSpoIIE_ANC" -o $mutODIR $mutR1 $mut
 # Generating a mutated reference sequences
 # depends on breseq and dependencies loaded above
 
-#%wtGD=$wtODIR/output/output.gd
+wtGD=$wtODIR/output/output.gd
 
-#%$BRESEQ/gdtools APPLY -f GFF3 -o $PARENT/data/delta6-ANC2.gff3 -r $HREF $wtGD
+$BRESEQ/gdtools APPLY -f GFF3 -o $PARENT/data/delta6-ANC2.gff3 -r $HREF $wtGD
 
 mutGD=$mutODIR/output/output.gd
 

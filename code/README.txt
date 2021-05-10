@@ -31,11 +31,11 @@ $ sbatch code/bash/qc-phage.sh
 (3) Construct ancestral reference genomes
 Run bash script on slurm to map reads of ancestors to published reference
 $ sbatch code/bash/map-anc-phage.sh
-$ sbatch code/bash/map-anc-hosts.sh
+$ sbatch code/bash/map-anc-hosts_2delta6.sh
 
 (4) Initial breseq round. Map reads of evolved samples to ANC
 $sbatch map-evolved-phage.sh
-
+$bash map-evolved-hosts.sh
 (5) Compile merged list of candidate junctions per population. 
 $ bash breseq_jc_phage.sh
 

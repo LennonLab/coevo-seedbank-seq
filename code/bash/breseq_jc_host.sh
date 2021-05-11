@@ -56,8 +56,8 @@ do
 								fi
 
 								#founder for current sample
-								if [[ ${SAMPLE} == *"SN"* ]] ; then
-									founder=$mutt_evidence_founder
+								if [[ ${POP} == *"SN"* ]] ; then
+									founder=$mut_evidence_founder
 								else
 									founder=$wt_evidence_founder
 								fi

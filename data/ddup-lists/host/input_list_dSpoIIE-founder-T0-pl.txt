@@ -1,0 +1,2 @@
+GSF2865-dSpoIIE-founder-T0-pl_S4_R1_001.fastq
+GSF2865-dSpoIIE-founder-T0-pl_S4_R2_001.fastq

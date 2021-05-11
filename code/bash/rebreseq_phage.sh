@@ -8,7 +8,7 @@ PARENT=/N/slate/danschw/coevo-seedbank-seq
 # de-duplicated reads
 dREADS=${PARENT}/data/ddup-fastq/phage
 
-bash_rebreseq_scripts="${PARENT}/code/bash/rebreseq_scripts"
+bash_rebreseq_scripts="${PARENT}/code/bash/breseq2-phage_scripts"
 data_rebreseq="${PARENT}/data/map-EVOL/phage/breseq2"
 data_rebreseq_out="${PARENT}/data/map-EVOL/phage/breseq2_out"
 data_rebreseq_err="${PARENT}/data/map-EVOL/phage/breseq2_err"

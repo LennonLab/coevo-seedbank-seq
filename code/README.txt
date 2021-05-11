@@ -38,6 +38,7 @@ $sbatch map-evolved-phage.sh
 $bash map-evolved-hosts.sh
 (5) Compile merged list of candidate junctions per population. 
 $ bash breseq_jc_phage.sh
+$ bash breseq_jc_host.sh
 
 (6) Second round of breseq. Map reads of evolved samples to ANC 
 The following bash script writes and submits sbatch jobs for all samples

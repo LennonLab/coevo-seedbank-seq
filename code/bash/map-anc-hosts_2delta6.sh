@@ -63,8 +63,8 @@ $BRESEQ/breseq -r $mutHREF -l 500 -j 12 -n "dSpoIIE_ANC" -o $mutODIR $mutR1 $mut
 
 wtGD=$wtODIR/output/output.gd
 
-$BRESEQ/gdtools APPLY -f GFF3 -o $PARENT/data/delta6-ANC2.gff3 -r $HREF $wtGD
+$BRESEQ/gdtools APPLY -f GFF3 -o $PARENT/data/delta6-ANC2.gff3 -r $wtHREF $wtGD
 
 mutGD=$mutODIR/output/output.gd
 
-$BRESEQ/gdtools APPLY -f GFF3 -o $PARENT/data/dSpoIIE-ANC2.gff3 -r $HREF $mutGD
+$BRESEQ/gdtools APPLY -f GFF3 -o $PARENT/data/dSpoIIE-ANC2.gff3 -r $mutHREF $mutGD

@@ -6,7 +6,7 @@ data/ddup-fastq
 data/map-ANC
 data/map-EVOL
 *.pileup
-
+data/CompSubPops/
 
 ######################
 #  R 

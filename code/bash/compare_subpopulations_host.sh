@@ -22,7 +22,8 @@ mkdir -p $bash_CompSubPop_scripts
 
 ##### Define populations  #####
 #%declare -a TRTS=("WLO" "WSO" "SNO" "WLCt" "WSCt" "SNCt")
-declare -a TRTS=("WLO" "WSO" "WLCt" "WSCt")
+#%declare -a TRTS=("WLO" "WSO" "WLCt" "WSCt")
+declare -a TRTS=("SNO" "SNCt")
 declare -a REPS=("L1" "L2" "L3")
 declare -a POPS=()
 

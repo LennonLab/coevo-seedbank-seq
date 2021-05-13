@@ -48,6 +48,8 @@ $ bash rebreseq_host.sh
 (7) pileup and merge time courses
 $ bash create_timecourse_phage.sh
 
+$ compare_subpopulations_host.sh
+
 (8) Create junction timecourses, and final merged timecourse file per
 population
 $ bash create_merged_timecourse_phage.sh

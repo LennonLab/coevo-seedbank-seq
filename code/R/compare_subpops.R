@@ -5,32 +5,32 @@ library(here)
 library(tidyverse)
 library(cowplot)
 
-# # extract bz file
-# xtr.bz <- function(file.name){
-#   new.file <- gsub(".bz", ".txt", file.name)
-#   if (file.exists(new.file))  file.remove(new.file)
-#   system(paste("bzip2 -dkc", file.name, ">", new.file))
-#   return(new.file)
-# }
+# extract bz file
+xtr.bz <- function(file.name){
+  new.file <- gsub(".bz", ".txt", file.name)
+  if (file.exists(new.file))  file.remove(new.file)
+  system(paste("bzip2 -dkc", file.name, ">", new.file))
+  return(new.file)
+}
 
 
 #-------------------#
 # files to read
+time_course_files <- list.files(here("data/CompSubPops/host/CompSubPop_merged2"),
+                                pattern = ".bz",full.names = TRUE, recursive = TRUE)
 # time_course_files <- list.files(here("data/CompSubPops/host/"),
-#                                 pattern = ".bz",full.names = TRUE, recursive = TRUE)
-time_course_files <- list.files(here("data/CompSubPops/host/"),
-                                pattern = ".txt",full.names = TRUE, recursive = TRUE)
+                                # pattern = ".txt",full.names = TRUE, recursive = TRUE)
 
 d.raw <- tibble()
 
 for (f in time_course_files){
   
   #get pop name
-  pop_name <- gsub(".*merged/","", f) %>% gsub("_Comp.*","", .)
+  pop_name <- gsub(".*_merged2/","", f) %>% gsub("_merged_Comp.*","", .)
   # pop_name <- "WLCt-L1"
   
   #extract and read file
-  txt.file <- f#xtr.bz(f)
+  txt.file <- xtr.bz(f)
   
   d.raw <-  read_csv(txt.file, 
                      col_names = c("chromosome", "position", "alt_allele", "times", "n.allele", "n.depth")) %>% 

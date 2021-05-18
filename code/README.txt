@@ -45,6 +45,10 @@ The following bash script writes and submits sbatch jobs for all samples
 $ bash rebreseq_phage.sh
 $ bash rebreseq_host.sh
 
+>>> mapping unmatched reads to phage: code/bash/map-umatched-hosts.sh
+>>> anlysis of breseq2 coverage: code/R/breseq-json-coverage.R
+
+
 (7) pileup and merge time courses
 $ bash create_timecourse_phage.sh
 

@@ -7,7 +7,7 @@ library(cowplot)
 library(jsonlite)
 
 pops <- list.dirs(here("data/map-EVOL/host/breseq2/"), recursive = F)
-
+pops2phage <- list.dirs(here("data/map-EVOL/host/unmatched/"), recursive = F)
 # prep tibble
 d <- tibble()
 
@@ -17,20 +17,40 @@ for (p in pops){
   
   if(str_detect(p, "SN")){
     d <- tibble(pop = str_remove(p, ".*/"),
-           coverage = js$references$reference$Exported$coverage_average,
-           dispersion = js$references$reference$Exported$coverage_dispersion,
-           total_fraction_aligned_reads = js$reads$total_fraction_aligned_reads ) %>% 
+                map.ref = "host",
+               coverage = js$references$reference$Exported$coverage_average,
+               dispersion = js$references$reference$Exported$coverage_dispersion,
+               total_fraction_aligned_reads = js$reads$total_fraction_aligned_reads,
+               total_reads = js$reads$total_reads,
+               total_aligned_reads = js$reads$total_aligned_reads) %>% 
       bind_rows(d, .)
     
   } else{
     d <- tibble(pop = str_remove(p, ".*/"),
-           coverage = js$references$reference$NZ_CP015975$coverage_average,
-           dispersion = js$references$reference$NZ_CP015975$coverage_dispersion,
-           total_fraction_aligned_reads = js$reads$total_fraction_aligned_reads) %>% 
+                map.ref = "host",
+               coverage = js$references$reference$NZ_CP015975$coverage_average,
+               dispersion = js$references$reference$NZ_CP015975$coverage_dispersion,
+               total_fraction_aligned_reads = js$reads$total_fraction_aligned_reads,
+               total_reads = js$reads$total_reads,
+               total_aligned_reads = js$reads$total_aligned_reads) %>% 
       bind_rows(d, .)
   }
 
 }
+
+for (p in pops2phage){
+  
+  js <- fromJSON(here(p, "/output/summary.json")) 
+
+    d <- tibble(pop = str_remove(p, ".*/"),
+                map.ref = "phage",
+                coverage = js$references$reference$NC_011421$coverage_average,
+                dispersion = js$references$reference$NC_011421$coverage_dispersion,
+                total_fraction_aligned_reads = js$reads$total_fraction_aligned_reads ,
+                total_reads = js$reads$total_reads,
+                total_aligned_reads = js$reads$total_aligned_reads) %>% 
+      bind_rows(d, .)
+}    
 
 
 d <- d %>% 
@@ -53,8 +73,8 @@ d <- d %>%
 
 d %>% 
   ggplot(aes(seed.bank, coverage))+
-  geom_pointrange(aes(ymin = coverage-dispersion, ymax = coverage+dispersion), shape=21,
-                  position = position_jitter(width = .1, height = 0))+
+  geom_pointrange(aes(ymin = coverage-dispersion, ymax = coverage+dispersion),
+                  shape=21, position = position_jitter(width = .1, height = 0))+
   theme_classic()+
   panel_border(size = 1.5, color = "black")+
   facet_grid(phage ~ subpop)+
@@ -67,7 +87,8 @@ d %>%
 
 d %>% 
   ggplot(aes(seed.bank, total_fraction_aligned_reads))+
-  geom_point( size=2, shape=21,position = position_jitter(width = .1, height = 0))+
+  geom_point(  size=2, shape=21,
+              position = position_jitter(width = .1, height = 0))+
   theme_classic()+
   panel_border(size = 1.5, color = "black")+
   facet_grid(phage ~ subpop)+
@@ -77,3 +98,41 @@ d %>%
         legend.background = element_rect(fill = "white"),
         axis.text.x = element_text(angle = 35, hjust = 1))+
   ggsave(here("plots","host_fract_aligned.png"))
+
+
+d.comp.ref <- 
+  d %>% 
+  filter(phage=="SPO1") %>% 
+  group_by(pop) %>% 
+  mutate(fraction_of_total = total_aligned_reads/total_reads[map.ref=="host"])
+
+d.comp.ref %>% 
+  ggplot(aes(seed.bank, fraction_of_total))+
+  geom_col(aes(fill = map.ref))+
+  theme_classic()+
+  panel_border(size = 1.5, color = "black")+
+  facet_grid(line ~ subpop)+
+  ylim(0, 1)+
+  ylab("fraction of reads mapped")+
+  scale_fill_grey()+
+  theme(strip.background = element_blank(),
+        legend.position = "bottom",
+        legend.background = element_rect(fill = "white"),
+        axis.text.x = element_text(angle = 35, hjust = 1))+
+  ggsave(here("plots","comp_fract_aligned.png"), width = 4, height = 4)
+
+d %>% 
+  filter(map.ref == "phage") %>% 
+  ggplot(aes(seed.bank, coverage))+
+  geom_pointrange(aes(ymin = coverage-dispersion, ymax = coverage+dispersion),
+                  shape=21, position = position_jitter(width = .1, height = 0))+
+  theme_classic()+
+  panel_border(size = 1.5, color = "black")+
+  facet_grid(phage ~ subpop)+
+  # ylim(0, NA)+
+  theme(strip.background = element_blank(),
+        legend.position = "bottom",
+        legend.background = element_rect(fill = "white"),
+        axis.text.x = element_text(angle = 35, hjust = 1))+
+  scale_y_log10()+annotation_logticks(sides = "l")+
+  ggsave(here("plots","phage_coverage_total.png"))

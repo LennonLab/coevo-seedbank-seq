@@ -8,6 +8,7 @@ library(jsonlite)
 
 pops <- list.dirs(here("data/map-EVOL/host/breseq2/"), recursive = F)
 pops2phage <- list.dirs(here("data/map-EVOL/host/unmatched/"), recursive = F)
+phage.seq <- list.dirs(here("data/map-EVOL/phage/breseq2/"), recursive = F)
 # prep tibble
 d <- tibble()
 
@@ -52,7 +53,19 @@ for (p in pops2phage){
       bind_rows(d, .)
 }    
 
-
+for (p in phage.seq){
+  
+  js <- fromJSON(here(p, "/output/summary.json")) 
+  
+  d <- tibble(pop = str_remove(p, ".*/"),
+              map.ref = "phage.seq",
+              coverage = js$references$reference$NC_011421$coverage_average,
+              dispersion = js$references$reference$NC_011421$coverage_dispersion,
+              total_fraction_aligned_reads = js$reads$total_fraction_aligned_reads ,
+              total_reads = js$reads$total_reads,
+              total_aligned_reads = js$reads$total_aligned_reads) %>% 
+    bind_rows(d, .)
+} 
 d <- d %>% 
   mutate(subpop = case_when(str_detect(pop,"pl") ~ "pellet",
                             str_detect(pop,"rS") ~ "revived_spore",
@@ -136,3 +149,20 @@ d %>%
         axis.text.x = element_text(angle = 35, hjust = 1))+
   scale_y_log10()+annotation_logticks(sides = "l")+
   ggsave(here("plots","phage_coverage_total.png"))
+
+d %>% 
+  filter(map.ref == "phage.seq") %>% 
+  ggplot(aes(seed.bank, coverage))+
+  geom_pointrange(aes(ymin = coverage-dispersion, ymax = coverage+dispersion),
+                  shape=21, position = position_jitter(width = .1, height = 0))+
+  theme_classic()+
+  panel_border(size = 1.5, color = "black")+
+  facet_grid(phage ~ line)+
+  # ylim(0, NA)+
+  theme(strip.background = element_blank(),
+        legend.position = "bottom",
+        legend.background = element_rect(fill = "white"),
+        axis.text.x = element_text(angle = 35, hjust = 1))+
+  scale_y_log10()+annotation_logticks(sides = "l")
+
+# d %>% filter(map.ref=="phage.seq") %>% ggplot(aes(coverage))+geom_histogram()+xlim(0, NA)

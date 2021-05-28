@@ -1,0 +1,491 @@
+---
+title: "Collect breseq gd files"
+
+---
+
+```{r}
+library(here)
+library(tidyverse)
+library(cowplot)
+```
+
+```{r}
+d <- 
+list.files(here("data/map-EVOL/host/breseq2"), pattern = "output.gd", 
+           recursive = T, full.names = T)%>%
+  tibble(path = .)%>%
+  # keep files from output folder
+  filter(str_detect(path, "/output/output.gd"))%>%
+  mutate(gd.name = str_remove(path, ".*breseq2/"))%>%
+  mutate(gd.name = str_remove(gd.name, "/output/output.gd"))%>%
+  mutate(gd.name = paste0(gd.name, ".gd"))
+
+dir.create(here("data/map-EVOL/host/breseq2-gd-compare/gd-files"), recursive = T)
+
+# copy file separating by host reference
+dir.wt <- here("data/map-EVOL/host/breseq2-gd-compare/gd-files/delta6")
+dir.mut <- here("data/map-EVOL/host/breseq2-gd-compare/gd-files/dSpoIIE")
+dir.create(dir.wt)
+dir.create(dir.mut)
+
+for (i in seq(d$path)){
+  # if (str_starts(d$gd.name[i], "SN"){
+      file.copy(from = d$path[i], 
+                to = paste0(if_else(str_starts(d$gd.name[i], "SN"),dir.mut,dir.wt )
+                            ,"/",d$gd.name[i]))
+}
+```
+
+
+######################
+#
+# Stopped here
+#
+#######################
+# summarize mutations with breseq  
+Following commands were run on carbonate
+
+$ module load breseq
+  # Curl version 7.54.0 loaded.
+  # Sun/Oracle Java SE Development Kit version 11.0.2 loaded.
+  # R version 3.6.0 loaded
+  # bowtie2 version 2.4.2 loaded.
+  # breseq version 0.32.0 loaded.
+
+$ cd /N/slate/danschw/coevo-seedbank-seq/data/map-EVOL/host/breseq2-gd-compare/
+$ gdtools COMPARE -o compare-all-delta6.tsv -f TSV -r /N/slate/danschw/coevo-seedbank-seq/data/delta6-ANC2.gff3 gd-files/delta6/*.gd
+$ gdtools COMPARE -o compare-all-dSpoIIE.tsv -f TSV -r /N/slate/danschw/coevo-seedbank-seq/data/dSpoIIE-ANC2.gff3 gd-files/dSpoIIE/*.gd
+
+```{r}
+# parameters needed to correct for spoIIE deletion
+    del.start <- 70538
+    del.wt.end <- 73021
+    del.mut.end <- 70692
+    del.adj <- del.wt.end-del.mut.end
+
+# import gd compare table
+d.wt <- read_tsv(here("data/map-EVOL/host/breseq2-gd-compare/compare-all-delta6.tsv"), 
+                  col_types = cols(.default = col_character(),aa_position = col_character(), position = col_double())) %>% 
+        #correct for spoIIE deletion
+  # remove mutations in deleted genes
+  filter(position < del.start | position > del.wt.end) 
+
+
+d.mut <- read_tsv(here("data/map-EVOL/host/breseq2-gd-compare/compare-all-dSpoIIE.tsv"), 
+                  col_types = cols(.default = col_character(),aa_position = col_character(), position = col_double())) %>% 
+  #correct for spoIIE deletion
+  # 1. remove mutations in deletion scar
+  filter(position < del.start | position > del.mut.end) %>% 
+  # 2. adjust the position number of mutations left of deletion
+  mutate(position = if_else(position > del.mut.end, position + del.adj, position)) 
+
+d.compare <- bind_rows(d.wt, d.mut) %>% 
+  rename(pop = title)%>%
+  separate(pop, into = c("trt", "line", "transfer", "subpop"), sep = "-", remove = F) %>% 
+    mutate(subpop = case_when(subpop == "pl" ~ "pellet",
+                            subpop == "rS" ~ "revived_spore",
+                            subpop == "rV" ~ "revived_total")) %>% 
+  # mutate(subpop=as.factor(subpop))%>%
+  # mutate(subpop = fct_relevel(subpop, "pellet","revived_total","revived_spore")) %>% 
+  
+  #ajust factor order for seed bank
+  mutate (seed.bank = case_when(str_starts(trt, "WL") ~ "long seed bank",
+                                str_starts(trt, "WS") ~ "short seed bank",
+                                str_starts(trt, "SN") ~ "no seed bank")) %>%
+  mutate(seed.bank=as.factor(seed.bank))%>%
+  mutate(seed.bank = fct_relevel(seed.bank, "long seed bank","short seed bank","no seed bank")) %>% 
+  #ajust factor order for seed bank
+  mutate (phage = case_when(str_detect(trt, "O") ~ "SPO1",
+                            str_detect(trt, "Ct") ~ "no phage")) 
+
+#plot
+p <- d.compare%>%
+  filter(mutation_category == "snp_nonsynonymous")%>%
+    filter (frequency > 0.01)%>%
+  ggplot(aes(x = position, y=frequency))+
+  geom_point(aes(color = type))+
+  facet_grid(trt+line ~ subpop) + 
+  theme_bw()
+
+ggsave(filename = here("plots/gd-compare-subpops.png"),
+       p, width = 11)
+```
+
+Compare results from different extraction methods
+```{r}
+d.compare %>% 
+  filter (phage == "no phage") %>% #no phage controls
+  filter (subpop != "revived_spore") %>% 
+  filter(type == "SNP") %>% 
+  mutate(mut=paste(position, mutation_category, new_seq, sep = "_"))%>%
+  mutate(frequency=as.numeric(frequency)) %>% 
+  select(trt, line, mut, seed.bank, subpop, frequency) %>% 
+  pivot_wider(names_from = "subpop", values_from = frequency) %>% 
+  
+  ggplot(aes(pellet, revived_total))+
+  geom_abline(slope = 1, intercept = 0, color = "grey", linetype=2)+
+  geom_point(shape=21, size = 1)+
+  facet_grid(line~seed.bank)+
+  theme_classic()+
+  panel_border(size = 1.5, color = "black")+
+  theme(strip.background = element_blank(),
+        legend.position = "bottom",
+        legend.background = element_rect(fill = "white"))+
+  # scale_x_log10()+scale_y_log10()+
+  ggtitle("Control populations (no phage)")
+  # ggsave(here("plots/pellet-vs-revived.png"), width = 8, height = 5)
+```
+
+
+
+```{r}
+# make a unique identifer for mutations
+d.mat <- d.compare %>%
+  filter(subpop != "pellet") %>% 
+  mutate(frequency=as.numeric(frequency)) %>% 
+  filter(mutation_category == "snp_nonsynonymous")%>%
+    # filter (frequency > 0.01)%>%
+  mutate(mut=paste(position,type, mutation_category, sep = "_"))%>%
+  select(pop, mut, frequency) #%>% 
+  # filter(str_detect(pop, regex("T1$|ANC")))
+
+# verify that each mutation is unique
+check <- d.mat %>% 
+  group_by(pop, mut)%>%
+  summarise(n=n(), .groups = "drop")%>%
+  arrange(desc(n))
+
+#all unique
+
+#arrange as distance matrix
+d.mat <- d.mat %>%
+  select(pop, mut, frequency) %>%
+  pivot_wider(values_from = frequency, names_from = mut, values_fill = 0)
+
+# add ancestor - by definition has none of the mutations
+d.mat <- d.mat %>%
+  add_row(pop = "ANC-ANC-T0-ANC") 
+
+d.mat[d.mat$pop=="ANC-ANC-T0-ANC",-1] <- 0.0
+
+
+m <- as.matrix(d.mat[,-1])
+dimnames(m) = list(d.mat$pop, colnames(d.mat)[-1])
+
+dst.m <- dist(m, method = "euclidean")
+# heatmap(m, Colv = NA, Rowv = NA)
+
+as_tibble(m) %>% 
+  mutate(pop = rownames(m)) %>% 
+  pivot_longer(-pop, names_to = "SNP", values_to = "frequency") %>% 
+  arrange(parse_number(str_remove(pop, ".*T"))) %>% 
+  mutate(pop = fct_inorder(pop) %>% fct_rev()) %>% 
+  ggplot(aes(SNP, pop))+
+  geom_raster(aes(fill=frequency))+
+  scale_fill_viridis_c()+
+  theme(axis.text.x = element_blank())
+
+```
+
+```{r}
+require(ape)
+
+tr <- bionj(dst.m)
+
+tr <-root(tr, outgroup = "ANC-ANC-T0-ANC", resolve.root = T)
+
+#make tip labels
+tips <- d.mat %>%
+  select(pop) %>%
+  separate(pop, into = c("trt", "line", "subpop"), sep = "\\.", remove = F) %>%
+  mutate(tip.color = case_when(str_starts(trt, "WLO") ~ rgb(1,0,0),
+                               str_starts(trt, "WSO") ~ rgb(0,1,0),
+                               str_starts(trt, "SNO") ~ rgb(0,0,1),
+                               str_starts(trt, "WLCt") ~ rgb(1,0.5,0),
+                               str_starts(trt, "WSCt") ~ rgb(0.5,1,0),
+                               str_starts(trt, "SNCt") ~ rgb(0.5,0,1))) 
+
+
+# mutate (seed.bank = case_when(str_starts(trt, "WL") ~ "long seed bank",
+#                               str_starts(trt, "WS") ~ "short seed bank",
+#                               str_starts(trt, "SN") ~ "no seed bank")) %>%
+#   mutate(seed.bank=as.factor(seed.bank))%>%
+#   mutate(seed.bank = fct_relevel(seed.bank, "long seed bank","short seed bank","no seed bank")) %>% 
+#   #ajust factor order for seed bank
+ 
+
+png(filename = here("plots/host_breseq_T14_bionj.png"),width = 12, height = 12, units = "in", res=150)
+plot(tr, show.tip.label = T, type = "fan", root.edge = F, tip.color = tips$tip.color, font = 2)
+title("BioNJ from Euclidean distance matrix ")
+# tiplabels(tips$pop, cex = .8, frame = "none",  bg = NA, adj = 0, col = tips$tip.color)
+dev.off()
+
+# #make tip labels
+# tips <- d.mat %>% 
+#   select(pop) %>% 
+#   separate(pop, into = c("trt", "line", "t.exp"), sep = "-", remove = F) %>% 
+#   mutate(tip.color = case_when(trt == "WLO" ~ "red",
+#                                trt == "WSO" ~ "pink",
+#                                trt == "SNO" ~ "blue"))
+# 
+# png(filename = here("bionj.png"),width = 6, height = 6, units = "in", res=150)
+# plot(tr, show.tip.label = F)#, type = "unrooted")
+# title("BioNJ from Euclidean distance matrix ")
+# tiplabels(tips$pop, cex = .8, frame = "none",  bg = NA, adj = 0, col = tips$tip.color)
+# dev.off()
+```
+```{r}
+br.ln <- cophenetic.phylo(tr) %>% 
+  as_tibble() %>% 
+  mutate(pop = colnames(.))
+
+d.anc <- select(br.ln, pop, dist2anc = `ANC-ANC-T0-ANC`) %>% 
+  filter(!str_detect(pop, "ANC")) %>% 
+  separate(pop, into = c("trt", "line", "transfer","subpop"), sep = "-") %>% 
+      mutate(subpop = case_when(subpop == "pl" ~ "pellet",
+                            subpop == "rS" ~ "revived_spore",
+                            subpop == "rV" ~ "revived_total")) %>% 
+  #ajust factor order for subpop
+  mutate(subpop=as.factor(subpop))%>%
+  mutate(subpop = fct_relevel(subpop, "pellet","revived_total","revived_spore")) %>% 
+  
+  #ajust factor order for seed bank
+  mutate (seed.bank = case_when(str_starts(trt, "WL") ~ "long seed bank",
+                                str_starts(trt, "WS") ~ "short seed bank",
+                                str_starts(trt, "SN") ~ "no seed bank")) %>%
+  mutate(seed.bank=as.factor(seed.bank))%>%
+  mutate(seed.bank = fct_relevel(seed.bank, "long seed bank","short seed bank","no seed bank")) %>% 
+  #ajust factor order for seed bank
+  mutate (phage = case_when(str_detect(trt, "O") ~ "SPO1",
+                            str_detect(trt, "Ct") ~ "no phage")) 
+sum.d.anc <- d.anc %>% 
+  group_by(seed.bank, subpop, phage) %>% 
+  summarise(m=mean(dist2anc), v=sd(dist2anc)/sqrt(n()), n=n())
+
+
+d.anc %>% 
+  ggplot(aes(seed.bank, dist2anc, color = seed.bank))+
+  geom_crossbar(data = sum.d.anc, aes(y = m, ymin = m-v, ymax = m+v))+
+  geom_point(aes(fill = seed.bank), color="black", shape=21, size=3)+
+  facet_grid(subpop ~ phage)+
+  theme_cowplot()+
+  panel_border(size = 1.5, color = "black")+
+  theme(strip.background = element_blank(),
+        legend.position = "bottom",
+        legend.background = element_rect(fill = "white"),
+        axis.text.x = element_blank())+
+  ylab("Distance from Anc. host")+
+  labs(caption = "box depicts mean±sem")+
+  ggsave(here("plots/breseq_dist2anc.png"), width = 6, height = 4)
+```
+
+```{r}
+d.test <- d.anc %>% 
+  filter(subpop == "revived_total")  %>% 
+  filter(phage == "no phage") 
+  pairwise.t.test(x= d.test$dist2anc, g = d.test$seed.bank, p.adjust.method = "BH")
+
+```
+
+
+
+```{r}
+pcoa <- cmdscale(dst.m,eig = T, k = 3)
+
+explainvar1 <- round(pcoa$eig[1] / sum(pcoa$eig), 3) *100
+explainvar2 <- round(pcoa$eig[2] / sum(pcoa$eig), 3) *100
+explainvar3 <- round(pcoa$eig[3] / sum(pcoa$eig), 3) *100
+
+sum.eig <- sum(explainvar1, explainvar2, explainvar3)
+
+pcoa.tbl <- pcoa$points%>%
+  as.data.frame()%>%
+  rownames_to_column(var = "pop")%>%
+  separate(pop, into = c("trt", "line", "t.exp", "subpop"))
+
+#make colors consitent across plot
+col.f <- pcoa.tbl$trt %>% factor()%>%levels()
+
+
+p3 <- ggplot(pcoa.tbl, aes(V1,V2))+
+  geom_point(aes(color=trt, shape=subpop),stroke=1, size = 3)+
+  xlab(paste0("PCoA 1(", explainvar1,"%)"))+
+  ylab(paste0("PCoA 2(", explainvar2,"%)"))+
+  theme_classic()+
+  scale_shape_manual(values = c(21:26))+
+  scale_fill_hue(drop=T, limits=col.f)
+p3  
+# ggsave(plot = p3, filename = here("PPCoA-phage-T14.png"), height = 7, width = 7)
+```
+
+```{r}
+p <- d.compare %>%
+  filter(subpop == "revived_total") %>% 
+  filter(type != "AMP") %>% 
+  mutate(frequency = as.numeric(frequency)) %>% 
+  ggplot(aes(x=position, y=frequency,color=type))+
+    geom_point(alpha=0.5)+
+    geom_segment(aes(xend=position, yend=0),alpha=0.5)+
+    facet_grid(phage + line ~ seed.bank )+
+  theme_bw()
+  save_plot(here("plots/host_all_muts.png"),p, base_width = 15, base_height = 8)
+```
+
+######################
+#
+# Stopped here
+#
+######################
+
+
+#distance from ancestor
+
+```{r}
+dst.tbl <- as.matrix(dst.m)%>%
+  as.data.frame()%>%
+  select(`ANC-ANC-T0`)%>%
+  rename(dist2anc = `ANC-ANC-T0`) %>%
+    rownames_to_column(var = "pop")%>%
+  separate(pop, into = c("trt", "line", "t.exp"))%>%
+  filter(trt != "ANC")%>%
+  mutate(t.exp = fct_relevel(t.exp, c("T1", "T4", "T7", "T10", "T14")))
+
+p4 <- dst.tbl%>%
+  ggplot(aes(x = trt, y = dist2anc))+
+  geom_boxplot()+
+  geom_point(aes(fill=trt),shape=21, size=3)+
+  expand_limits(y = 0)+
+  theme_classic()+
+  scale_fill_hue(limits=col.f, breaks = col.f[col.f!="ANC"])+
+  facet_wrap(~t.exp)+
+  ylab("Euclidean ditance from Anc. phage")
+
+  ggsave(here("T14-dist2anc_value.png"), p4)
+  
+  
+p5 <- dst.tbl%>%
+  group_by(trt, t.exp)%>%
+  summarise(m=mean(dist2anc), v = sd(dist2anc)/sqrt(n()))%>%
+  C
+  ggplot(aes(x = t.exp, y = m, color=trt))+
+  geom_line(size=1)+
+    geom_pointrange(aes(ymin = m-v, ymax = m+v), shape=21, fill="white")+
+  geom_point(shape=21, fill="white")+
+  expand_limits(y = 0)+
+  theme_cowplot()+
+  # scale_color_hue(limits=col.f, breaks = col.f[col.f!="ANC"])+
+  ylab("Euclidean ditance from Anc. phage")+
+  xlab("Experimental transfer")+
+  labs(caption = "mean±sem (n=3)")+
+  scale_x_continuous(breaks = c(1,4,7,10,14))
+
+  ggsave(here("Line-dist2anc_value.png"), p5)
+
+```
+```{r}
+dst.tbl%>%
+  # group_by(trt, t.exp)%>%
+  # summarise(m=mean(dist2anc), v = sd(dist2anc)/sqrt(n()))%>%
+  mutate(t.exp = parse_number(as.character(t.exp)))%>%
+  ggplot(aes(x = t.exp, y = dist2anc, color=trt))+
+  geom_line(aes(linetype=line), size=1)+
+    # geom_pointrange(aes(ymin = m-v, ymax = m+v), shape=21, fill="white")+
+  geom_point(shape=21, fill="white")+
+  expand_limits(y = 0)+
+  theme_cowplot()+
+  # scale_color_hue(limits=col.f, breaks = col.f[col.f!="ANC"])+
+  ylab("Euclidean ditance from Anc. phage")+
+  xlab("Experimental transfer")+
+  labs(caption = "mean±sem (n=3)")+
+  scale_x_continuous(breaks = c(1,4,7,10,14))
+```
+
+```{r}
+plot_grid(p4,p3, labels = letters[1:2])+
+  ggsave(here("dist_both.png"), width = 8, height = 4)
+```
+
+```{r}
+m.t <- list()
+
+for(ti in unique(dst.tbl$t.exp)){
+  
+  cur <- dst.tbl%>%
+    filter(t.exp == ti) 
+  
+   m.t[[ti]] <-
+    pairwise.t.test(cur$dist2anc, cur$trt, p.adjust.method="BH")
+
+}
+
+# m.t$T14
+
+```
+
+
+
+# summary of mutations
+```{r}
+d.mat <- d.compare %>%
+  filter (frequency > 0.1)%>%
+  group_by(pop,gene_name)%>%
+  summarise(n = n())%>%
+  pivot_wider(values_from = "n",names_from = "gene_name")%>%
+  arrange(pop)
+
+
+
+m <- as.matrix(d.mat[,-1])
+dimnames(m) = list(d.mat$pop, colnames(d.mat)[-1])
+
+dst.m <- dist(m)
+```
+
+
+
+
+```{r}
+p5 <- d.compare %>%
+  ggplot(aes(x=mutation_category, y=frequency))+
+  geom_violin(aes(fill = type), alpha=0.3)+
+    geom_point(aes(color=type), shape = 21)+
+    facet_wrap(~pop)+
+  theme_classic()+
+  coord_flip()
+
+  ggsave(here("type_muts.png"), p5, width = 8, height = 7)
+```
+
+```{r}
+d.compare %>%
+  group_by(gene_product, pop)%>%
+  summarise(n=n(), .groups="drop")%>%
+  group_by(gene_product)%>%
+  summarise(n.pop=n(), mean.mut.n = sum(n)/n.pop)%>%
+  arrange(desc(n.pop))%>%
+  knitr::kable()
+```
+
+
+```{r}
+# make a unique identifer for mutations
+d.unq <- d.compare %>%
+  # filter(type == "SNP")%>%
+    # filter (frequency > 0.01)%>%
+  mutate(mut=paste(position,type, mutation_category, sep = "_"))%>%
+  select(pop, mut, frequency) %>% 
+  separate(pop, into = c("trt", "line", "t.exp"), sep = "-", remove = F) %>% 
+  mutate(t.exp = parse_number(as.character(t.exp)))
+
+d.unq %>% 
+  ggplot(aes(x = t.exp, y = frequency)) + 
+  geom_line(aes(color = mut), show.legend = F)+
+  geom_point(aes(color = mut), show.legend = F)+
+  facet_grid(trt~line)+
+  theme_cowplot()+
+  panel_border()+
+  scale_color_viridis_d()
+
+```
+
+

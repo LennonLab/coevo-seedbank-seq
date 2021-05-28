@@ -54,6 +54,11 @@ $ bash create_timecourse_phage.sh
 
 $ compare_subpopulations_host.sh
 
+
+##-##
+SnpGenie
+##-##
+
 (8) Create junction timecourses, and final merged timecourse file per
 population
 $ bash create_merged_timecourse_phage.sh

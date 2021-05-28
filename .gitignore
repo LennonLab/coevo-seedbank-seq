@@ -7,6 +7,7 @@ data/map-ANC
 data/map-EVOL
 *.pileup
 data/CompSubPops/
+data/SnpGenie
 
 ######################
 #  R 

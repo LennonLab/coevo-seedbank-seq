@@ -99,3 +99,19 @@ d %>%
   ylab("mutation freq (A/D)") +
   ggsave(filename = here("plots","merged_mut_freq_TAIL_REGION.png"), 
          width = 10, height = 7, units = "in")
+
+
+d %>% 
+  mutate(transfer = paste0("T", transfer)) %>% 
+  ggplot(aes(Dt, At))+
+  geom_point(aes(color=transfer), shape=21, alpha = 0.5)+
+  theme_classic()+
+  scale_colour_viridis_d()+
+  facet_wrap(seed.bank ~ rep)+
+  ylab("Allele (#reads)") +
+  xlab("Depth (#reads)") + 
+  scale_x_log10()+
+  scale_y_log10()+
+  annotation_logticks()+
+  ggsave(filename = here("plots","phage_A-D.png"), 
+         width = 10, height = 7, units = "in")

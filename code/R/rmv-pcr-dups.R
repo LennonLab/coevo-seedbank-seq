@@ -5,7 +5,7 @@
 fastuniq.path <- "/N/u/danschw/Carbonate/my_tools/FastUniq/FastUniq/source/fastuniq"
 
 # phage or host?
-  input.arg <- NULL
+  input.arg <-# NULL
   
   input.arg <- commandArgs(trailingOnly = TRUE)
   # test if there is an argument: if not, return an error
@@ -20,96 +20,129 @@ fastuniq.path <- "/N/u/danschw/Carbonate/my_tools/FastUniq/FastUniq/source/fastu
   library(here, quietly = T, verbose = F)
   library(tidyverse, quietly = T, verbose = F)
 
-
-############################
-# copy fastq files and unzip
-############################
-  
-  #make directories
-  if (!dir.exists(here("data", "ddup-fastq")))
-    dir.create(here("data", "ddup-fastq"))
-  if (!dir.exists(here("data", "ddup-fastq", input.arg)))
-    dir.create(here("data", "ddup-fastq", input.arg))
-
-  #copy fastq files
-  fastq <- list.files(here("data/input/fastq/", input.arg), 
-                      pattern = "fastq", full.names = T)           
-  file.copy(fastq, here("data", "ddup-fastq", input.arg))
-  
-  # unzip
-  fastq <- list.files(here("data", "ddup-fastq", input.arg), pattern = "fastq.gz", full.names = T)
-  for (i in fastq) 
-    system(paste("gunzip", i))
-
-############################
-# make input lists for FastUniq
-############################
-# Each list file should contain the file names of paired sequencing files
-  
-  # parse file name
-
-if (input.arg =="phage"){
-  reads <-
-    tibble(f = list.files(here("data", "ddup-fastq", input.arg), pattern = "fastq"))%>%
-    separate(1,into=c("run","num","trt", "line", "transfer", "bc", "read", "sufx"), sep=regex("-|_"), remove = F) %>% 
-    mutate(unq.sample = interaction(trt, line, transfer, sep = '-'))
-}
-if (input.arg =="host"){
-  reads <-
-    tibble(f = list.files(here("data", "ddup-fastq", input.arg), pattern = "fastq"))%>%
-    separate(1,into=c("run","trt", "line", "transfer", "extract", "bc", "read", "sufx"), sep=regex("-|_"), remove = F) %>% 
-    mutate(unq.sample = interaction(trt, line, transfer,extract, sep = '-'))
-}
-  
-  # make list files
-  if (!dir.exists(here("data", "ddup-lists")))
-    dir.create(here("data", "ddup-lists"))
-  if (!dir.exists(here("data", "ddup-lists", input.arg)))
-    dir.create(here("data", "ddup-lists", input.arg))
-  
-  for (i in unique(reads$unq.sample)){
-    cur <- reads %>%
-      filter(unq.sample == i)
-
-    write_lines(cur$f, file = here("data", "ddup-lists", input.arg, paste0("input_list_",i,".txt")))
+######################################
+# read and parse names of fastq files
+######################################
+  if (input.arg =="phage"){
+    reads <-
+      tibble(path = list.files(here("data/input/fastq", input.arg), 
+                               pattern = "fastq", full.names = TRUE) ,
+             f = list.files(here("data/input/fastq", input.arg), 
+                            pattern = "fastq", full.names = FALSE) )%>%
+      separate(1,into=c("run","num","trt", "line", "transfer", "bc", "read", "sufx"), sep=regex("-|_"), remove = F) %>% 
+      mutate(unq.sample = interaction(trt, line, transfer, sep = '-'))
   }
+  if (input.arg =="host"){
+    reads <-
+      tibble(path = list.files(here("data/input/fastq", input.arg), 
+                            pattern = "fastq", full.names = TRUE) ,
+             f = list.files(here("data/input/fastq", input.arg), 
+                               pattern = "fastq", full.names = FALSE) )%>%
+      separate(f,into=c("run","trt", "line", "transfer", "extract", "bc", "read", "sufx"),
+               sep=regex("-|_"), remove = F) %>% 
+      mutate(unq.sample = interaction(trt, line, transfer,extract, sep = '-'))
+  }  
+
+
+########################################
+# make a folder for deduplicated data
+########################################
+#make directories
+if (!dir.exists(here("data", "ddup-fastq")))
+  dir.create(here("data", "ddup-fastq"))
+if (!dir.exists(here("data", "ddup-fastq", input.arg)))
+  dir.create(here("data", "ddup-fastq", input.arg))
 
 
 ############################
-# make FastUniq commands for batch job
+# write commands for batch job
 ############################
-  # file to save the fastuniq commands 
-  path.sh <- here("code/bash", paste0("deduplicate-", input.arg, ".sh"))
   
+  # folder to save the batch scripts commands 
+  if (!dir.exists(here("code/bash", "ddup-scripts")))
+    dir.create(here("code/bash", "ddup-scripts"))
+  if (!dir.exists(here("code/bash", "ddup-scripts", input.arg)))
+    dir.create(here("code/bash", "ddup-scripts", input.arg))
+  
+for (current.reads in unique(reads$unq.sample)){
+  
+  # reads in current loop iteration
+  paths <- reads %>% 
+    filter(unq.sample == current.reads) %>% 
+    select(path, f) %>% 
+    mutate(f = str_remove(f, ".gz$")) %>% 
+    mutate(out = paste0(here("data/ddup-fastq/"), input.arg, "/ddup-",f))
+
+    
+  # path for current batch script
+    path.sh <- here("code/bash/ddup-scripts", input.arg,
+                    paste0("deduplicate-", current.reads, ".sh"))
+    
   #slrum header
-  write_lines("#!/bin/bash
+    write_lines(c("#!/bin/bash
 #SBATCH --mail-user=danschw@iu.edu
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=8
-#SBATCH --time=06:00:00
-#SBATCH --mail-type=FAIL,BEGIN,END
-#SBATCH --job-name=de-dup-pcr", 
-              path.sh)
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=8
+#SBATCH --time=01:00:00
+#SBATCH --mail-type=FAIL,BEGIN,END",
+    paste0("#SBATCH --job-name=ddup-", current.reads)), 
+                    path.sh)
+    
+    #copy and extract paired read data
+    write_lines("\n#copy and extract paired read data",
+                file = path.sh, append = TRUE)
+    write_lines(paste("zcat", paths$path, ">", 
+                      here("data", "ddup-fastq", input.arg, paths$f )),
+                file = path.sh, append = TRUE)
 
-  write_lines(paste("cd ", here("data", "ddup-fastq", input.arg), "\n\n"),
-              path.sh, append = TRUE)
+    # make input list for FastUniq
+    # Each list file should contain the file names of paired sequencing files
+    input.list <- here("data/ddup-fastq", input.arg, paste0("input_list_",current.reads,".txt"))
+    write_lines("\n# make input list for FastUniq",
+                file = path.sh, append = TRUE)
+    write_lines(paste("touch", input.list), 
+                file = path.sh, append = TRUE)
+    write_lines(paste("echo",paths$f, ">>", input.list),
+                file = path.sh, append = TRUE)
+    
+    # write_lines(paths$f, file = input.list,append = FALSE)
+    
+    #FastUniq commands
+    write_lines("\n#de-duplicate with FastUniq (local)",
+                path.sh, append = TRUE)
+    
+    write_lines(paste("cd ", here("data", "ddup-fastq", input.arg)),
+                path.sh, append = TRUE)
 
-  inputs <-  list.files( here("data", "ddup-lists", input.arg), pattern = ".txt", full.names = T)
-
-  for (i in 1:length(inputs)){
-    out <- read_lines(inputs[i]) %>%
-            paste0(here("data/ddup-fastq/"), input.arg, "/ddup-",.)
-
-  sys.cmd <- paste(
-     fastuniq.path,
-    "-i", inputs[i], # input list
-    "-t q", # Output sequence format: fastq
-    "-o", out[1], # first output file
-    "-p", out[2], # second output file
-    "-c 1") # New serial numbers assigned by FastUniq
-
-  write_lines(paste(sys.cmd,"\n"), path.sh, append = T)
-
-  }
-
+    sys.cmd <- paste(
+      fastuniq.path,
+      "-i", input.list, # input list
+      "-t q", # Output sequence format: fastq
+      "-o", paths$out[1], # first output file
+      "-p", paths$out[2], # second output file
+      "-c 1") # New serial numbers assigned by FastUniq
+    
+    write_lines(paste("\n", sys.cmd), path.sh, append = T)
+    
+    # clean up
+    write_lines(paste("\n", "# delete copied inputs"),
+                path.sh, append = T)
+    write_lines(paste("rm ", here("data", "ddup-fastq", input.arg, paths$f)),
+                      path.sh, append = T)
+    write_lines(paste("\n", "# delete input list"),
+                path.sh, append = T)
+    write_lines(paste("rm ", input.list),
+                path.sh, append = T)
+    write_lines(paste("\n", "# compress outputs"),
+                path.sh, append = T)
+    write_lines(paste("gzip ", paths$out),
+                path.sh, append = T)
+    
+     
+    # submit job
+    system(paste("sbatch", path.sh))
+}
+  
+  
 quit(save = "no")

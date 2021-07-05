@@ -1,2 +1,0 @@
-GSF2865-delta6-founder-T0-pl_S3_R1_001.fastq
-GSF2865-delta6-founder-T0-pl_S3_R2_001.fastq

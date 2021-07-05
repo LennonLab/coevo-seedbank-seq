@@ -1,2 +1,0 @@
-GSF2865-WLCt-L1-T14-pl_S8_R1_001.fastq
-GSF2865-WLCt-L1-T14-pl_S8_R2_001.fastq

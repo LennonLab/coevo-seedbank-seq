@@ -1,2 +1,0 @@
-GSF2865-dSpoIIE-ANC-ANC-pl_S2_R1_001.fastq
-GSF2865-dSpoIIE-ANC-ANC-pl_S2_R2_001.fastq

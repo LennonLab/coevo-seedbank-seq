@@ -1,8 +1,9 @@
 #!/bin/bash
 #SBATCH --mail-user=danschw@iu.edu
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=8
-#SBATCH --time=06:00:00
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=8
+#SBATCH --time=03:00:00
 #SBATCH --mail-type=FAIL,BEGIN,END
 #SBATCH --job-name=QC-Hdedup
 

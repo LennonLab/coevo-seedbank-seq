@@ -44,9 +44,9 @@ mkdir -p $ODIR
 #####define population samples #####
 declare -a TRTS=("WLO" "WSO" "SNO" "WLCt" "WSCt" "SNCt")
 declare -a REPS=("L1" "L2" "L3")
-declare -a TIMES=("T14")
+declare -a TIMES=("T1" "T4" "T14")
 #declare -a TIMES=("T1" "T4" "T7" "T10" "T14")
-declare -a EXTRACTS=("pl" "rV" "rS") # pellet, revived veg, revived spore
+declare -a EXTRACTS=("rV" "rS") # revived veg, revived spore
 
 export -a SAMPLES=()
 
@@ -106,8 +106,9 @@ do
     echo '#!/bin/bash' >> $bash_out
     echo '#SBATCH --mail-user=danschw@iu.edu' >> $bash_out
     echo '#SBATCH --nodes=1' >> $bash_out
-    echo '#SBATCH --ntasks-per-node=8' >> $bash_out
-    echo '#SBATCH --time=9:59:00' >> $bash_out
+    echo '#SBATCH --ntasks-per-node=1' >> $bash_out
+    echo '#SBATCH --cpus-per-task=8' >> $bash_out
+    echo '#SBATCH --time=2:59:00' >> $bash_out
     echo '#SBATCH --mem=50gb' >> $bash_out
     echo '#SBATCH --mail-type=FAIL,BEGIN,END' >> $bash_out
     echo "#SBATCH --job-name=${SAMPLE}" >> $bash_out

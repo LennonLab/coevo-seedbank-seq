@@ -5,7 +5,7 @@
 fastuniq.path <- "/N/u/danschw/Carbonate/my_tools/FastUniq/FastUniq/source/fastuniq"
 
 # phage or host?
-  input.arg <-# NULL
+  input.arg <- NULL
   
   input.arg <- commandArgs(trailingOnly = TRUE)
   # test if there is an argument: if not, return an error
@@ -71,9 +71,12 @@ for (current.reads in unique(reads$unq.sample)){
     filter(unq.sample == current.reads) %>% 
     select(path, f) %>% 
     mutate(f = str_remove(f, ".gz$")) %>% 
-    mutate(out = paste0(here("data/ddup-fastq/"), input.arg, "/ddup-",f))
+    mutate(out = paste0(here("data/ddup-fastq/"), input.arg, "/ddup-",f)) %>% 
+    #fix extraction names to unify across sequencing runs
+    mutate(out = str_replace(out, "SB", "rS")) %>% 
+    mutate(out = str_replace(out, "veg", "rV"))
+             
 
-    
   # path for current batch script
     path.sh <- here("code/bash/ddup-scripts", input.arg,
                     paste0("deduplicate-", current.reads, ".sh"))

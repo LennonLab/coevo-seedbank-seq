@@ -23,9 +23,9 @@ mkdir -p ${ODIR}/breseq_jc/merged
 #####define population samples #####
 declare -a TRTS=("WLO" "WSO" "SNO" "WLCt" "WSCt" "SNCt")
 declare -a REPS=("L1" "L2" "L3")
-declare -a TIMES=("T14")
+declare -a TIMES=("T1" "T4" "T14")
 #declare -a TIMES=("T1" "T4" "T7" "T10" "T14")
-declare -a EXTRACTS=("pl" "rV" "rS") # pellet, revived veg, revived spore
+declare -a EXTRACTS=("rV" "rS") # revived veg, revived spore
 declare -a SAMPLES=()
 
 # add founder populations to all

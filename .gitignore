@@ -12,8 +12,8 @@ data/SnpGenie
 ######################
 #  code generated batch scripts
 ######################
-*_scripts/*.sh
-
+*_scripts/
+*-scripts/
 
 ######################
 #  R 

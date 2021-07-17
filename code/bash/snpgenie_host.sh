@@ -34,8 +34,9 @@ do
 		echo '#!/bin/bash' >> $bash_out
 		echo '#SBATCH --mail-user=danschw@iu.edu' >> $bash_out
 		echo '#SBATCH --nodes=1' >> $bash_out
-		echo '#SBATCH --ntasks-per-node=8' >> $bash_out
-		echo '#SBATCH --time=3:59:00' >> $bash_out
+		echo '#SBATCH --ntasks-per-node=1' >> $bash_out
+		echo '#SBATCH --cpus-per-task=8' >> $bash_out
+		echo '#SBATCH --time=1:59:00' >> $bash_out
 		echo '#SBATCH --mem=50gb' >> $bash_out
 		echo '#SBATCH --mail-type=FAIL,BEGIN,END' >> $bash_out
 		echo "#SBATCH --job-name=${SAMPLE}" >> $bash_out
@@ -50,6 +51,7 @@ do
 		echo "rm ${SAMPLE}_reference.gtf ${SAMPLE}_gffread.log" >> $bash_out
 	   	
 		sbatch $bash_out
+echo $bash_out
 
 done
 

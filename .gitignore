@@ -12,8 +12,9 @@ data/SnpGenie
 ######################
 #  code generated batch scripts
 ######################
-code/bash/*_scripts/
-code/bash/unmatched-host_scripts/
+*_scripts/*.sh
+
+
 ######################
 #  R 
 ######################

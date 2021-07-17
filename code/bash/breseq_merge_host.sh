@@ -14,9 +14,8 @@ BRESEQ=/N/u/danschw/Carbonate/my_tools/breseq-0.35.5-Linux-x86_64/bin
 PARENT=/N/slate/danschw/coevo-seedbank-seq
 ODIR=${PARENT}/data/map-EVOL/host
 
-mkdir -p ${ODIR}/breseq_merge/
-mkdir -p ${ODIR}/breseq_merge/all
-mkdir -p ${ODIR}/breseq_merge/merged
+mkdir -p ${ODIR}/breseq_merge
+
 
 
 
@@ -32,15 +31,17 @@ declare -a SAMPLES=()
 #wt_evidence_founder="${ODIR}/breseq1/delta6-founder-T0-pl/output/evidence/evidence.gd"
 #mut_evidence_founder="${ODIR}/breseq1/dSpoIIE-founder-T0-pl/output/evidence/evidence.gd"
 
-##### merge evidence files of all samples per population #####
+##### merge evidence files of all samples per host #####
+declare -a wt_gd_files=()
+declare -a mut_gd_files=()
 
 for TRT in "${TRTS[@]}"
 do
   for REP in "${REPS[@]}"
   do
       
-    POP=${TRT}-${REP}
-    declare -a gd_files=()
+    #POP=${TRT}-${REP}
+
     
     for SUBPOP in "${SUBPOPS[@]}"
     do
@@ -49,19 +50,32 @@ do
         
         current_gd="${ODIR}/breseq1/${TRT}-${REP}-${TIME}-${SUBPOP}/output/evidence/evidence.gd"
         if [ -f $current_gd ] ; then
-					gd_files=(${gd_files[@]} $current_gd)
-				fi
+						#refernce for current sample
+			if [[ ${TRT} == *"SN"* ]] ; then
+				mut_gd_files=(${mut_gd_files[@]} $current_gd)
+			else
+				wt_gd_files=(${wt_gd_files[@]} $current_gd)
+			fi
+		fi
 
       done
     done
-  
-      # make new file
-			merged_output="${ODIR}/breseq_merge/merged/${POP}.gd"
-								if [ -f $merged_output ] ; then
-									rm $merged_output
-								fi
-			${BRESEQ}/gdtools UNION -o $merged_output -e ${gd_files[@]}
-			
+
   done
 done
+
+  
+# make new files
+merged_output="${ODIR}/breseq_merge/delta6-pops-merged.gd"
+					if [ -f $merged_output ] ; then
+						rm $merged_output
+					fi
+${BRESEQ}/gdtools UNION -o $merged_output -e ${wt_gd_files[@]}
+
+
+merged_output="${ODIR}/breseq_merge/dSpoIIE-pops-merged.gd"
+					if [ -f $merged_output ] ; then
+						rm $merged_output
+					fi
+${BRESEQ}/gdtools UNION -o $merged_output -e ${mut_gd_files[@]}
 

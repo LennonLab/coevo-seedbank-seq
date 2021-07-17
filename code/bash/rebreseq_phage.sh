@@ -51,8 +51,8 @@ do
 
   files_test=( ${fR1} ${fR2} )
   if [ -e "${files_test[0]}" ] && [ -e "${files_test[1]}" ]; then
-    pop="$(echo "$SAMPLE" | cut -d "-" -f1-2)"
-    pop_gd="${PARENT}/data/map-EVOL/phage/breseq_jc/merged/${pop}.gd"
+    # pop="$(echo "$SAMPLE" | cut -d "-" -f1-2)"
+    pop_gd="${PARENT}/data/map-EVOL/phage/breseq_merge/phage-pops-merged.gd"
 
     bash_out="${bash_rebreseq_scripts}/${SAMPLE}_rebreseq.sh"
     if [ -f $bash_out ]; then
@@ -72,11 +72,12 @@ do
     echo '#!/bin/bash' >> $bash_out
     echo '#SBATCH --mail-user=danschw@iu.edu' >> $bash_out
     echo '#SBATCH --nodes=1' >> $bash_out
-    echo '#SBATCH --ntasks-per-node=8' >> $bash_out
-    echo '#SBATCH --time=9:59:00' >> $bash_out
-    echo '#SBATCH --mem=50gb' >> $bash_out
+    echo '#SBATCH --ntasks-per-node=1' >> $bash_out
+    echo '#SBATCH --cpus-per-task=8' >> $bash_out
+    echo '#SBATCH --time=1:59:00' >> $bash_out
+    echo '#SBATCH --mem=10gb' >> $bash_out
     echo '#SBATCH --mail-type=FAIL,BEGIN,END' >> $bash_out
-    echo "#SBATCH --job-name=${SAMPLE}" >> $bash_out
+    echo "#SBATCH --job-name=p${SAMPLE}" >> $bash_out
     echo '' >> $bash_out
     echo '##### load dependencies #####' >> $bash_out
     echo 'module load r' >> $bash_out

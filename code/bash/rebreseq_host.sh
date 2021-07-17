@@ -75,15 +75,14 @@ do
 	#refernce for current sample
 	if [[ ${SAMPLE} == *"SN"* ]] ; then
 		HREF=$mutHREF
+		pop_gd="${PARENT}/data/map-EVOL/host/breseq_merge/dSpoIIE-pops-merged.gd"
 	else
 		HREF=$wtHREF
+		pop_gd="${PARENT}/data/map-EVOL/host/breseq_merge/delta6-pops-merged.gd"
 	fi
 
 	files_test=( ${fR1} ${fR2} )
 	if [ -e "${files_test[0]}" ] && [ -e "${files_test[1]}" ]; then
-
-    	pop="$(echo "$SAMPLE" | cut -d "-" -f1-2)"
-	    pop_gd="${PARENT}/data/map-EVOL/host/breseq_jc/merged/${pop}.gd"
 
     bash_out="${bash_rebreseq_scripts}/${SAMPLE}_rebreseq.sh"
     if [ -f $bash_out ]; then
@@ -108,8 +107,8 @@ do
     echo '#SBATCH --nodes=1' >> $bash_out
     echo '#SBATCH --ntasks-per-node=1' >> $bash_out
     echo '#SBATCH --cpus-per-task=8' >> $bash_out
-    echo '#SBATCH --time=2:59:00' >> $bash_out
-    echo '#SBATCH --mem=50gb' >> $bash_out
+    echo '#SBATCH --time=1:59:00' >> $bash_out
+    echo '#SBATCH --mem=8gb' >> $bash_out
     echo '#SBATCH --mail-type=FAIL,BEGIN,END' >> $bash_out
     echo "#SBATCH --job-name=${SAMPLE}" >> $bash_out
     echo '' >> $bash_out
@@ -119,7 +118,8 @@ do
     echo '' >> $bash_out
     echo '##### run breseq from local instance #####' >> $bash_out
     echo "${BRESEQ}/breseq -j 8 -p --user-evidence-gd ${pop_gd} -o ${OUT_rebreseq} -r ${HREF} ${fR1} ${fR2} > ${OUT_rebreseq_err} 2> ${OUT_rebreseq_log}" >> $bash_out
-   	sbatch $bash_out
+   	
+	sbatch $bash_out
 
   else
     continue

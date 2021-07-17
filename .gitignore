@@ -10,6 +10,11 @@ data/CompSubPops/
 data/SnpGenie
 
 ######################
+#  code generated batch scripts
+######################
+code/bash/*_scripts/
+code/bash/unmatched-host_scripts/
+######################
 #  R 
 ######################
 # History files
@@ -51,3 +56,7 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+code/bash/unmatched-host_scripts/
+code/bash/breseq2-host_scripts/
+code/bash/breseq1-host_scripts/
+code/bash/unmatched-host_scripts/SNO-L1-T14-pl_breseq.sh code/bash/unmatched-host_scripts/SNO-L1-T14-rV_breseq.sh code/bash/unmatched-host_scripts/SNO-L1-T1-rV_breseq.sh code/bash/unmatched-host_scripts/SNO-L1-T4-rV_breseq.sh code/bash/unmatched-host_scripts/SNO-L2-T14-pl_breseq.sh code/bash/unmatched-host_scripts/SNO-L2-T14-rV_breseq.sh code/bash/unmatched-host_scripts/SNO-L2-T1-rV_breseq.sh code/bash/unmatched-host_scripts/SNO-L2-T4-rV_breseq.sh code/bash/unmatched-host_scripts/SNO-L3-T14-pl_breseq.sh code/bash/unmatched-host_scripts/SNO-L3-T14-rV_breseq.sh code/bash/unmatched-host_scripts/SNO-L3-T1-rV_breseq.sh code/bash/unmatched-host_scripts/SNO-L3-T4-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L1-T14-pl_breseq.sh code/bash/unmatched-host_scripts/WLO-L1-T14-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L1-T14-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L1-T1-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L1-T1-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L1-T4-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L1-T4-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L2-T14-pl_breseq.sh code/bash/unmatched-host_scripts/WLO-L2-T14-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L2-T14-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L2-T1-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L2-T1-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L2-T4-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L2-T4-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L3-T14-pl_breseq.sh code/bash/unmatched-host_scripts/WLO-L3-T14-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L3-T14-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L3-T1-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L3-T1-rV_breseq.sh code/bash/unmatched-host_scripts/WLO-L3-T4-rS_breseq.sh code/bash/unmatched-host_scripts/WLO-L3-T4-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L1-T14-pl_breseq.sh code/bash/unmatched-host_scripts/WSO-L1-T14-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L1-T14-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L1-T1-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L1-T1-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L1-T4-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L1-T4-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L2-T14-pl_breseq.sh code/bash/unmatched-host_scripts/WSO-L2-T14-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L2-T14-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L2-T1-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L2-T1-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L2-T4-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L2-T4-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L3-T14-pl_breseq.sh code/bash/unmatched-host_scripts/WSO-L3-T14-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L3-T14-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L3-T1-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L3-T1-rV_breseq.sh code/bash/unmatched-host_scripts/WSO-L3-T4-rS_breseq.sh code/bash/unmatched-host_scripts/WSO-L3-T4-rV_breseq.sh

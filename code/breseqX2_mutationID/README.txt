@@ -1,4 +1,4 @@
-# Old code for Ben Godd type analyses
+# Old code for Ben Good type analyses
 #===================================================
 Cleaning up I stashed aside all the analyses code in this folder
 (4) Initial breseq round. Map reads of evolved samples to ANC

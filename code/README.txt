@@ -22,3 +22,9 @@ $ sbatch code/bash/qc-phage.sh
 Run bash script on slurm to map reads of ancestors to published reference
 $ sbatch code/bash/map-anc-phage.sh
 $ sbatch code/bash/map-anc-hosts.sh
+
+(4) Lists data per sample
+List of al the samples to be used in downstream analysis
+$ Rscript code/R/sample-list.R
+Writes csv files in data folder (samples_evolved.csv; samples_ancestors.csv)
+

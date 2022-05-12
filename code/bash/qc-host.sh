@@ -12,7 +12,7 @@
 module load java
 module unload perl/5.24.1
 module load perl/5.30.1
-module load fastqc/0.11.5 
+module load fastqc/0.11.5
 
 ##### Define paths #####
 PARENT=/N/slate/danschw/coevo-seedbank-seq
@@ -29,4 +29,4 @@ module unload python
 module load python/3.6.8
 module load multiqc/python3.6/1.8
 
-multiqc --interactive -o ${ODIR} ${ODIR} 
+multiqc --interactive -o ${ODIR} ${ODIR}

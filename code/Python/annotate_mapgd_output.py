@@ -9,11 +9,11 @@ import parse_file
 from Bio import SeqIO
 
 
-phage_or_host_type = 'host'
-seed_bank_type = 'long_seed_bank'
-phage_treatment_type = 'noPhage'
-subpop_type = 'revived_spore'
-replicate = 1
+#phage_or_host_type = 'host'
+#seed_bank_type = 'long_seed_bank'
+#phage_treatment_type = 'noPhage'
+#subpop_type = 'revived_spore'
+#replicate = 1
 
 
 
@@ -51,6 +51,7 @@ def parse_and_annotate_pol_files_all_timepoints(samples, transfers):
             position = int(line_split[1])
             major_allele = line_split[3]
             minor_allele = line_split[4]
+            coverage = float(line_split[5])
             frequency = float(line_split[7].split('/')[0])
 
             # mapgd starts counting at one
@@ -70,6 +71,7 @@ def parse_and_annotate_pol_files_all_timepoints(samples, transfers):
                 pol_dict[position]['alt_allele'] = alt_allele
                 pol_dict[position]['transfers'] = []
                 pol_dict[position]['frequency_trajectory'] = []
+                pol_dict[position]['coverage_trajectory'] = []
 
 
             else:
@@ -79,6 +81,7 @@ def parse_and_annotate_pol_files_all_timepoints(samples, transfers):
 
             pol_dict[position]['transfers'].append(transfer)
             pol_dict[position]['frequency_trajectory'].append(frequency)
+            pol_dict[position]['coverage_trajectory'].append(coverage)
 
             all_positions.append(position)
 
@@ -190,12 +193,21 @@ def parse_and_annotate_pol_files_all_timepoints(samples, transfers):
 
 
         print_strings = [str(position), gene_name, alt_allele, var_type, str(codon), str(position_in_codon), str(fold_count)]
+        # once for frequency
         for transfer in utils.transfers:
             if transfer not in pol_dict[position]['transfers']:
                 print_strings.append(str(0))
 
             else:
                 print_strings.append(str(pol_dict[position]['frequency_trajectory'][pol_dict[position]['transfers'].index(transfer)]))
+        # once for coverage
+        for transfer in utils.transfers:
+            if transfer not in pol_dict[position]['transfers']:
+                print_strings.append("Nan")
+
+            else:
+                print_strings.append(str(pol_dict[position]['coverage_trajectory'][pol_dict[position]['transfers'].index(transfer)]))
+
 
         annotated_mutations.append((position, ", ".join(print_strings)))
 
@@ -207,12 +219,10 @@ def parse_and_annotate_pol_files_all_timepoints(samples, transfers):
     file_name.pop(2)
     file_name = '_'.join(file_name)
 
-    print(file_name)
-
     output_filename = "%stimecourse_final/%s_annotated_timecourse.txt" % (config.data_directory, file_name)
 
-    header = ['Position', 'Gene', 'Allele', 'Annotation', 'Codon', 'Position in codon', 'AA fold count', 'Freq:1', 'Freq:4', 'Freq:7', 'Freq:10', 'Freq:14']
-    header = ", ".join(print_strings)
+    header = ['Position', 'Gene', 'Allele', 'Annotation', 'Codon', 'Position in codon', 'AA fold count', 'Freq:1', 'Freq:4', 'Freq:7', 'Freq:10', 'Freq:14', 'Cov:1', 'Cov:4', 'Cov:7', 'Cov:10', 'Cov:14']
+    header = ", ".join(header)
 
     output_file = open(output_filename,"w")
     output_file.write(header)
@@ -230,27 +240,33 @@ def parse_and_annotate_pol_files_all_timepoints(samples, transfers):
 
 
 
+def annotate_all_line():
+
+    for phage_or_host_type in utils.phage_or_host_types:
+        for seed_bank_type in  utils.seed_bank_types:
+            for phage_treatment_type in utils.phage_treatment_types:
+                print(phage_or_host_type, seed_bank_type, phage_treatment_type)
+
+                for subpop_type in utils.subpop_types:
+
+                    for replicate in utils.replicates:
+
+                        samples = utils.get_samples_from_metadata(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
+                        if len(samples) == 0:
+                            continue
+
+                        # get timepoints
+                        transfer_all = []
+                        for sample in samples:
+                            transfer_all.append(metadata_dict[sample]['transfer'])
+
+                        transfer_all, samples = zip(*sorted(zip(transfer_all, samples)))
+                        samples = list(samples)
+                        transfer_all = list(transfer_all)
+
+
+                        parse_and_annotate_pol_files_all_timepoints(samples, transfer_all)
 
 
 
-for phage_or_host_type in utils.phage_or_host_types:
-    for seed_bank_types in  utils.seed_bank_types:
-        for phage_treatment_type in utils.phage_treatment_types:
-            for subpop_type in utils.subpop_types:
-                for replicate in utils.replicates:
-
-                    samples = utils.get_samples_from_metadata(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
-                    if len(samples) == 0:
-                        continue
-
-                    # get timepoints
-                    transfer_all = []
-                    for sample in samples:
-                        transfer_all.append(metadata_dict[sample]['transfer'])
-
-                    transfer_all, samples = zip(*sorted(zip(transfer_all, samples)))
-                    samples = list(samples)
-                    transfer_all = list(transfer_all)
-
-
-                    parse_and_annotate_pol_files_all_timepoints(samples, transfer_all)
+#annotate_all_line()

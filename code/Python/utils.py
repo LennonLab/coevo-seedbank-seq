@@ -2,8 +2,12 @@ from __future__ import division
 import numpy
 import sys
 from math import fabs
-import glob, os, sys, re
+import glob, os, sys, re, glob
 import config
+
+
+import matplotlib.colors as clr
+
 
 from Bio.Alphabet import generic_dna
 from Bio import SeqIO
@@ -17,8 +21,19 @@ subpop_types = ['filtered_phage', 'revived_total', 'revived_spore']
 references = ['delta6-ANC', 'dspoIIE-ANC', 'SPO1-ANC']
 replicates = [1, 2, 3]
 
+background = ['SNO', 'WLCt', 'WLO', 'SNCt', 'WSCt', 'WSO']
+#to_ignore = [('host', 'revived_spore')]
 
 transfers = [1,4,7,10,14]
+
+min_n_non_zero_freqs = 2
+
+
+seed_bank_types_format_dict = {'short_seed_bank': 'Short seed bank', 'long_seed_bank': 'Long seed bank', 'no_seed_bank': 'No seed bank'}
+phage_treatment_types_format_dict = {'noPhage': 'no phage', 'SPO1': 'with phage'}
+subpop_types = {'filtered_phage': 'Phage', 'revived_total': 'All cells', 'revived_spore': 'Seed bank'}
+
+
 
 
 #def gff3_to_fasta():
@@ -92,6 +107,7 @@ def get_samples_from_metadata(phage_or_host_type, seed_bank_type, phage_treatmen
     metadata_dict = get_sample_metadata_dict()
 
     samples_all = []
+    #print(metadata_dict['SNCt-L3-T7_host_no_seed_bank_noPhage_revived_total'])
 
     for key in metadata_dict.keys():
 
@@ -114,3 +130,92 @@ def get_samples_from_metadata(phage_or_host_type, seed_bank_type, phage_treatmen
         samples_all.append(key)
 
     return samples_all
+
+
+
+
+def load_annotated_mapgd(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate):
+
+    population = 'L%d_%s_%s_%s_%s_annotated_timecourse.txt' % (replicate, phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type)
+
+    #print(population)
+
+    annotated_mapgd_dict = {}
+
+    partial_matches = glob.glob('%s/timecourse_final/*%s' % (config.data_directory, population))
+
+    if len(partial_matches) == 0:
+        exists = False
+    else:
+        exists = True
+
+        filename = partial_matches[0]
+        file = open(filename,"r")
+        header = file.readline() # header
+        header = header.strip().split('/t')
+        for line in file:
+
+            line = line.strip().split(', ')
+            position = int(line[0])
+            annotated_mapgd_dict[position] = {}
+
+            annotated_mapgd_dict[position]['gene'] = line[1]
+            annotated_mapgd_dict[position]['allele'] = line[2]
+            annotated_mapgd_dict[position]['annotation'] = line[3]
+            annotated_mapgd_dict[position]['codon'] = line[4]
+
+            if line[5] == 'None':
+                annotated_mapgd_dict[position]['position_in_codon'] = 'None'
+                annotated_mapgd_dict[position]['aa_fold_count'] = 'None'
+            elif line[5] == 'unknown':
+                annotated_mapgd_dict[position]['position_in_codon'] = 'unknown'
+                annotated_mapgd_dict[position]['aa_fold_count'] = 'unknown'
+            else:
+                annotated_mapgd_dict[position]['position_in_codon'] = int(line[5])
+                annotated_mapgd_dict[position]['aa_fold_count'] = int(line[6])
+
+            frequency_trajectory = numpy.asarray([float(f) for f in line[7:12]])
+            annotated_mapgd_dict[position]['frequency_trajectory'] = frequency_trajectory
+
+            coverage_trajectory = numpy.asarray([float(f) for f in line[12:]])
+            annotated_mapgd_dict[position]['coverage_trajectory'] = coverage_trajectory
+
+
+        file.close()
+
+
+    return exists, annotated_mapgd_dict
+
+
+
+
+def lighten_color(color, amount=0.5):
+    """
+    Lightens the given color by multiplying (1-luminosity) by the given amount.
+    Input can be matplotlib color string, hex string, or RGB tuple.
+    Examples:
+    >> lighten_color('g', 0.3)
+    >> lighten_color('#F034A3', 0.6)
+    >> lighten_color((.3,.55,.1), 0.5)
+    """
+    import matplotlib.colors as mc
+    import colorsys
+    try:
+        c = mc.cnames[color]
+    except:
+        c = color
+    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+    return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
+
+
+
+def mut_freq_colormap():
+    #cmap = clr.LinearSegmentedColormap.from_list('Zissou1', ["#3B9AB2", "#78B7C5", "#EBCC2A", "#E1AF00", "#F21A00"], N=256)
+    cmap = clr.LinearSegmentedColormap.from_list('Darjeeling1', ["#FF0000", "#00A08A", "#F2AD00", "#F98400", "#5BBCD6"], N=256)
+
+    # sample from cmap using uniform dist b/w 0 and 1
+    u = numpy.random.uniform()
+    rgb = '#%02x%02x%02x' % tuple([int(x * 100) for x in list(cmap(u))[:-1]])
+    #tuple([int(x * 100) for x in list(cmap(u))[:-1]])
+    # RGB six digit code
+    return rgb

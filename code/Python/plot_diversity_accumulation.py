@@ -23,8 +23,6 @@ fig = plt.figure(figsize = (12, 4))
 
 for subpop_type_idx, subpop_type in enumerate(utils.subpop_types):
 
-
-
     ax_i = plt.subplot2grid((1, len(utils.subpop_types)), (0, subpop_type_idx), colspan=1)
 
     for phage_or_host_type in utils.phage_or_host_types:
@@ -38,17 +36,29 @@ for subpop_type_idx, subpop_type in enumerate(utils.subpop_types):
                     m_trajectory = numpy.zeros(len(utils.transfers))
                     # check if it exists
                     exists, annotated_mapgd_dict = utils.load_annotated_mapgd(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
+                    #exists, annotated_mapgd_dict = utils.load_annotated_breseq(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
+
                     if exists == False:
                         continue
 
                     for key, value in annotated_mapgd_dict.items():
 
                         frequency_trajectory = value['frequency_trajectory']
+                        coverage_trajectory = value['coverage_trajectory']
 
-                        if sum(frequency_trajectory>0) < utils.min_n_non_zero_freqs:
+                        #frequency_trajectory[frequency_trajectory<1/60] = 0
+
+                        #if frequency_trajectory[0] > 0.2:
+                        #    continue
+
+                        if sum(frequency_trajectory>0) < 3:
                             continue
 
+                        #if (sum(frequency_trajectory[utils.high_coverage_idx]>0) > 0) and (sum(frequency_trajectory[utils.low_coverage_idx] > 0) > 0):
+                        #if (sum(frequency_trajectory[utils.low_coverage_idx] > 0) == 2):
                         m_trajectory += frequency_trajectory
+
+                    print(subpop_type, m_trajectory)
 
                     log_m_trajectory = numpy.log10(m_trajectory)
                     log_m_trajectory_all.append(log_m_trajectory)

@@ -90,7 +90,6 @@ def parse_and_annotate_pol_files_all_timepoints(samples, transfers):
 
     gene_data = parse_file.parse_gene_list(reference)
     gene_names, gene_start_positions, gene_end_positions, promoter_start_positions, promoter_end_positions, gene_sequences, strands, genes, features, protein_ids = gene_data
-
     position_gene_map, effective_gene_lengths, substitution_specific_synonymous_fraction = parse_file.create_annotation_map(reference=reference, gene_data=gene_data)
 
 
@@ -245,7 +244,6 @@ def annotate_all_line():
     for phage_or_host_type in utils.phage_or_host_types:
         for seed_bank_type in  utils.seed_bank_types:
             for phage_treatment_type in utils.phage_treatment_types:
-                print(phage_or_host_type, seed_bank_type, phage_treatment_type)
 
                 for subpop_type in utils.subpop_types:
 

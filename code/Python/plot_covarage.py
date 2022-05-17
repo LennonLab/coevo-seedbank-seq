@@ -22,7 +22,7 @@ for phage_or_host_type in utils.phage_or_host_types:
 
                     coverage_all = []
 
-                    exists, annotated_mapgd_dict = utils.load_annotated_mapgd(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
+                    exists, annotated_mapgd_dict = utils.load_annotated_breseq(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
 
                     if exists == False:
                         continue
@@ -53,7 +53,7 @@ for phage_or_host_type in utils.phage_or_host_types:
 
 
 ax.set_xlabel('Transfer', fontsize=12)
-ax.set_ylabel('Median coverage of\nsites that passed MAPGD', fontsize=12)
+ax.set_ylabel('Median coverage of\nsites that passed breseq', fontsize=12)
 #ax.set_yscale('log', basey=10)
 
 #custom_lines = [Line2D([0], [0], color='firebrick'),

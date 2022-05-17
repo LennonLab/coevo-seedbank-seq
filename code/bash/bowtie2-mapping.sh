@@ -56,7 +56,7 @@ while read sample; do
   fi
 
   # revived_total, revived_spore, filtered_phage
-  if [[ "$subpop" != 'filtered_phage' ]]; then
+  if [[ "$subpop" != 'revived_spore' ]]; then
     continue
   fi
 
@@ -73,7 +73,10 @@ while read sample; do
   #samtools index ${bam_sorted}
   #samtools view -H ${bam_sorted} > ${bam_sorted_header}
 
-  samtools mpileup -q 5 -Q 5 -B ${bam_sorted} | /N/u/wrshoema/Carbonate/MAPGD-master/bin/mapgd proview -H ${bam_sorted_header} | /N/u/wrshoema/Carbonate/MAPGD-master/bin/mapgd pool -a 15 -o ${pol}
+  # try with -a 5 and see if it helps
+  # old -a 15
+
+  samtools mpileup -q 5 -Q 5 -B ${bam_sorted} | /N/u/wrshoema/Carbonate/MAPGD-master/bin/mapgd proview -H ${bam_sorted_header} | /N/u/wrshoema/Carbonate/MAPGD-master/bin/mapgd pool -a 5 -o ${pol}
 
   #rm ${sam}
   #rm ${bam}

@@ -28,6 +28,8 @@ transfers = [1,4,7,10,14]
 
 min_n_non_zero_freqs = 2
 
+high_coverage_idx = numpy.asarray([0,1,4])
+low_coverage_idx = numpy.asarray([2,3])
 
 seed_bank_types_format_dict = {'short_seed_bank': 'Short seed bank', 'long_seed_bank': 'Long seed bank', 'no_seed_bank': 'No seed bank'}
 phage_treatment_types_format_dict = {'noPhage': 'no phage', 'SPO1': 'with phage'}
@@ -99,6 +101,33 @@ def get_sample_metadata_dict():
 
 
     return metadata_dict
+
+
+
+
+
+def get_sample_metadata_breseq_dict():
+
+    sample_metadata_dict = get_sample_metadata_dict()
+    sample_metadata_dict_keys = list(sample_metadata_dict.keys())
+
+    subpop_breseq_to_metadata_dict = {'phage': 'filtered_phage', 'rS': 'revived_spore', 'rV': 'revived_total'}
+
+    metadata_breseq_dict = {}
+
+    for file in os.listdir("%sbreseq_output/" % config.data_directory):
+
+        file_strip = file.strip()
+        uniq_label, subpop_breseq = file_strip.split('.')[0].rsplit('-', 1)
+
+        subpop_metadata = subpop_breseq_to_metadata_dict[subpop_breseq]
+        sample = [e for e in sample_metadata_dict_keys if e.startswith(uniq_label+'_') and e.endswith(subpop_metadata)][0]
+
+        metadata_breseq_dict[sample] = file_strip
+
+    return metadata_breseq_dict
+
+
 
 
 
@@ -180,6 +209,59 @@ def load_annotated_mapgd(phage_or_host_type, seed_bank_type, phage_treatment_typ
             coverage_trajectory = numpy.asarray([float(f) for f in line[12:]])
             annotated_mapgd_dict[position]['coverage_trajectory'] = coverage_trajectory
 
+
+        file.close()
+
+
+    return exists, annotated_mapgd_dict
+
+
+
+
+
+def load_annotated_breseq(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate):
+
+    population = 'L%d_%s_%s_%s_%s_annotated_timecourse.txt' % (replicate, phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type)
+
+    annotated_mapgd_dict = {}
+
+    partial_matches = glob.glob('%s/timecourse_final_breseq/*%s' % (config.data_directory, population))
+
+    if len(partial_matches) == 0:
+        exists = False
+    else:
+        exists = True
+
+        filename = partial_matches[0]
+        file = open(filename,"r")
+        header = file.readline() # header
+        header = header.strip().split('/t')
+        for line in file:
+
+            line = line.strip().split(', ')
+            position = int(line[0])
+            annotated_mapgd_dict[position] = {}
+
+            annotated_mapgd_dict[position]['gene'] = line[1]
+            annotated_mapgd_dict[position]['allele'] = line[2]
+            annotated_mapgd_dict[position]['annotation'] = line[3]
+            annotated_mapgd_dict[position]['codon'] = line[4]
+
+            if line[5] == 'None':
+                annotated_mapgd_dict[position]['position_in_codon'] = 'None'
+                annotated_mapgd_dict[position]['aa_fold_count'] = 'None'
+            elif line[5] == 'unknown':
+                annotated_mapgd_dict[position]['position_in_codon'] = 'unknown'
+                annotated_mapgd_dict[position]['aa_fold_count'] = 'unknown'
+            else:
+                annotated_mapgd_dict[position]['position_in_codon'] = int(line[5])
+                annotated_mapgd_dict[position]['aa_fold_count'] = int(line[6])
+
+            frequency_trajectory = numpy.asarray([float(f) for f in line[7:12]])
+            annotated_mapgd_dict[position]['frequency_trajectory'] = frequency_trajectory
+
+            coverage_trajectory = numpy.asarray([float(f) for f in line[12:]])
+            annotated_mapgd_dict[position]['coverage_trajectory'] = coverage_trajectory
 
         file.close()
 

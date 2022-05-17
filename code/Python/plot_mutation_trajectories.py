@@ -61,7 +61,8 @@ for seed_bank_type in  utils.seed_bank_types:
 
                 for replicate in utils.replicates:
 
-                    exists, annotated_mapgd_dict = utils.load_annotated_mapgd(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
+                    #exists, annotated_mapgd_dict = utils.load_annotated_mapgd(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
+                    exists, annotated_mapgd_dict = utils.load_annotated_breseq(phage_or_host_type, seed_bank_type, phage_treatment_type, subpop_type, replicate)
 
                     if exists == False:
                         continue
@@ -113,7 +114,7 @@ for seed_bank_type in  utils.seed_bank_types:
         title = '%s, %s' % (utils.seed_bank_types_format_dict[seed_bank_type], utils.phage_treatment_types_format_dict[phage_treatment_type])
         fig.suptitle(title, fontsize=14)
 
-        fig_name = "%smutation_trajectories/%s_%s_mutation_trajectories.png" % (config.analysis_directory, seed_bank_type, phage_treatment_type)
+        fig_name = "%smutation_trajectories_breseq/%s_%s_mutation_trajectories.png" % (config.analysis_directory, seed_bank_type, phage_treatment_type)
         fig.savefig(fig_name, format='png', bbox_inches = "tight", pad_inches = 0.4, dpi = 600)
         plt.close()
 

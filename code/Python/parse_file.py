@@ -96,7 +96,23 @@ def get_genome_size(reference):
 
     r = reference.split('/')[-1].split('.')[0]
 
-    return genome_size_dict[r]
+    if 'dspoIIE' in reference:
+        size =  3874590
+
+    elif 'delta6' in reference:
+        size = 3876919
+
+    elif ('SPO1' in reference):
+        size = 132564
+
+    else:
+        print("don't know the reference!")
+
+
+    #return genome_size_dict[r]
+    return size
+
+
 
 
 
@@ -292,6 +308,166 @@ def parse_gene_list(reference, reference_sequence=None):
     gene_names, start_positions, end_positions, promoter_start_positions, promoter_end_positions, gene_sequences, strands, genes, features, protein_ids = (list(x) for x in zip(*sorted(zip(gene_names, start_positions, end_positions, promoter_start_positions, promoter_end_positions, gene_sequences, strands, genes, features, protein_ids), key=lambda pair: pair[1])))
 
     return gene_names, numpy.array(start_positions), numpy.array(end_positions), numpy.array(promoter_start_positions), numpy.array(promoter_end_positions), gene_sequences, strands, genes, features, protein_ids
+
+
+
+
+# get the annotations from genbank files
+def get_gene_annotation_dict(reference, reference_sequence=None):
+
+    annotation_dict = {}
+
+    filename = reference
+    gene_features = ['CDS', 'tRNA', 'rRNA', 'ncRNA', 'tmRNA']
+    recs = [rec for rec in SeqIO.parse(filename, "genbank")]
+    count_riboswitch = 0
+    for rec in recs:
+        reference_sequence = rec.seq
+        contig = rec.annotations['accessions'][0]
+        for feat in rec.features:
+            if 'pseudo' in list((feat.qualifiers.keys())):
+                continue
+            if (feat.type == "source") or (feat.type == "gene"):
+                continue
+
+            locations = re.findall(r"[\w']+", str(feat.location))
+            if feat.type in gene_features:
+                locus_tag = feat.qualifiers['locus_tag'][0]
+            elif (feat.type=="regulatory"):
+                locus_tag = feat.qualifiers["regulatory_class"][0] + '_' + str(count_riboswitch)
+                count_riboswitch += 1
+            else:
+                continue
+            # for frameshifts, split each CDS seperately and merge later
+            # Fix this for Deinococcus, it has a frameshift in three pieces
+            split_list = []
+            if 'join' in locations:
+                location_str = str(feat.location)
+                minus_position = []
+                if '-' in location_str:
+                    minus_position = [r.start() for r in re.finditer('-', location_str)]
+                pos_position = []
+
+                if '+' in location_str:
+                    if taxon == 'D':
+                        pos_position = [pos for pos, char in enumerate(location_str) if char == '+']
+                    elif taxon == 'J':
+                        pos_position = [pos for pos, char in enumerate(location_str) if char == '+']
+                    else:
+                        pos_position = [r.start() for r in re.finditer('+', location_str)]
+
+
+                if len(minus_position) + len(pos_position) == 2:
+                    if len(minus_position) == 2:
+                        strand_symbol_one = '-'
+                        strand_symbol_two = '-'
+                    elif len(pos_position) == 2:
+                        strand_symbol_one = '+'
+                        strand_symbol_two = '+'
+                    else:
+                        # I don't think this is possible, but might as well code it up
+                        if minus_position[0] < pos_position[0]:
+                            strand_symbol_one = '-'
+                            strand_symbol_two = '+'
+                        else:
+                            strand_symbol_one = '+'
+                            strand_symbol_two = '-'
+
+                    start_one = int(locations[1])
+                    stop_one = int(locations[2])
+                    start_two = int(locations[3])
+                    stop_two = int(locations[4])
+
+                    locus_tag1 = locus_tag + '_1'
+                    locus_tag2 = locus_tag + '_2'
+
+                    split_list.append([locus_tag1, start_one, stop_one, strand_symbol_one])
+                    split_list.append([locus_tag2, start_two, stop_two, strand_symbol_two])
+
+                else:
+                    if len(pos_position) == 3:
+                        strand_symbol_one = '+'
+                        strand_symbol_two = '+'
+                        strand_symbol_three = '+'
+                    start_one = int(locations[1])
+                    stop_one = int(locations[2])
+                    start_two = int(locations[3])
+                    stop_two = int(locations[4])
+                    start_three = int(locations[5])
+                    stop_three = int(locations[6])
+
+                    locus_tag1 = locus_tag + '_1'
+                    locus_tag2 = locus_tag + '_2'
+                    locus_tag3 = locus_tag + '_3'
+
+                    split_list.append([locus_tag1, start_one, stop_one, strand_symbol_one])
+                    split_list.append([locus_tag2, start_two, stop_two, strand_symbol_two])
+                    split_list.append([locus_tag3, start_three, stop_three, strand_symbol_three])
+
+
+            else:
+                strand_symbol = str(feat.location)[-2]
+                start = int(locations[0])
+                stop = int(locations[1])
+                split_list.append([locus_tag, start, stop, strand_symbol])
+
+            for split_item in split_list:
+                locus_tag = split_item[0]
+                start = split_item[1]
+                stop = split_item[2]
+                strand_symbol = split_item[3]
+
+
+                if feat.type == 'CDS':
+                    #  why was a -1 there originally?
+                    #gene_sequence = reference_sequence[start-1:stop]
+                    gene_sequence = str(reference_sequence[start:stop])
+                else:
+                    gene_sequence = ""
+
+
+                if 'gene' in list((feat.qualifiers.keys())):
+                    gene = feat.qualifiers['gene'][0]
+                else:
+                    gene = ""
+
+                if 'protein_id' in list((feat.qualifiers.keys())):
+                    protein_id = feat.qualifiers['protein_id'][0]
+                else:
+                    protein_id = ""
+
+
+                if strand_symbol == '+':
+                    promoter_start = start - 100 # by arbitrary definition, we treat the 100bp upstream as promoters
+                    promoter_end = start - 1
+                    strand = 'forward'
+                else:
+                    promoter_start = stop+1
+                    promoter_end = stop+100
+                    strand = 'reverse'
+
+
+                if gene_sequence!="" and (not len(gene_sequence)%3==0):
+                    print(locus_tag, start, "Not a multiple of 3")
+                    continue
+
+                if 'product' in feat.qualifiers:
+
+                    function = feat.qualifiers['product'][0]
+
+                else:
+                    function = 'hypothetical protein'
+
+                annotation_dict[locus_tag] = function
+
+    return annotation_dict
+
+
+
+
+
+
+
 
 
 def annotate_gene(position, position_gene_map):

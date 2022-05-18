@@ -26,7 +26,7 @@ background = ['SNO', 'WLCt', 'WLO', 'SNCt', 'WSCt', 'WSO']
 
 transfers = [1,4,7,10,14]
 
-min_n_non_zero_freqs = 2
+min_n_non_zero_freqs = 3
 
 high_coverage_idx = numpy.asarray([0,1,4])
 low_coverage_idx = numpy.asarray([2,3])
@@ -242,10 +242,11 @@ def load_annotated_breseq(phage_or_host_type, seed_bank_type, phage_treatment_ty
             position = int(line[0])
             annotated_mapgd_dict[position] = {}
 
-            annotated_mapgd_dict[position]['gene'] = line[1]
-            annotated_mapgd_dict[position]['allele'] = line[2]
-            annotated_mapgd_dict[position]['annotation'] = line[3]
-            annotated_mapgd_dict[position]['codon'] = line[4]
+            annotated_mapgd_dict[position]['mutation_type'] = line[1]
+            annotated_mapgd_dict[position]['gene'] = line[2]
+            annotated_mapgd_dict[position]['allele'] = line[3]
+            annotated_mapgd_dict[position]['annotation'] = line[4]
+            annotated_mapgd_dict[position]['codon'] = line[5]
 
             if line[5] == 'None':
                 annotated_mapgd_dict[position]['position_in_codon'] = 'None'
@@ -254,13 +255,13 @@ def load_annotated_breseq(phage_or_host_type, seed_bank_type, phage_treatment_ty
                 annotated_mapgd_dict[position]['position_in_codon'] = 'unknown'
                 annotated_mapgd_dict[position]['aa_fold_count'] = 'unknown'
             else:
-                annotated_mapgd_dict[position]['position_in_codon'] = int(line[5])
-                annotated_mapgd_dict[position]['aa_fold_count'] = int(line[6])
+                annotated_mapgd_dict[position]['position_in_codon'] = int(line[6])
+                annotated_mapgd_dict[position]['aa_fold_count'] = int(line[7])
 
-            frequency_trajectory = numpy.asarray([float(f) for f in line[7:12]])
+            frequency_trajectory = numpy.asarray([float(f) for f in line[8:13]])
             annotated_mapgd_dict[position]['frequency_trajectory'] = frequency_trajectory
 
-            coverage_trajectory = numpy.asarray([float(f) for f in line[12:]])
+            coverage_trajectory = numpy.asarray([float(f) for f in line[13:]])
             annotated_mapgd_dict[position]['coverage_trajectory'] = coverage_trajectory
 
         file.close()

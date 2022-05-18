@@ -9,14 +9,11 @@ import parse_file
 
 import matplotlib.pyplot as plt
 
-
-
-
-phage_or_host_type = 'host'
-seed_bank_type = 'long_seed_bank'
-phage_treatment_type = 'noPhage'
-subpop_type = 'revived_spore'
-replicate = 1
+#phage_or_host_type = 'host'
+#seed_bank_type = 'long_seed_bank'
+#phage_treatment_type = 'noPhage'
+#subpop_type = 'revived_spore'
+#replicate = 1
 
 
 fig = plt.figure(figsize = (12, 4))

@@ -4,7 +4,7 @@ import sys
 from math import fabs
 import glob, os, sys, re, glob
 import config
-
+import parse_file
 
 import matplotlib.colors as clr
 
@@ -20,6 +20,11 @@ phage_treatment_types = ['noPhage', 'SPO1']
 subpop_types = ['filtered_phage', 'revived_total', 'revived_spore']
 references = ['delta6-ANC', 'dspoIIE-ANC', 'SPO1-ANC']
 replicates = [1, 2, 3]
+
+
+color_dict = {'no_seed_bank':'#87CEEB', 'short_seed_bank': '#FFA500', 'long_seed_bank':'#FF6347'}
+marker_dict = {'noPhage': 'o', 'SPO1': '^'}
+line_dict = {'noPhage': '--', 'SPO1': ':'}
 
 background = ['SNO', 'WLCt', 'WLO', 'SNCt', 'WSCt', 'WSO']
 #to_ignore = [('host', 'revived_spore')]
@@ -302,3 +307,21 @@ def mut_freq_colormap():
     #tuple([int(x * 100) for x in list(cmap(u))[:-1]])
     # RGB six digit code
     return rgb
+
+
+
+def get_gene_intersection():
+
+    reference_1 = "%sdspoIIE-ANC.gbk" % config.data_directory
+    gene_data_1 = parse_file.parse_gene_list(reference_1)
+    gene_names_1, gene_start_positions_1, gene_end_positions_1, promoter_start_positions_1, promoter_end_positions_1, gene_sequences_1, strands_1, genes_1, features_1, protein_ids_1 = gene_data_1
+
+    reference_2 = "%sdelta6-ANC.gbk" % config.data_directory
+    gene_data_2 = parse_file.parse_gene_list(reference_2)
+    gene_names_2, gene_start_positions_2, gene_end_positions_2, promoter_start_positions_2, promoter_end_positions_2, gene_sequences_2, strands_2, genes_2, features_2, protein_ids_2 = gene_data_2
+    #gene_names_1 = numpy.asarray(gene_names_1)
+
+    gene_names_intersection = set(gene_names_1).intersection(set(gene_names_2))
+    gene_names_union = set(gene_names_1).union(set(gene_names_2))
+
+    return gene_names_intersection

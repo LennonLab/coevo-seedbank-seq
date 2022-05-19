@@ -20,8 +20,7 @@ from skbio.stats.ordination import pcoa
 from statsmodels.stats.multitest import multipletests
 
 
-color_dict = {'no_seed_bank':'#87CEEB', 'short_seed_bank': '#FFA500', 'long_seed_bank':'#FF6347'}
-marker_dict = {'noPhage': 'o', 'SPO1': '^'}
+
 
 def make_multiplicity_dict(phage_or_host_type = 'host'):
 
@@ -37,8 +36,6 @@ def make_multiplicity_dict(phage_or_host_type = 'host'):
 
     gene_names_intersection = set(gene_names_1).intersection(set(gene_names_2))
     gene_names_union = set(gene_names_1).union(set(gene_names_2))
-
-    #print(len(gene_names_intersection)/len(gene_names_union))
 
     mult_path = "%smultiplicity_dict_%s.pickle" % (config.data_directory, phage_or_host_type)
 
@@ -75,7 +72,12 @@ def make_multiplicity_dict(phage_or_host_type = 'host'):
                     if (gene == 'intergenic') or (gene == 'repeat'):
                         continue
 
-                    if gene not in gene_names_intersection:
+                    if phage_or_host_type == 'host':
+                        # ignore genes that aren't in both strains
+                        if gene not in gene_names_intersection:
+                            continue
+
+                    if (position_dict['annotation'] == 'synonymous') or (position_dict['annotation'] == 'noncoding'):
                         continue
 
                     frequency_trajectory = position_dict['frequency_trajectory']
@@ -325,14 +327,14 @@ def plot_pcoa_host():
         for phage_treatment_type in utils.phage_treatment_types:
 
             seed_bank_phage_idx = numpy.asarray([numpy.where(df_index==e)[0][0] for e in df_index if '%s_%s' % (seed_bank_type, phage_treatment_type) in e])
-            ax.scatter(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], marker = marker_dict[phage_treatment_type],
-                edgecolors='#244162', c = color_dict[seed_bank_type], alpha = 0.8, s = 120, zorder=4, label=utils.seed_bank_types_format_dict[seed_bank_type] + ', ' + utils.phage_treatment_types_format_dict[phage_treatment_type])
+            ax.scatter(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], marker = utils.marker_dict[phage_treatment_type],
+                edgecolors='#244162', c = utils.color_dict[seed_bank_type], alpha = 0.8, s = 120, zorder=4, label=utils.seed_bank_types_format_dict[seed_bank_type] + ', ' + utils.phage_treatment_types_format_dict[phage_treatment_type])
 
-            confidence_ellipse(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], ax, n_std=2, edgecolor=color_dict[seed_bank_type], linestyle='--', lw=3)
+            confidence_ellipse(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], ax, n_std=2, edgecolor=utils.color_dict[seed_bank_type], linestyle='--', lw=3)
 
 
     ax.set_xlabel('PCo 1 (' + str(round(df_pcoa.proportion_explained[0],3)*100) + '%)' , fontsize = 12)
-    ax.set_ylabel('PCo 2 (' + str(round(df_pcoa.proportion_explained[1],3)*100) + '%)' , fontsize = 12)
+    ax.set_ylabel('PCo 2 (' + str(round(df_pcoa.proportion_explained[1]*100, 1)) + '%)' , fontsize = 12)
 
     ax.legend(loc="upper left", fontsize=6)
 
@@ -342,7 +344,7 @@ def plot_pcoa_host():
 
 
 
-def plot_pcoa_host():
+def plot_pcoa_phage():
 
     mult_dict = load_multiplicity_dict('phage')
     df = pandas.DataFrame.from_dict(mult_dict).T
@@ -365,9 +367,9 @@ def plot_pcoa_host():
 
     for seed_bank_type in  utils.seed_bank_types:
         seed_bank_phage_idx = numpy.asarray([numpy.where(df_index==e)[0][0] for e in df_index if '%s_%s' % (seed_bank_type, phage_treatment_type) in e])
-        ax.scatter(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], marker = marker_dict[phage_treatment_type],
-            edgecolors='#244162', c = color_dict[seed_bank_type], alpha = 0.8, s = 120, zorder=4, label=utils.seed_bank_types_format_dict[seed_bank_type])
-        confidence_ellipse(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], ax, n_std=2, edgecolor=color_dict[seed_bank_type], linestyle='--', lw=3)
+        ax.scatter(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], marker = utils.marker_dict[phage_treatment_type],
+            edgecolors='#244162', c = utils.color_dict[seed_bank_type], alpha = 0.8, s = 120, zorder=4, label=utils.seed_bank_types_format_dict[seed_bank_type])
+        confidence_ellipse(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], ax, n_std=2, edgecolor=utils.color_dict[seed_bank_type], linestyle='--', lw=3)
 
 
     ax.set_xlabel('PCo 1 (' + str(round(df_pcoa.proportion_explained[0]*100, 1)) + '%)' , fontsize = 12)
@@ -380,4 +382,13 @@ def plot_pcoa_host():
     plt.close()
 
 
-plot_pcoa_host()
+
+
+
+#make_multiplicity_dict('phage')
+#make_multiplicity_dict('host')
+#plot_pcoa_host()
+#plot_pcoa_phage()
+#plot_pcoa_host()
+
+corr_mult_pcoa_axes('host')

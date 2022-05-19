@@ -18,12 +18,13 @@ breseq_non_snp_types = ['DEL', 'INS']
 
 def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, transfers):
 
-    all_positions = []
     pol_dict = {}
 
     reference = metadata_dict[samples[0]]['reference']
     records = list(SeqIO.parse('%s.fa' % (reference.split('.')[0]), "fasta"))
     sequence = records[0].seq
+
+    all_positions = []
 
     for breseq_sample_idx, breseq_sample in enumerate(breseq_samples):
 
@@ -48,8 +49,6 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             # breseq starts counting at one
             reference_allele = sequence[position-1]
 
-            #print(breseq_sample, position, reference_allele, alt_allele)
-
             if position not in pol_dict:
                 pol_dict[position] = {}
                 pol_dict[position]['mutation_type'] = line_type
@@ -68,7 +67,6 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
             all_positions.append(position)
 
-
         for line in open(breseq_sample_path, 'r'):
 
             line = line.strip().split('\t')
@@ -82,6 +80,28 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                     coverage_total = int(coverage_1) + int(coverage_2)
 
                     pol_dict[position]['coverage_trajectory'].append(coverage_total)
+
+    # go back through and set frequencies of observations with no coverage succeeding fixations to zero
+    all_positions = list(pol_dict.keys())
+    for position in all_positions:
+
+        t = pol_dict[position]['frequency_trajectory']
+        t = numpy.asarray(t)
+
+        # not real mutations
+        if t[0] > 0.8:
+            del pol_dict[position]
+        #else:
+        #    # keep if theres at least one fixation and one polymophic observation
+        #    if (sum(t==1)>0) and (sum((t>0.01) & (t<0.99)) >0):
+        #        init_idx = numpy.argwhere(t==1)[0][0]
+        #        # set all future samples to 1
+        #        print(t)
+        #        t[init_idx+1:] = 1
+        #        print(t)
+
+
+    all_positions = list(pol_dict.keys())
 
 
     # get annotation for these sites
@@ -172,7 +192,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                         new_codon="".join(codon_list)
                         # one wrong bp in caulobacter reference genome
 
-                        if new_codon not in parse_file.codon_table[codon]:
+                        if new_codon not in parse_file.codon_table:
                             var_type='unknown'
 
                         elif parse_file.codon_table[codon]==parse_file.codon_table[new_codon]:
@@ -260,9 +280,8 @@ def annotate_all_line():
                             continue
 
                         # Daniel needs to rerun this sample
-
-                        if ('WLO-L3' in samples[0]) and ('_filtered_phage' in samples[0]):
-                            continue
+                        #if ('WLO-L3' in samples[0]) and ('_filtered_phage' in samples[0]):
+                        #    continue
 
                         breseq_samples = [sample_metadata_breseq_dict[s] for s in samples]
                         # get timepoints
@@ -270,12 +289,13 @@ def annotate_all_line():
                         for sample in samples:
                             transfer_all.append(metadata_dict[sample]['transfer'])
 
-                        transfer_all, samples = zip(*sorted(zip(transfer_all, samples)))
-                        samples = list(samples)
+                        transfer_all, breseq_samples, samples = zip(*sorted(zip(transfer_all, breseq_samples, samples)))
                         transfer_all = list(transfer_all)
+                        breseq_samples = list(breseq_samples)
+                        samples = list(samples)
 
                         parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, transfer_all)
 
 
 
-#annotate_all_line()
+annotate_all_line()

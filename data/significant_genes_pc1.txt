@@ -1,319 +1,235 @@
 Locus tag, Gene, Annotation, Correlatin, P-value
-A8O17_RS00130, dnaX, DNA polymerase III subunit gamma/tau, 0.9645883433149497, 0.0007
-A8O17_RS00185, , 5-bromo-4-chloroindolyl phosphate hydrolysisfamily protein, -0.9739296908869517, 0.0002
-A8O17_RS00345, spoVT, stage V sporulation protein T, -0.9175318128242322, 0.0011
-A8O17_RS00350, , polysaccharide biosynthesis protein, -0.9559833284545368, 0.0008
-A8O17_RS00360, , RNA-binding S4 domain-containing protein, -0.9070261885702859, 0.0013
-A8O17_RS00395, , , -0.9441567129215536, 0.0008
-A8O17_RS00485, lysS, lysine--tRNA ligase, -0.9744051320674678, 0.0002
-A8O17_RS00530, , tRNA-Leu, 0.8872803182464094, 0.0033
-A8O17_RS00595, disA, DNA integrity scanning protein DisA, -0.8040586213616655, 0.0345
-A8O17_RS00625, cysE, serine O-acetyltransferase, 0.9898392534725945, 0.0002
-A8O17_RS00845, , adenylate kinase, 0.9396618942613558, 0.0008
-A8O17_RS01070, , DUF1343 domain-containing protein, 0.8596649311813903, 0.0075
-A8O17_RS01145, cdaA, diadenylate cyclase CdaA, -0.984106569551586, 0.0002
-A8O17_RS01185, , protein kinase, -0.9579271069844362, 0.0007
-A8O17_RS01375, mmuM, homocysteine S-methyltransferase, -0.8462468049310401, 0.012
-A8O17_RS01405, kdgD, 5-dehydro-4-deoxyglucarate dehydratase, -0.9606341697188597, 0.0007
-A8O17_RS01420, gudD, glucarate dehydratase, -0.9553567138758265, 0.0008
-A8O17_RS01570, , aldo/keto reductase, -0.9238143688570508, 0.0011
-A8O17_RS01585, , DUF4901 domain-containing protein, -0.983437693323874, 0.0002
-A8O17_RS01705, , hypothetical protein, -0.8525185129579017, 0.0095
-A8O17_RS01845, nasC, assimilatory nitrate reductase catalyticsubunit, -0.9752564172029603, 0.0002
-A8O17_RS01860, , GTP cyclohydrolase I FolE2, 0.9273042275548657, 0.0011
-A8O17_RS01965, , MFS transporter, 0.8060002479754741, 0.033
-A8O17_RS01975, , DMT family transporter, -0.9786688937882719, 0.0002
-A8O17_RS02050, , hypothetical protein, -0.8607550654667583, 0.0073
-A8O17_RS02070, , ABC transporter ATP-binding protein, -0.9249717334697692, 0.0011
-A8O17_RS02110, yclN, petrobactin ABC transporter permease YclN, -0.9177888516390308, 0.0011
-A8O17_RS02240, , hypothetical protein, -0.9280254654721651, 0.0011
-A8O17_RS02285, , YczI family protein, 0.9310696315851655, 0.0009
-A8O17_RS02340, amj, lipid II flippase Amj, -0.8909221094795345, 0.0029
-A8O17_RS02400, , hypothetical protein, -0.890301096183412, 0.0029
-A8O17_RS02545, , rhomboid family intramembrane serine protease, 0.9175356105120822, 0.0011
-A8O17_RS02830, , MFS transporter, -0.9187065290195341, 0.0011
-A8O17_RS02860, , GNAT family N-acetyltransferase, 0.9192140065904274, 0.0011
-A8O17_RS02965, , DUF421 domain-containing protein, 0.8622426128902099, 0.0066
-A8O17_RS03040, , Bcr/CflA family efflux MFS transporter, -0.8444736477466237, 0.0126
-A8O17_RS03210, , ABC-F family ATP-binding cassettedomain-containing protein, 0.8944429748736777, 0.0024
-A8O17_RS03325, , PD40 domain-containing protein, -0.9873707909047398, 0.0002
-A8O17_RS03570, , efflux RND transporter permease subunit, -0.9627054149009175, 0.0007
-A8O17_RS03705, yesN, two-component system response regulator YesN, -0.9238552801142035, 0.0011
-A8O17_RS03725, yesR, rhamnogalacturonyl hydrolase YesR, -0.879441377972476, 0.0042
-A8O17_RS03755, , rhamnogalacturonan lyase, 0.9213225938769736, 0.0011
-A8O17_RS03770, , hypothetical protein, -0.9569562761801574, 0.0007
-A8O17_RS03775, , extracellular solute-binding protein, 0.8094624168200872, 0.0317
-A8O17_RS03850, , cytochrome P450, 0.9597323250419186, 0.0007
-A8O17_RS03855, , LTA synthase family protein, -0.9774982321311875, 0.0002
-A8O17_RS03890, , noncanonical pyrimidine nucleotidase, YjjGfamily, -0.9082840056341088, 0.0013
-A8O17_RS03900, yfmT, benzaldehyde dehydrogenase, -0.9560621804751664, 0.0008
-A8O17_RS03990, , iron ABC transporter permease, 0.9733499104795974, 0.0002
-A8O17_RS03995, yfmC, Fe(3+)-citrate ABC transporter substrate-bindingprotein YfmC, -0.9863342064191706, 0.0002
-A8O17_RS04100, , sodium:alanine symporter family protein, -0.945161501759722, 0.0008
-A8O17_RS04145, , multifunctional 2',3'-cyclic-nucleotide 2'-phosphodiesterase/3'-nucleotidase/5'-nucleotidase, -0.8891449571125405, 0.0031
-A8O17_RS04250, , tRNA-dihydrouridine synthase, -0.9783091991466614, 0.0002
-A8O17_RS04340, , ABC transporter ATP-binding protein, -0.933513632223224, 0.0008
-A8O17_RS04380, lnrJ, two-component system sensor histidine kinaseLnrJ, -0.8807793815351089, 0.0042
-A8O17_RS04535, , glycosyltransferase family 2 protein, -0.9143207972865569, 0.0011
-A8O17_RS04540, , YfhO family protein, -0.9016786734087623, 0.0015
-A8O17_RS04755, , ABC transporter ATP-binding protein, -0.8300667553673874, 0.0212
-A8O17_RS04920, , L-cystine transporter, -0.9067982147373531, 0.0013
-A8O17_RS05035, lytF, peptidoglycan endopeptidase LytF, -0.9528392385973, 0.0008
-A8O17_RS05055, phoA, alkaline phosphatase PhoA, -0.8729059247585808, 0.0048
-A8O17_RS05115, , aldo/keto reductase, 0.9856553734400251, 0.0002
-A8O17_RS05175, , polysaccharide deacetylase, -0.8985592236527707, 0.0019
-A8O17_RS05205, bmrD, multidrug resistance ABC transporter ATP-binding protein/permease BmrD, 0.955745469911651, 0.0008
-A8O17_RS05230, , YheC/YheD family protein, -0.9517781539712279, 0.0008
-A8O17_RS05380, sndC, N-acetyl amino acid acetylase SndC, -0.9806448644108706, 0.0002
-A8O17_RS05505, , acryloyl-CoA reductase, 0.9236942463210841, 0.0011
-A8O17_RS05585, , TVP38/TMEM64 family protein, 0.9225226041691872, 0.0011
-A8O17_RS05655, addB, helicase-exonuclease AddAB subunit AddB, -0.9804280986398172, 0.0002
-A8O17_RS05670, sbcC, exonuclease subunit SbcC, -0.9157863196316203, 0.0011
-A8O17_RS05790, , PLP-dependent aminotransferase family protein, -0.929360867498177, 0.001
-A8O17_RS05870, , sporulation delaying protein family toxin, -0.8963456230509437, 0.0021
-A8O17_RS05890, , hypothetical protein, 0.9357540722680724, 0.0008
-A8O17_RS05900, nprB, neutral protease NprB, -0.9026595778645965, 0.0014
-A8O17_RS21055, , hypothetical protein, -0.9446796006774729, 0.0008
-A8O17_RS06080, oppA, oligopeptide ABC transporter substrate-bindingprotein OppA, 0.925374907435861, 0.0011
-A8O17_RS06085, oppB, oligopeptide ABC transporter permease OppB, -0.9902947717716482, 0.0002
-A8O17_RS06105, , MFS transporter, -0.951964593044001, 0.0008
-A8O17_RS06225, , thiazole biosynthesis adenylyltransferase ThiF, -0.9784549344450927, 0.0002
-A8O17_RS06305, , GNAT family N-acetyltransferase, -0.8969762723169832, 0.002
-A8O17_RS06420, , YjdF family protein, -0.9240243496890929, 0.0011
-A8O17_RS06450, cyoE, protoheme IX farnesyltransferase, -0.9556673760926131, 0.0008
-A8O17_RS06465, , YjfA family protein, -0.9615353689712325, 0.0007
-A8O17_RS06520, yjiB, monooxygenase YjiB, 0.8187458090260121, 0.0275
-A8O17_RS06610, , tagaturonate reductase, -0.985302335099014, 0.0002
-A8O17_RS20805, , hypothetical protein, -0.8100041265155439, 0.031
-A8O17_RS06635, spoIISA, toxin-antitoxin-antitoxin system toxin SpoIISA, -0.855565230898501, 0.0082
-A8O17_RS06685, dppA, D-aminopeptidase DppA, -0.8047589122155292, 0.0337
-A8O17_RS06865, , PepSY domain-containing protein, -0.8313576746701925, 0.0207
-A8O17_RS06915, , glycosyl transferase, -0.9662222169883831, 0.0007
-A8O17_RS07300, , MFS transporter, 0.9679712640887298, 0.0006
-A8O17_RS07500, lepB, signal peptidase I, 0.8596726391795293, 0.0075
-A8O17_RS07505, , hypothetical protein, 0.8507964984602197, 0.0098
-A8O17_RS07685, typA, translational GTPase TypA, -0.9727369915196366, 0.0003
-A8O17_RS07695, , YlaI family protein, -0.9388398836788193, 0.0008
-A8O17_RS07730, pyc, pyruvate carboxylase, -0.896741538220805, 0.0021
-A8O17_RS07770, , hypothetical protein, 0.9027451402455932, 0.0014
-A8O17_RS07885, , penicillin-binding protein, 0.8707249826092621, 0.0051
-A8O17_RS07905, , UDP-N-acetylmuramoyl-L-alanyl-D-glutamate--2, 6-diaminopimelate ligase, -0.9702347743204219, 0.0006
-A8O17_RS07970, , bacillopeptidase F, -0.9799265321717557, 0.0002
-A8O17_RS08060, , uracil permease, -0.9652325515421295, 0.0007
-A8O17_RS08140, , fibronectin/fibrinogen-binding protein, -0.9420288368151057, 0.0008
-A8O17_RS08155, remA, extracellular matrix/biofilm regulator RemA, -0.8601402811799747, 0.0075
-A8O17_RS08170, coaBC, bifunctional phosphopantothenoylcysteine decarboxylase/phosphopantothenate--cysteine ligase CoaBC, -0.932972612389042, 0.0008
-A8O17_RS08190, rsmB, 16S rRNA (cytosine(967)-C(5))-methyltransferaseRsmB, 0.9453996133067812, 0.0008
-A8O17_RS08265, plsX, phosphate acyltransferase PlsX, -0.9855885384750445, 0.0002
-A8O17_RS08290, smc, chromosome segregation protein SMC, -0.8970172434642133, 0.002
-A8O17_RS08355, , hypothetical protein, -0.8191248221944135, 0.0275
-A8O17_RS08480, fliM, flagellar motor switch protein FliM, -0.9601750851288847, 0.0007
-A8O17_RS08515, flhB, flagellar biosynthesis protein FlhB, 0.9600015568107625, 0.0007
-A8O17_RS08775, rodZ, cell shape determination protein RodZ, -0.8879699175532235, 0.0033
-A8O17_RS09125, , hypothetical protein, -0.8752673522647776, 0.0046
-A8O17_RS09350, parE, DNA topoisomerase IV subunit B, -0.9776480309249439, 0.0002
-A8O17_RS09500, dacB, D-alanyl-D-alanine carboxypeptidase/D-alanyl-D-alanine-endopeptidase, 0.9029181025817157, 0.0014
-A8O17_RS09655, , DUF1275 domain-containing protein, -0.9282342375576993, 0.0011
-A8O17_RS09665, , SOS response-associated peptidase, -0.8833852653787521, 0.0038
-A8O17_RS09720, , DUF817 domain-containing protein, -0.9478887264278878, 0.0008
-A8O17_RS09730, , DMT family transporter, 0.9420998338763783, 0.0008
-A8O17_RS20855, , putative holin-like toxin, -0.9499028707290867, 0.0008
-A8O17_RS09985, , LysM peptidoglycan-binding domain-containingprotein, 0.9659982912113777, 0.0007
-A8O17_RS10115, , MATE family efflux transporter, -0.9013686616884636, 0.0016
-A8O17_RS10310, cgeD, spore maturation glycosyltransferase CgeD, 0.883312180581655, 0.0038
-A8O17_RS10355, , MATE family efflux transporter, -0.963523418725247, 0.0007
-A8O17_RS10530, dynA, dynamin GTPase, -0.9560485438960978, 0.0008
-A8O17_RS10545, pbuX, xanthine permease, 0.9586316784249195, 0.0007
-A8O17_RS10575, kdgR, pectin utilization transcriptional regulatorKdgR, -0.9646566845876707, 0.0007
-A8O17_RS10770, , nucleotide pyrophosphohydrolase, -0.9420084187952628, 0.0008
-A8O17_RS10875, aroC, chorismate synthase, 0.8541940664006197, 0.0088
-A8O17_RS10930, , hypothetical protein, -0.9888520052807571, 0.0002
-A8O17_RS11005, prsW, intramembrane metalloprotease PrsW, 0.9765320368665504, 0.0002
-A8O17_RS11010, ypdA, YpdA family putative bacillithiol disulfidereductase, -0.901290349680944, 0.0016
-A8O17_RS11020, , genetic competence negative regulator, -0.9604676270876037, 0.0007
-A8O17_RS11025, , metallophosphoesterase, -0.9850149075042866, 0.0002
-A8O17_RS11035, , LysM peptidoglycan-binding domain-containingprotein, -0.9101139406019539, 0.0013
-A8O17_RS11145, , DUF309 domain-containing protein, -0.9642038714146677, 0.0007
-A8O17_RS11180, lepB, signal peptidase I, -0.9368161690958752, 0.0008
-A8O17_RS11250, spoVAB, stage V sporulation protein SpoVAB, -0.9459673638792482, 0.0008
-A8O17_RS11280, , purine nucleoside phosphorylase I, inosine and guanosine-specific, -0.9206531492266464, 0.0011
-A8O17_RS11320, mleN, malate-H+/Na+-lactate antiporter MleN, -0.8313135588389231, 0.0207
-A8O17_RS11400, , DNA polymerase IV, -0.988201877677369, 0.0002
-A8O17_RS11420, , VOC family protein, -0.8384808486346048, 0.0159
-A8O17_RS11500, , M20/M25/M40 family metallo-hydrolase, -0.9156579170349098, 0.0011
-A8O17_RS11505, , acyl-CoA carboxylase subunit beta, -0.9446643306221043, 0.0008
-A8O17_RS11595, yqiS, phosphate butyryltransferase, -0.9694775308300633, 0.0006
-A8O17_RS11635, , acetyl-CoA C-acetyltransferase, -0.9913836359064526, 0.0002
-A8O17_RS11705, , polyprenyl synthetase family protein, -0.9443795779059505, 0.0008
-A8O17_RS11720, folD, bifunctional methylenetetrahydrofolate dehydrogenase/methenyltetrahydrofolate cyclohydrolase FolD, -0.9549133868752289, 0.0008
-A8O17_RS11750, spoIIIAG, stage III sporulation protein AG, -0.959701965398839, 0.0007
-A8O17_RS11770, spoIIIAC, stage III sporulation protein AC, -0.9179733491116409, 0.0011
-A8O17_RS11800, aroQ, type II 3-dehydroquinate dehydratase, -0.906821018273648, 0.0013
-A8O17_RS11895, , YqzE family protein, -0.9424344203327688, 0.0008
-A8O17_RS12125, zur, zinc uptake transcriptional repressor Zur, -0.9753004275349099, 0.0002
-A8O17_RS12185, , YaiI/YqxD family protein, -0.820956362560057, 0.0266
-A8O17_RS12195, ccpN, transcriptional regulator CcpN, 0.8227046761580697, 0.0259
-A8O17_RS12290, , Na/Pi symporter, -0.9442495465778822, 0.0008
-A8O17_RS12325, hrcA, heat-inducible transcriptional repressor HrcA, -0.9370813269674932, 0.0008
-A8O17_RS12360, holA, DNA polymerase III subunit delta, -0.8749146848434771, 0.0046
-A8O17_RS12515, , DUF418 domain-containing protein, 0.9497560476973169, 0.0008
-A8O17_RS12525, , GNAT family N-acetyltransferase, -0.9807525258383125, 0.0002
-A8O17_RS12620, , LysR family transcriptional regulator, 0.8987791375265924, 0.0019
-A8O17_RS12885, oatA, peptidoglycan O-acetyltransferase OatA, -0.9468560913283538, 0.0008
-A8O17_RS13080, , cysteine desulfurase, -0.9657603743856286, 0.0007
-A8O17_RS13115, yrzK, YrzK family protein, -0.827410262831995, 0.0232
-A8O17_RS13305, spo0B, sporulation initiation phosphotransferase Sop0B, -0.8567733415866965, 0.0081
-A8O17_RS13320, , ribosomal-processing cysteine protease Prp, -0.908418282290994, 0.0013
-A8O17_RS13385, , bifunctional folylpolyglutamatesynthase/dihydrofolate synthase, 0.9270596256307723, 0.0011
-A8O17_RS13390, valS, valine--tRNA ligase, -0.9858816105774726, 0.0002
-A8O17_RS13570, , acyl-CoA thioesterase, -0.8233178329199308, 0.0254
-A8O17_RS13625, etfB, electron transfer flavoprotein subunit beta, 0.871590854860951, 0.0051
-A8O17_RS13650, , endonuclease MutS2, -0.9701411891609935, 0.0006
-A8O17_RS13675, , phenylalanine--tRNA ligase subunit beta, -0.9270822208622557, 0.0011
-A8O17_RS13710, , (Fe-S)-binding protein, -0.9830888947691653, 0.0002
-A8O17_RS13840, thrS, threonine--tRNA ligase, -0.8675857558176866, 0.0057
-A8O17_RS13915, polA, DNA polymerase I, -0.9301160210375085, 0.001
-A8O17_RS13955, fxsA, membrane protein FxsA, -0.9148791991451852, 0.0011
-A8O17_RS14190, ezrA, septation ring formation regulator EzrA, -0.9408281566544999, 0.0008
-A8O17_RS14225, , tyrosine--tRNA ligase, -0.8097179492616776, 0.0314
-A8O17_RS14255, motP, flagellar motor protein MotP, -0.9331115825618167, 0.0008
-A8O17_RS14315, , M42 family metallopeptidase, -0.8229123440097039, 0.0258
-A8O17_RS14330, , MBL fold metallo-hydrolase, -0.9770679287161894, 0.0002
-A8O17_RS14380, pbuO, hypoxanthine/guanine permease PbuO, -0.9344623565463819, 0.0008
-A8O17_RS14400, , rRNA pseudouridine synthase, -0.9875507475216094, 0.0002
-A8O17_RS14430, , Gfo/Idh/MocA family oxidoreductase, -0.9614309892209083, 0.0007
-A8O17_RS14440, rmgQ, unsaturated rhamnogalacturonyl hydrolase, -0.9733692701749286, 0.0002
-A8O17_RS14475, bioB, biotin synthase BioB, 0.9922981599395305, 0.0002
-A8O17_RS14550, , MFS transporter, -0.836423143431434, 0.017
-A8O17_RS14740, , cytochrome d ubiquinol oxidase subunit II, -0.8468510960087157, 0.0117
-A8O17_RS14945, , tRNA-Arg, -0.9294984250550027, 0.001
-A8O17_RS14950, , tRNA-Leu, 0.8849600193390941, 0.0035
-A8O17_RS15120, , bifunctional aldolase/short-chain dehydrogenase, -0.8266093078762976, 0.0238
-A8O17_RS15225, , aminotransferase, -0.8515362747328464, 0.0098
-A8O17_RS15290, maeL, two-component system sensor histidine kinaseMaeL, -0.9635092495179359, 0.0007
-A8O17_RS15330, , Na+/H+ antiporter subunit A, -0.9478861326042867, 0.0008
-A8O17_RS15370, comA, two-component system response regulator ComA, -0.8332752683996423, 0.0191
-A8O17_RS15520, dhbC, isochorismate synthase DhbC, 0.8634942890025357, 0.0066
-A8O17_RS15580, , NAD(P)/FAD-dependent oxidoreductase, -0.9141585153794933, 0.0011
-A8O17_RS15640, , S9 family peptidase, 0.9872634001304645, 0.0002
-A8O17_RS15685, , lipoprotein, -0.8071349224880509, 0.0322
-A8O17_RS15720, , DUF72 domain-containing protein, -0.8419296081940241, 0.014
-A8O17_RS15750, pucL, urate oxidase, 0.9102728958464587, 0.0013
-A8O17_RS15765, pucE, xanthine dehydrogenase subunit E, -0.9408176072593307, 0.0008
-A8O17_RS15770, pucD, xanthine dehydrogenase subunit D, 0.9354734402808437, 0.0008
-A8O17_RS15795, allC, allantoate deiminase, -0.9601968223939543, 0.0007
-A8O17_RS15860, , hypothetical protein, -0.9796530929888455, 0.0002
-A8O17_RS15935, , toprim domain-containing protein, -0.8325370204570465, 0.0194
-A8O17_RS15960, , acetyl-CoA C-acyltransferase, -0.9282980855734587, 0.0011
-A8O17_RS15965, , 3-hydroxyacyl-CoA dehydrogenase, 0.9602743273238257, 0.0007
-A8O17_RS16055, htrB, serine protease Do-like protein HtrB, -0.8125660966937631, 0.0302
-A8O17_RS16090, gerAA, spore germination receptor protein GerAA, -0.938538156446915, 0.0008
-A8O17_RS16095, gerAB, spore germination receptor protein GerAB, 0.9301126666906134, 0.001
-A8O17_RS16160, , SDR family oxidoreductase, 0.8814590162795828, 0.0042
-A8O17_RS16210, , ABC transporter ATP-binding protein, -0.9620620345642374, 0.0007
-A8O17_RS16315, , disulfide bond formation protein B, -0.9853487066200513, 0.0002
-A8O17_RS16345, iolW, scyllo-inositol 2-dehydrogenase, -0.9087250842187171, 0.0013
-A8O17_RS16365, , multidrug efflux SMR transporter, -0.8871606245615022, 0.0033
-A8O17_RS16420, , helix-turn-helix domain-containing protein, 0.9571310693603843, 0.0007
-A8O17_RS16650, ganB, arabinogalactan endo-beta-1,4-galactanase, -0.8195386413813376, 0.0275
-A8O17_RS16735, , glycosyltransferase, 0.8853524952788143, 0.0035
-A8O17_RS16750, epsE, glycosyltransferase EpsE, -0.8386672015291872, 0.0159
-A8O17_RS16760, , polysaccharide biosynthesis protein, -0.9754068704695162, 0.0002
-A8O17_RS16780, pnbA, para-nitrobenzyl esterase, 0.9555027657767381, 0.0008
-A8O17_RS16900, mdxD, maltogenic alpha-amylase, -0.8297891301141735, 0.0213
-A8O17_RS16980, rapZ, RNase adapter RapZ, -0.8316034446512339, 0.0204
-A8O17_RS17015, , hypothetical protein, -0.9210018500200342, 0.0011
-A8O17_RS17035, hisA, 1-(5-phosphoribosyl)-5-[(5- phosphoribosylamino)methylideneamino]imidazole-4- carboxamide isomerase, -0.8506392679824352, 0.0098
-A8O17_RS17180, uvrB, excinuclease ABC subunit B, 0.916863754271505, 0.0011
-A8O17_RS17200, , MFS transporter, 0.8417857352850222, 0.014
-A8O17_RS17230, cccB, cytochrome c-551, -0.9615938196580954, 0.0007
-A8O17_RS17235, , YitT family protein, 0.9813587750549823, 0.0002
-A8O17_RS17240, , , 0.8691953116228516, 0.0054
-A8O17_RS17345, degU, two-component system response regulator DegU, -0.9809988392630317, 0.0002
-A8O17_RS17505, lytD, beta-N-acetylglucosaminidase LytD, -0.895256814669478, 0.0023
-A8O17_RS17520, gerBA, spore germination protein GerBA, -0.9036201109222528, 0.0013
-A8O17_RS17625, alsS, acetolactate synthase AlsS, -0.957540268575875, 0.0007
-A8O17_RS17715, , ribonuclease YeeF family protein, -0.9664580853602251, 0.0007
-A8O17_RS17735, uglF, UDP-glucose 6-dehydrogenase UglF, -0.9555353482129713, 0.0008
-A8O17_RS17775, glcR, transcriptional regulator GlcR, -0.8506029588129358, 0.0098
-A8O17_RS17850, , right-handed parallel beta-helixrepeat-containing protein, -0.9692436735626345, 0.0006
-A8O17_RS17990, , hypothetical protein, -0.9030995455584305, 0.0014
-A8O17_RS18105, , low molecular weight protein argininephosphatase, 0.8034785372828324, 0.035
-A8O17_RS18200, fsa, fructose-6-phosphate aldolase, -0.9528460270477909, 0.0008
-A8O17_RS18315, , arginine--tRNA ligase, 0.9673946837121371, 0.0006
-A8O17_RS18340, , ABC transporter ATP-binding protein, -0.9911276441751008, 0.0002
-A8O17_RS18405, , penicillin-binding protein, -0.9526995375800398, 0.0008
-A8O17_RS18440, , MFS transporter, -0.9402301322427209, 0.0008
-A8O17_RS18475, ywfL, octanoyl-[GcvH]:protein N-octanoyltransferase, -0.860810172530227, 0.0073
-A8O17_RS18485, pta, phosphate acetyltransferase, -0.9367879721779164, 0.0008
-A8O17_RS18600, , DegT/DnrJ/EryC1/StrS aminotransferase familyprotein, 0.8592752224365721, 0.0075
-A8O17_RS18700, , hypothetical protein, 0.8988198548232009, 0.0019
-A8O17_RS18745, qoxA, cytochrome aa3 quinol oxidase subunit II, 0.9853739767499232, 0.0002
-A8O17_RS18760, , galactokinase, -0.8791314579039508, 0.0042
-A8O17_RS18785, , cation acetate symporter, -0.969912884503377, 0.0006
-A8O17_RS18830, , CidB/LrgB family autolysis modulator, 0.9112521378589373, 0.0013
-A8O17_RS18845, , class I SAM-dependent rRNA methyltransferase, -0.9073875678772908, 0.0013
-A8O17_RS18880, , glycosyltransferase family 8 protein, -0.9482919530961287, 0.0008
-A8O17_RS18900, ywaD, aminopeptidase YwaD, -0.9237436950903763, 0.0011
-A8O17_RS18950, , branched-chain amino acid aminotransferase, -0.8711258611865494, 0.0051
-A8O17_RS18985, , DNA-3-methyladenine glycosylase, -0.9176139912520094, 0.0011
-A8O17_RS19005, , ABC transporter ATP-binding protein, 0.9552543051691473, 0.0008
-A8O17_RS19045, cydD, thiol reductant ABC exporter subunit CydD, 0.8819493588813507, 0.004
-A8O17_RS19055, cydA, cytochrome ubiquinol oxidase subunit I, 0.8293040677276835, 0.0215
-A8O17_RS19065, , M48 family metalloprotease, -0.990937649515563, 0.0002
-A8O17_RS19075, , polysaccharide deacetylase family protein, -0.9428553890567578, 0.0008
-A8O17_RS19135, pepT, peptidase T, -0.9371566576727671, 0.0008
-A8O17_RS19230, licT, transcriptional antiterminator LicT, -0.9570160414350501, 0.0007
-A8O17_RS19260, , hypothetical protein, 0.9915472983421232, 0.0002
-A8O17_RS19410, deoR, DNA-binding transcriptional repressor DeoR, 0.9257175547817994, 0.0011
-A8O17_RS19435, , amino acid ABC transporter ATP-binding protein, 0.8579313212193383, 0.008
-A8O17_RS19690, yxaF, transcriptional regulator YxaF, -0.8477727420610818, 0.0112
-A8O17_RS19695, , SDR family oxidoreductase, -0.9659858719091652, 0.0007
-A8O17_RS19710, , LrgB family protein, -0.9256166164575861, 0.0011
-A8O17_RS19715, , general stress protein 30, 0.9629986359067607, 0.0007
-A8O17_RS19750, ahpF, alkyl hydroperoxide reductase subunit F, 0.89833957958784, 0.002
-A8O17_RS19820, rlmH, 23S rRNA(pseudouridine(1915)-N(3))-methyltransferase RlmH, 0.8317634257884523, 0.0203
-A8O17_RS19845, , DUF2651 family protein, 0.9696280300305347, 0.0006
-A8O17_RS19940, , tRNA-Asp, -0.9367550540879398, 0.0008
-A8O17_RS19965, dnaB, replicative DNA helicase, -0.9404558664298818, 0.0008
-A8O17_RS19995, , glycosyltransferase family 39 protein, -0.9089629527319046, 0.0013
-A8O17_RS20045, , MFS transporter, -0.9328948530250727, 0.0008
-A8O17_RS20180, , thioredoxin domain-containing protein, -0.9683532741140295, 0.0006
-A8O17_RS20190, , MFS transporter, -0.8709635799280114, 0.0051
-A8O17_RS20275, rsmG, 16S rRNA (guanine(527)-N(7))-methyltransferaseRsmG, -0.9712621654190897, 0.0005
-A8O17_RS01370, mmuP, S-methylmethionine permease, -0.8344610236299561, 0.0185
-A8O17_RS16710, , acetyltransferase, -0.8070136684493165, 0.0322
-A8O17_RS01075, nagZ, beta-N-acetylhexosaminidase, 0.9254036418656255, 0.0011
-A8O17_RS00075, , D-alanyl-D-alanine carboxypeptidase, 0.9950914092596004, 0.0
-A8O17_RS01525, lmrA, transcriptional regulator LmrA, 0.9567624282914026, 0.0007
-A8O17_RS01655, , toxic anion resistance protein, 0.9808853543866509, 0.0002
-A8O17_RS02515, , thioredoxin family protein, 0.992321345440733, 0.0002
-A8O17_RS03070, phoB, alkaline phosphatase PhoB, 0.985551497652335, 0.0002
-A8O17_RS03715, , sugar ABC transporter permease, 0.9176082072763394, 0.0011
-A8O17_RS03845, , DUF3900 domain-containing protein, 0.9705046981730522, 0.0006
-A8O17_RS04050, , nitric oxide synthase oxygenase, 0.9939455083738875, 0.0002
-A8O17_RS04085, , PTS transporter subunit EIIC, 0.853938612808739, 0.0089
-A8O17_RS04460, , iron ABC transporter permease, 0.9808899877387196, 0.0002
-A8O17_RS05165, mscY, small-conductance mechanosensitive channelprotein MscY, 0.9331058222031005, 0.0008
-A8O17_RS06680, , pyrroline-5-carboxylate reductase, 0.9529629243963833, 0.0008
-A8O17_RS08005, pgeF, peptidoglycan editing factor PgeF, 0.9894527782928989, 0.0002
-A8O17_RS08070, , dihydroorotase, 0.856452470006422, 0.0081
-A8O17_RS08180, , peptide deformylase, 0.9471106936981932, 0.0008
-A8O17_RS21065, yoyG, YhzE/YjcZ family sporulation protein YoyG, 0.9942603262195853, 0.0002
-A8O17_RS10560, kdgT, 2-keto-3-deoxygluconate transporter, 0.9180817596522209, 0.0011
-A8O17_RS11825, mntR, transcriptional regulator MntR, 0.9682406604879633, 0.0006
-A8O17_RS12155, , 4-hydroxy-3-methylbut-2-enyl diphosphatereductase, 0.9576168176085005, 0.0007
-A8O17_RS12385, , late competence protein ComER, 0.8143888110162886, 0.0293
-A8O17_RS13070, , tetratricopeptide repeat protein, 0.9476822553535625, 0.0008
-A8O17_RS13465, , trigger factor, 0.824777263449876, 0.0248
-A8O17_RS14505, , LacI family DNA-binding transcriptionalregulator, 0.8611217526911455, 0.0072
-A8O17_RS15010, floT, flotillin lipid rafts scaffold protein FloT, 0.9717994020746693, 0.0004
-A8O17_RS15315, nupQ, guanosine ABC transporter permease NupQ, 0.9414462487781144, 0.0008
-A8O17_RS16540, gpmI, 2,3-bisphosphoglycerate-independentphosphoglycera te mutase, 0.9136193462316153, 0.0011
-A8O17_RS17040, hisH, imidazole glycerol phosphate synthase subunitHisH, 0.9408698520392405, 0.0008
-A8O17_RS17925, mta, transcriptional activator Mta, 0.8107197715674742, 0.0309
-A8O17_RS19070, , hypothetical protein, 0.9270143307523837, 0.0011
-A8O17_RS19220, citN, citrate/sodium symporter CitN, 0.8671612372526984, 0.0058
-A8O17_RS19665, , PQQ-like beta-propeller repeat protein, 0.865354339799967, 0.0063
-A8O17_RS19670, , DUF5391 family protein, 0.8630763550162375, 0.0066
-A8O17_RS19850, , hypothetical protein, 0.9139531925519407, 0.0011
+A8O17_RS00130, dnaX, DNA polymerase III subunit gamma/tau, 0.9603500777833437, 0.0002
+A8O17_RS00185, , 5-bromo-4-chloroindolyl phosphate hydrolysisfamily protein, -0.9784698510446096, 0.0
+A8O17_RS00350, , polysaccharide biosynthesis protein, -0.9186746402703145, 0.0007
+A8O17_RS00360, , RNA-binding S4 domain-containing protein, -0.8736390098815995, 0.0029
+A8O17_RS00400, , VWA domain-containing protein, -0.8091344417663746, 0.0191
+A8O17_RS01070, , DUF1343 domain-containing protein, 0.9627142519005764, 0.0002
+A8O17_RS01185, , protein kinase, -0.9515589992525633, 0.0002
+A8O17_RS01375, mmuM, homocysteine S-methyltransferase, -0.8413005952865866, 0.0097
+A8O17_RS01405, kdgD, 5-dehydro-4-deoxyglucarate dehydratase, -0.9570621073590118, 0.0002
+A8O17_RS01420, gudD, glucarate dehydratase, -0.9501159699784516, 0.0002
+A8O17_RS01570, , aldo/keto reductase, -0.9097220336098262, 0.0009
+A8O17_RS01585, , DUF4901 domain-containing protein, -0.9815930461899834, 0.0
+A8O17_RS01845, nasC, assimilatory nitrate reductase catalyticsubunit, -0.9718824383946918, 0.0
+A8O17_RS01950, srfAB, surfactin non-ribosomal peptide synthetaseSrfAB, -0.9536978277980729, 0.0002
+A8O17_RS01975, , DMT family transporter, -0.9790774185637773, 0.0
+A8O17_RS02050, , hypothetical protein, -0.9616144049097674, 0.0002
+A8O17_RS02070, , ABC transporter ATP-binding protein, -0.9245542480685949, 0.0006
+A8O17_RS02110, yclN, petrobactin ABC transporter permease YclN, -0.9238525753175225, 0.0006
+A8O17_RS02240, , hypothetical protein, -0.9099295839973913, 0.0009
+A8O17_RS02545, , rhomboid family intramembrane serine protease, 0.8970205069015859, 0.0015
+A8O17_RS02830, , MFS transporter, -0.9187566003414284, 0.0007
+A8O17_RS02860, , GNAT family N-acetyltransferase, 0.8859498293161178, 0.0021
+A8O17_RS03025, , MMPL family transporter, -0.9043852444542587, 0.0012
+A8O17_RS03040, , Bcr/CflA family efflux MFS transporter, -0.8528416684489684, 0.0069
+A8O17_RS03210, , ABC-F family ATP-binding cassettedomain-containing protein, 0.8573523699361657, 0.0063
+A8O17_RS03570, , efflux RND transporter permease subunit, -0.9609520171361994, 0.0002
+A8O17_RS03705, yesN, two-component system response regulator YesN, -0.9175030788725357, 0.0007
+A8O17_RS03770, , hypothetical protein, -0.9655736561997553, 0.0002
+A8O17_RS03850, , cytochrome P450, 0.9615508015479454, 0.0002
+A8O17_RS03855, , LTA synthase family protein, -0.9612643326666178, 0.0002
+A8O17_RS03900, yfmT, benzaldehyde dehydrogenase, -0.9606067032306985, 0.0002
+A8O17_RS03910, , ABC-F family ATP-binding cassettedomain-containing protein, -0.9618254395056814, 0.0002
+A8O17_RS03995, yfmC, Fe(3+)-citrate ABC transporter substrate-bindingprotein YfmC, -0.988646937060432, 0.0
+A8O17_RS04145, , multifunctional 2',3'-cyclic-nucleotide 2'-phosphodiesterase/3'-nucleotidase/5'-nucleotidase, -0.8761543119307398, 0.0025
+A8O17_RS04910, , MetQ/NlpA family ABC transportersubstrate-binding protein, -0.9325242693450433, 0.0004
+A8O17_RS04920, , L-cystine transporter, -0.9075298935878597, 0.001
+A8O17_RS05035, lytF, peptidoglycan endopeptidase LytF, -0.9502337403691273, 0.0002
+A8O17_RS05055, phoA, alkaline phosphatase PhoA, -0.8563437757735779, 0.0064
+A8O17_RS05085, , sodium-dependent transporter, -0.9608702211277181, 0.0002
+A8O17_RS05115, , aldo/keto reductase, 0.9271563531743379, 0.0005
+A8O17_RS05175, , polysaccharide deacetylase, -0.90176024088246, 0.0012
+A8O17_RS05230, , YheC/YheD family protein, -0.9350914716835921, 0.0003
+A8O17_RS05380, sndC, N-acetyl amino acid acetylase SndC, -0.9869172888725118, 0.0
+A8O17_RS05585, , TVP38/TMEM64 family protein, 0.8952073071491772, 0.0015
+A8O17_RS05600, , MarR family transcriptional regulator, 0.8757991719834616, 0.0025
+A8O17_RS05655, addB, helicase-exonuclease AddAB subunit AddB, -0.924155995150741, 0.0006
+A8O17_RS05670, sbcC, exonuclease subunit SbcC, -0.9164262419731385, 0.0007
+A8O17_RS05840, , MFS transporter, -0.8196534480766917, 0.0158
+A8O17_RS05870, , sporulation delaying protein family toxin, -0.9021897408385362, 0.0012
+A8O17_RS05890, , hypothetical protein, 0.9353987743587853, 0.0003
+A8O17_RS06085, oppB, oligopeptide ABC transporter permease OppB, -0.9759863135389015, 0.0
+A8O17_RS06105, , MFS transporter, -0.9545717118873341, 0.0002
+A8O17_RS06225, , thiazole biosynthesis adenylyltransferase ThiF, -0.9705610051595746, 0.0
+A8O17_RS06450, cyoE, protoheme IX farnesyltransferase, -0.9505369052484091, 0.0002
+A8O17_RS06635, spoIISA, toxin-antitoxin-antitoxin system toxin SpoIISA, -0.8589965145920336, 0.0062
+A8O17_RS06685, dppA, D-aminopeptidase DppA, -0.8031476377115767, 0.0208
+A8O17_RS06865, , PepSY domain-containing protein, -0.8179464990800548, 0.0163
+A8O17_RS06915, , glycosyl transferase, -0.9663507002849027, 0.0002
+A8O17_RS06930, , membrane protein, -0.9285175150150906, 0.0005
+A8O17_RS07300, , MFS transporter, 0.959401454793232, 0.0002
+A8O17_RS07470, , efflux RND transporter periplasmic adaptorsubunit, -0.8138986229384098, 0.0176
+A8O17_RS07685, typA, translational GTPase TypA, -0.9706722479545448, 0.0
+A8O17_RS07695, , YlaI family protein, -0.9199194341232444, 0.0007
+A8O17_RS07885, , penicillin-binding protein, 0.8811216058611537, 0.0023
+A8O17_RS07970, , bacillopeptidase F, -0.9825866475656365, 0.0
+A8O17_RS08040, ylyA, sporulation-related RNA polymerase-bindingprotein YlyA, 0.8740491126236618, 0.0028
+A8O17_RS08060, , uracil permease, -0.9649963114262039, 0.0002
+A8O17_RS08140, , fibronectin/fibrinogen-binding protein, -0.9389003322307541, 0.0003
+A8O17_RS08190, rsmB, 16S rRNA (cytosine(967)-C(5))-methyltransferaseRsmB, -0.9479251118398968, 0.0002
+A8O17_RS08265, plsX, phosphate acyltransferase PlsX, -0.9849233578756154, 0.0
+A8O17_RS08290, smc, chromosome segregation protein SMC, -0.905316155268406, 0.0011
+A8O17_RS08355, , hypothetical protein, -0.827248466021092, 0.014
+A8O17_RS08515, flhB, flagellar biosynthesis protein FlhB, 0.9620036930315083, 0.0002
+A8O17_RS08615, , PolC-type DNA polymerase III, -0.9631942471419034, 0.0002
+A8O17_RS09125, , hypothetical protein, -0.9816572788308144, 0.0
+A8O17_RS09350, parE, DNA topoisomerase IV subunit B, -0.9738205568519898, 0.0
+A8O17_RS09500, dacB, D-alanyl-D-alanine carboxypeptidase/D-alanyl-D-alanine-endopeptidase, 0.8492045703830299, 0.0077
+A8O17_RS09655, , DUF1275 domain-containing protein, -0.9183625464892574, 0.0007
+A8O17_RS09720, , DUF817 domain-containing protein, -0.8251320388151591, 0.0144
+A8O17_RS20855, , putative holin-like toxin, -0.9335684793643599, 0.0004
+A8O17_RS09985, , LysM peptidoglycan-binding domain-containingprotein, 0.9659697683932352, 0.0002
+A8O17_RS10005, , FMN-dependent NADH-azoreductase, 0.8883125297542288, 0.0021
+A8O17_RS10115, , MATE family efflux transporter, -0.8994299937875108, 0.0013
+A8O17_RS10355, , MATE family efflux transporter, -0.9272700010043944, 0.0005
+A8O17_RS10545, pbuX, xanthine permease, 0.9452307935763106, 0.0002
+A8O17_RS10575, kdgR, pectin utilization transcriptional regulatorKdgR, -0.9689509029834266, 0.0
+A8O17_RS10770, , nucleotide pyrophosphohydrolase, -0.9402781813080475, 0.0002
+A8O17_RS10930, , hypothetical protein, -0.9887367779582661, 0.0
+A8O17_RS11005, prsW, intramembrane metalloprotease PrsW, 0.9699595648468543, 0.0
+A8O17_RS11010, ypdA, YpdA family putative bacillithiol disulfidereductase, -0.906108305717424, 0.001
+A8O17_RS11020, , genetic competence negative regulator, -0.9488137545337384, 0.0002
+A8O17_RS11035, , LysM peptidoglycan-binding domain-containingprotein, -0.9154496612024015, 0.0007
+A8O17_RS11180, lepB, signal peptidase I, -0.936362834545785, 0.0003
+A8O17_RS11250, spoVAB, stage V sporulation protein SpoVAB, -0.9846236788322582, 0.0
+A8O17_RS11280, , purine nucleoside phosphorylase I, inosine and guanosine-specific, -0.9132445183553926, 0.0008
+A8O17_RS11320, mleN, malate-H+/Na+-lactate antiporter MleN, -0.8332632121064147, 0.0119
+A8O17_RS11400, , DNA polymerase IV, -0.9881407655729032, 0.0
+A8O17_RS11420, , VOC family protein, -0.8225288121047031, 0.015
+A8O17_RS11500, , M20/M25/M40 family metallo-hydrolase, -0.8897532181989879, 0.0021
+A8O17_RS11595, yqiS, phosphate butyryltransferase, -0.9502222668870516, 0.0002
+A8O17_RS11635, , acetyl-CoA C-acetyltransferase, -0.9830839402736862, 0.0
+A8O17_RS11705, , polyprenyl synthetase family protein, -0.9420863681301797, 0.0002
+A8O17_RS11720, folD, bifunctional methylenetetrahydrofolate dehydrogenase/methenyltetrahydrofolate cyclohydrolase FolD, -0.9513993436753111, 0.0002
+A8O17_RS11750, spoIIIAG, stage III sporulation protein AG, -0.9631910661996602, 0.0002
+A8O17_RS11800, aroQ, type II 3-dehydroquinate dehydratase, -0.9074573993301291, 0.001
+A8O17_RS11895, , YqzE family protein, -0.9611731821681891, 0.0002
+A8O17_RS12125, zur, zinc uptake transcriptional repressor Zur, -0.969307263119655, 0.0
+A8O17_RS12185, , YaiI/YqxD family protein, -0.8349607380659319, 0.0114
+A8O17_RS12290, , Na/Pi symporter, -0.9189289718356395, 0.0007
+A8O17_RS12325, hrcA, heat-inducible transcriptional repressor HrcA, -0.9886851477578793, 0.0
+A8O17_RS12515, , DUF418 domain-containing protein, 0.9503224586391662, 0.0002
+A8O17_RS12525, , GNAT family N-acetyltransferase, -0.9815675299003287, 0.0
+A8O17_RS13080, , cysteine desulfurase, -0.9517320855405754, 0.0002
+A8O17_RS13140, recJ, single-stranded-DNA-specific exonuclease RecJ, 0.894078428383267, 0.0016
+A8O17_RS13305, spo0B, sporulation initiation phosphotransferase Sop0B, -0.8468654733801265, 0.0083
+A8O17_RS13320, , ribosomal-processing cysteine protease Prp, -0.811449926264876, 0.0182
+A8O17_RS13390, valS, valine--tRNA ligase, -0.9893561906927182, 0.0
+A8O17_RS13625, etfB, electron transfer flavoprotein subunit beta, 0.8755286031065701, 0.0026
+A8O17_RS13650, , endonuclease MutS2, -0.9668001580205369, 0.0001
+A8O17_RS13675, , phenylalanine--tRNA ligase subunit beta, -0.9162166194086462, 0.0007
+A8O17_RS13710, , (Fe-S)-binding protein, -0.985230380077131, 0.0
+A8O17_RS13840, thrS, threonine--tRNA ligase, -0.8735203070168208, 0.0029
+A8O17_RS13915, polA, DNA polymerase I, -0.9344010434802649, 0.0004
+A8O17_RS13955, fxsA, membrane protein FxsA, -0.919992771467614, 0.0007
+A8O17_RS14255, motP, flagellar motor protein MotP, -0.9369912715178229, 0.0003
+A8O17_RS14315, , M42 family metallopeptidase, -0.8293626607046831, 0.0132
+A8O17_RS14330, , MBL fold metallo-hydrolase, -0.9432551522713742, 0.0002
+A8O17_RS14380, pbuO, hypoxanthine/guanine permease PbuO, -0.9800134708957736, 0.0
+A8O17_RS14400, , rRNA pseudouridine synthase, -0.9844197819374699, 0.0
+A8O17_RS14430, , Gfo/Idh/MocA family oxidoreductase, -0.95950610244809, 0.0002
+A8O17_RS14440, rmgQ, unsaturated rhamnogalacturonyl hydrolase, -0.9710147105617453, 0.0
+A8O17_RS14475, bioB, biotin synthase BioB, 0.9820314164787882, 0.0
+A8O17_RS14740, , cytochrome d ubiquinol oxidase subunit II, -0.8480803733966542, 0.0082
+A8O17_RS15120, , bifunctional aldolase/short-chain dehydrogenase, -0.8238202527985076, 0.0148
+A8O17_RS15225, , aminotransferase, -0.8295360040906888, 0.0132
+A8O17_RS15290, maeL, two-component system sensor histidine kinaseMaeL, -0.9680397773659024, 0.0
+A8O17_RS15330, , Na+/H+ antiporter subunit A, -0.9476816104494176, 0.0002
+A8O17_RS15370, comA, two-component system response regulator ComA, -0.8412145687868101, 0.0098
+A8O17_RS15420, , YueH family protein, -0.8001494537029162, 0.0218
+A8O17_RS15520, dhbC, isochorismate synthase DhbC, 0.8611388669557524, 0.0056
+A8O17_RS15640, , S9 family peptidase, 0.9853152972289477, 0.0
+A8O17_RS15720, , DUF72 domain-containing protein, -0.8386151830536471, 0.0102
+A8O17_RS15770, pucD, xanthine dehydrogenase subunit D, 0.9026353829354097, 0.0012
+A8O17_RS15795, allC, allantoate deiminase, -0.9699764521205851, 0.0
+A8O17_RS15965, , 3-hydroxyacyl-CoA dehydrogenase, 0.9510737764461081, 0.0002
+A8O17_RS16055, htrB, serine protease Do-like protein HtrB, -0.8200626424355656, 0.0156
+A8O17_RS16090, gerAA, spore germination receptor protein GerAA, -0.9429788114396197, 0.0002
+A8O17_RS16095, gerAB, spore germination receptor protein GerAB, 0.9493225156946775, 0.0002
+A8O17_RS16160, , SDR family oxidoreductase, 0.8640789019187312, 0.0045
+A8O17_RS16210, , ABC transporter ATP-binding protein, -0.9617981743066591, 0.0002
+A8O17_RS16235, , iron-hydroxamate ABC transportersubstrate-binding protein, 0.954823804049897, 0.0002
+A8O17_RS16315, , disulfide bond formation protein B, -0.9858167331091985, 0.0
+A8O17_RS16365, , multidrug efflux SMR transporter, -0.9663338969984808, 0.0002
+A8O17_RS16395, , carboxylesterase, -0.8917403300118422, 0.0017
+A8O17_RS16650, ganB, arabinogalactan endo-beta-1,4-galactanase, -0.8229675698620356, 0.0149
+A8O17_RS16715, , sugar transferase, 0.9105275216731904, 0.0009
+A8O17_RS16760, , polysaccharide biosynthesis protein, -0.9552602318067875, 0.0002
+A8O17_RS16780, pnbA, para-nitrobenzyl esterase, 0.9635043515196782, 0.0002
+A8O17_RS16980, rapZ, RNase adapter RapZ, -0.8136134873539116, 0.0176
+A8O17_RS17015, , hypothetical protein, -0.9132601992116226, 0.0008
+A8O17_RS17035, hisA, 1-(5-phosphoribosyl)-5-[(5- phosphoribosylamino)methylideneamino]imidazole-4- carboxamide isomerase, -0.8527288059454124, 0.0069
+A8O17_RS17180, uvrB, excinuclease ABC subunit B, 0.8496691813544229, 0.0076
+A8O17_RS17230, cccB, cytochrome c-551, -0.9504789431599346, 0.0002
+A8O17_RS17235, , YitT family protein, 0.985074582562227, 0.0
+A8O17_RS17345, degU, two-component system response regulator DegU, -0.9790664432574965, 0.0
+A8O17_RS17505, lytD, beta-N-acetylglucosaminidase LytD, -0.8939166660095925, 0.0016
+A8O17_RS17715, , ribonuclease YeeF family protein, -0.9646140718664499, 0.0002
+A8O17_RS17735, uglF, UDP-glucose 6-dehydrogenase UglF, -0.9444288820266771, 0.0002
+A8O17_RS17775, glcR, transcriptional regulator GlcR, -0.8613544058039294, 0.0054
+A8O17_RS17850, , right-handed parallel beta-helixrepeat-containing protein, -0.9628660875837274, 0.0002
+A8O17_RS17980, moaA, GTP 3',8-cyclase MoaA, -0.9638183993444761, 0.0002
+A8O17_RS18200, fsa, fructose-6-phosphate aldolase, -0.9423822068983939, 0.0002
+A8O17_RS18215, , DUF2529 domain-containing protein, -0.9171644066602321, 0.0007
+A8O17_RS18315, , arginine--tRNA ligase, 0.9665840636795249, 0.0002
+A8O17_RS18340, , ABC transporter ATP-binding protein, -0.9746005589163171, 0.0
+A8O17_RS18440, , MFS transporter, -0.9313881275798607, 0.0005
+A8O17_RS18470, , DMT family transporter, -0.9194539499441354, 0.0007
+A8O17_RS18475, ywfL, octanoyl-[GcvH]:protein N-octanoyltransferase, -0.8125382065394535, 0.0179
+A8O17_RS18485, pta, phosphate acetyltransferase, -0.9377459965982099, 0.0003
+A8O17_RS18505, bacE, bacilysin exporter BacE, 0.8619593570820367, 0.0053
+A8O17_RS18600, , DegT/DnrJ/EryC1/StrS aminotransferase familyprotein, 0.8518869094088157, 0.0071
+A8O17_RS18745, qoxA, cytochrome aa3 quinol oxidase subunit II, 0.9850741524882278, 0.0
+A8O17_RS18760, , galactokinase, -0.8826574258260006, 0.0023
+A8O17_RS18785, , cation acetate symporter, -0.9684109860535485, 0.0
+A8O17_RS18830, , CidB/LrgB family autolysis modulator, 0.8017008185590833, 0.0214
+A8O17_RS18845, , class I SAM-dependent rRNA methyltransferase, -0.9046677624862206, 0.0012
+A8O17_RS18880, , glycosyltransferase family 8 protein, -0.9326007956199381, 0.0004
+A8O17_RS18950, , branched-chain amino acid aminotransferase, -0.977755796725391, 0.0
+A8O17_RS19005, , ABC transporter ATP-binding protein, 0.9473530506229673, 0.0002
+A8O17_RS19045, cydD, thiol reductant ABC exporter subunit CydD, 0.8537047090606799, 0.0066
+A8O17_RS19055, cydA, cytochrome ubiquinol oxidase subunit I, 0.8399237646135619, 0.0101
+A8O17_RS19065, , M48 family metalloprotease, -0.9736225466856866, 0.0
+A8O17_RS19075, , polysaccharide deacetylase family protein, -0.9321884070426134, 0.0004
+A8O17_RS19155, , 5-methyltetrahydropteroyltriglutamate--homocystei ne S-methyltransferase, 0.9384323094383473, 0.0003
+A8O17_RS19260, , hypothetical protein, 0.9889804511449833, 0.0
+A8O17_RS19410, deoR, DNA-binding transcriptional repressor DeoR, 0.8880231720161097, 0.0021
+A8O17_RS19690, yxaF, transcriptional regulator YxaF, -0.8351183467841504, 0.0113
+A8O17_RS19715, , general stress protein 30, 0.9461427744030323, 0.0002
+A8O17_RS19750, ahpF, alkyl hydroperoxide reductase subunit F, 0.8817067495327365, 0.0023
+A8O17_RS19820, rlmH, 23S rRNA(pseudouridine(1915)-N(3))-methyltransferase RlmH, 0.8142019055120191, 0.0175
+A8O17_RS19845, , DUF2651 family protein, 0.9789700977606003, 0.0
+A8O17_RS19890, rocR, arginine utilization regulatory protein RocR, -0.9309658536863713, 0.0005
+A8O17_RS19965, dnaB, replicative DNA helicase, -0.9353195722769759, 0.0003
+A8O17_RS19990, , CynX/NimT family MFS transporter, -0.9379407966339485, 0.0003
+A8O17_RS19995, , glycosyltransferase family 39 protein, -0.9245694395746366, 0.0006
+A8O17_RS20045, , MFS transporter, -0.9119211648171309, 0.0009
+A8O17_RS20180, , thioredoxin domain-containing protein, -0.9687638561175157, 0.0
+A8O17_RS20190, , MFS transporter, -0.88041494730896, 0.0024
+A8O17_RS01075, nagZ, beta-N-acetylhexosaminidase, 0.9152050406890682, 0.0007
+A8O17_RS00075, , D-alanyl-D-alanine carboxypeptidase, 0.993386670895504, 0.0
+A8O17_RS01525, lmrA, transcriptional regulator LmrA, 0.9521490218694416, 0.0002
+A8O17_RS01655, , toxic anion resistance protein, 0.9833583410971128, 0.0
+A8O17_RS02515, , thioredoxin family protein, 0.9903119820216802, 0.0
+A8O17_RS03715, , sugar ABC transporter permease, 0.919670035233072, 0.0007
+A8O17_RS03845, , DUF3900 domain-containing protein, 0.9673863010803785, 0.0001
+A8O17_RS04085, , PTS transporter subunit EIIC, 0.8559434665870881, 0.0064
+A8O17_RS04460, , iron ABC transporter permease, 0.9862478353332017, 0.0
+A8O17_RS08005, pgeF, peptidoglycan editing factor PgeF, 0.9847454455576957, 0.0
+A8O17_RS08180, , peptide deformylase, 0.9449668544144043, 0.0002
+A8O17_RS21065, yoyG, YhzE/YjcZ family sporulation protein YoyG, 0.9910273252889158, 0.0
+A8O17_RS10560, kdgT, 2-keto-3-deoxygluconate transporter, 0.9203819991989943, 0.0007
+A8O17_RS11090, resD, DNA-binding response regulator ResD, 0.9448447397055881, 0.0002
+A8O17_RS11825, mntR, transcriptional regulator MntR, 0.9662757534998153, 0.0002
+A8O17_RS12385, , late competence protein ComER, 0.8274134017944609, 0.014
+A8O17_RS13070, , tetratricopeptide repeat protein, 0.9496005260277012, 0.0002
+A8O17_RS13465, , trigger factor, 0.8357739749349411, 0.0112
+A8O17_RS15010, floT, flotillin lipid rafts scaffold protein FloT, 0.971991704442536, 0.0
+A8O17_RS16540, gpmI, 2,3-bisphosphoglycerate-independentphosphoglycera te mutase, 0.9147375531695427, 0.0008
+A8O17_RS17040, hisH, imidazole glycerol phosphate synthase subunitHisH, 0.9368278451316795, 0.0003
+A8O17_RS17925, mta, transcriptional activator Mta, 0.8157040274241893, 0.0167
+A8O17_RS19070, , hypothetical protein, 0.9333390229716795, 0.0004
+A8O17_RS19665, , PQQ-like beta-propeller repeat protein, 0.866402280919512, 0.004
+A8O17_RS19670, , DUF5391 family protein, 0.8697075504974698, 0.0035
+A8O17_RS19850, , hypothetical protein, 0.9190595473978956, 0.0007

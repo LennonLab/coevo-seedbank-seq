@@ -14,7 +14,9 @@ done
 
 
 
-for d in /geode/projects/iu/BL-BIO-Lennon-Lab/Data/0000_Schwartz/20220412_coevo-seedbank-seq/data/map-EVOL/phage/breseq2/*/ ; do
+# /geode/projects/iu/BL-BIO-Lennon-Lab/Data/0000_Schwartz/20220412_coevo-seedbank-seq/data/map-EVOL/phage/breseq2/*/
+
+for d in /geode/projects/iu/BL-BIO-Lennon-Lab/Data/0000_Schwartz/clean_coevo-seedbank-seq/coevo-seedbank-seq/data/map-EVOL/phage/breseq2/*/ ; do
     #echo "$d"
     name="$(echo "$d" | rev | cut -d '/' -f 2 | rev)"
     echo "$name"

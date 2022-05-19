@@ -1,0 +1,2 @@
+Locus tag, Gene, Annotation, Correlatin, P-value
+A8O17_RS05005, pgcA, phosphoglucomutase, 0.8395618411318956, 0.0045

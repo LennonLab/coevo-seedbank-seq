@@ -1,10 +1,14 @@
 
-install.packages('indicspecies')
+
+#install.packages('indicspecies')
+
+set.seed(123456789)
 
 library(vegan)
 library(indicspecies)
 
-mydata <- read.table("/Users/williamrshoemaker/GitHub/coevo-seedbank-seq/data/mult_pcoa.csv", header=TRUE, sep=",", row.names=1)
+mydata <- read.table("/Users/williamrshoemaker/GitHub/coevo-seedbank-seq/data/mult_pcoa_host.csv", header=TRUE, sep=",", row.names=1)
+#mydata <- read.table("/Users/williamrshoemaker/GitHub/coevo-seedbank-seq/data/mult_host.csv", header=TRUE, sep=",", row.names=1)
 
 rownames(mydata)
 #mydata.db <- vegdist(mydata, method = "bray")
@@ -16,7 +20,7 @@ seedbank.binary <- c(rep("short", 12), rep("none", 6))
 phage <- c(rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3) )
 
 
-adonis2(mydata ~ phage*seedbank, method = "euc", permutations = 999)
+adonis2(mydata ~ phage*seedbank, method = "euc", permutations = 9999)
 
 
 # https://www.rdocumentation.org/packages/indicspecies/versions/1.7.9/topics/multipatt

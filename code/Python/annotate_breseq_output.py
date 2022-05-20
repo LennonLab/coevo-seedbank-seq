@@ -88,9 +88,34 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
         t = pol_dict[position]['frequency_trajectory']
         t = numpy.asarray(t)
 
+        if sum(t) == 0:
+            del pol_dict[position]
+            continue
+
+        if len(t) < 2:
+            del pol_dict[position]
+            continue
+
+        if len(pol_dict[position]['coverage_trajectory']) < 2:
+            del pol_dict[position]
+            continue
+
         # not real mutations
         if t[0] > 0.8:
             del pol_dict[position]
+            continue
+
+        if sum(t==0.5) == len(t):
+            del pol_dict[position]
+            continue
+
+        zip_list = list(zip(t.tolist(), pol_dict[position]['coverage_trajectory']))
+
+        if (0.5, 0) in zip_list:
+            del pol_dict[position]
+            continue
+
+
         #else:
         #    # keep if theres at least one fixation and one polymophic observation
         #    if (sum(t==1)>0) and (sum((t>0.01) & (t<0.99)) >0):
@@ -170,8 +195,6 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
                         if alt_allele not in parse_file.base_table:
                             new_base = 'NA'
-                            print(line)
-                            print(alt_allele)
                         else:
                             new_base = parse_file.base_table[alt_allele]
 
@@ -241,7 +264,6 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
         annotated_mutations.append((position, ", ".join(print_strings)))
 
 
-
     file_name = samples[0]
     file_name = file_name.replace('-', '_')
     file_name = file_name.split('_')
@@ -298,4 +320,4 @@ def annotate_all_line():
 
 
 
-annotate_all_line()
+#annotate_all_line()

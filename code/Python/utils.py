@@ -15,7 +15,7 @@ from BCBio import GFF
 
 
 phage_or_host_types = ['phage', 'host']
-seed_bank_types = ['short_seed_bank', 'long_seed_bank', 'no_seed_bank']
+seed_bank_types = ['no_seed_bank', 'short_seed_bank', 'long_seed_bank']
 phage_treatment_types = ['noPhage', 'SPO1']
 subpop_types = ['filtered_phage', 'revived_total', 'revived_spore']
 references = ['delta6-ANC', 'dspoIIE-ANC', 'SPO1-ANC']
@@ -25,6 +25,8 @@ replicates = [1, 2, 3]
 color_dict = {'no_seed_bank':'#87CEEB', 'short_seed_bank': '#FFA500', 'long_seed_bank':'#FF6347'}
 marker_dict = {'noPhage': 'o', 'SPO1': '^'}
 line_dict = {'noPhage': '--', 'SPO1': ':'}
+
+seed_bank_type_cmap_dict = {'no_seed_bank':'Blues', 'short_seed_bank': 'Oranges', 'long_seed_bank':'Reds'}
 
 background = ['SNO', 'WLCt', 'WLO', 'SNCt', 'WSCt', 'WSO']
 #to_ignore = [('host', 'revived_spore')]
@@ -37,7 +39,11 @@ high_coverage_idx = numpy.asarray([0,1,4])
 low_coverage_idx = numpy.asarray([2,3])
 
 seed_bank_types_format_dict = {'short_seed_bank': 'Short seed bank', 'long_seed_bank': 'Long seed bank', 'no_seed_bank': 'No seed bank'}
+seed_bank_types_format_split_dict = {'short_seed_bank': 'Short\nseed bank', 'long_seed_bank': 'Long\nseed bank', 'no_seed_bank': 'No\nseed bank'}
+
+
 phage_treatment_types_format_dict = {'noPhage': 'no phage', 'SPO1': 'with phage'}
+phage_treatment_types_format_caps_dict = {'noPhage': 'No phage', 'SPO1': 'With phage'}
 subpop_types = {'filtered_phage': 'Phage', 'revived_total': 'All cells', 'revived_spore': 'Seed bank'}
 
 

@@ -24,7 +24,6 @@ from statsmodels.stats.multitest import multipletests
 
 def make_multiplicity_dict(phage_or_host_type = 'host'):
 
-
     reference_1 = "%sdspoIIE-ANC.gbk" % config.data_directory
     gene_data_1 = parse_file.parse_gene_list(reference_1)
     gene_names_1, gene_start_positions_1, gene_end_positions_1, promoter_start_positions_1, promoter_end_positions_1, gene_sequences_1, strands_1, genes_1, features_1, protein_ids_1 = gene_data_1
@@ -47,7 +46,6 @@ def make_multiplicity_dict(phage_or_host_type = 'host'):
         subpop_type = 'filtered_phage'
 
     multiplicity_dict = {}
-
     for seed_bank_type in  utils.seed_bank_types:
         for phage_treatment_type in utils.phage_treatment_types:
 
@@ -82,8 +80,8 @@ def make_multiplicity_dict(phage_or_host_type = 'host'):
 
                     frequency_trajectory = position_dict['frequency_trajectory']
 
-                    if sum(frequency_trajectory>0) < utils.min_n_non_zero_freqs:
-                        continue
+                    #if sum(frequency_trajectory>0) < utils.min_n_non_zero_freqs:
+                    #    continue
 
                     if gene not in  multiplicity_dict[replicate_name]:
                         multiplicity_dict[replicate_name][gene] = 0
@@ -265,9 +263,9 @@ def corr_mult_pcoa_axes(phage_or_host_type, number_of_dimensions=2, iter=10000):
         rho_all = numpy.asarray(rho_all)
         p_value_all = numpy.asarray(p_value_all)
 
-        rho_values_to_keep = rho_all[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.8)]
-        p_values_to_keep = p_value_all[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.8)]
-        gene_names_to_keep = df_gene_names[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.8)]
+        rho_values_to_keep = rho_all[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.7)]
+        p_values_to_keep = p_value_all[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.7)]
+        gene_names_to_keep = df_gene_names[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.7)]
         #genes_to_keep = genes[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.9)]
 
         output_filename = "%ssignificant_genes_%s.txt" % (config.data_directory, pc)
@@ -299,7 +297,6 @@ def corr_mult_pcoa_axes(phage_or_host_type, number_of_dimensions=2, iter=10000):
         output_file.close()
 
 
-#corr_mult_pcoa_axes('host')
 
 
 def plot_pcoa_host():
@@ -311,17 +308,15 @@ def plot_pcoa_host():
 
     df_index = df.index.values
 
-
     df_bc = pairwise_distances(df, metric='braycurtis')
 
     df_pcoa = pcoa(df_bc , number_of_dimensions=2)
     ord_matrix = df_pcoa.samples
-    ord_matrix.to_csv("%smult_pcoa.csv" % config.data_directory, sep=',')
+    ord_matrix.to_csv("%smult_pcoa_host.csv" % config.data_directory, sep=',')
 
-    df.to_csv("%smult.csv" % config.data_directory, sep=',')
+    df.to_csv("%smult_host.csv" % config.data_directory, sep=',')
 
     fig, ax = plt.subplots(figsize=(4, 4))
-
 
     for seed_bank_type in  utils.seed_bank_types:
         for phage_treatment_type in utils.phage_treatment_types:
@@ -338,7 +333,7 @@ def plot_pcoa_host():
 
     ax.legend(loc="upper left", fontsize=6)
 
-    fig_name = '%spcoa.png' % (config.analysis_directory)
+    fig_name = '%spcoa_host.png' % (config.analysis_directory)
     fig.savefig(fig_name, bbox_inches = "tight", pad_inches = 0.4, dpi = 600)
     plt.close()
 
@@ -359,9 +354,9 @@ def plot_pcoa_phage():
 
     df_pcoa = pcoa(df_bc , number_of_dimensions=2)
     ord_matrix = df_pcoa.samples
-    ord_matrix.to_csv("%smult_pcoa.csv" % config.data_directory, sep=',')
+    ord_matrix.to_csv("%smult_pcoa_phage.csv" % config.data_directory, sep=',')
 
-    df.to_csv("%smult.csv" % config.data_directory, sep=',')
+    df.to_csv("%smult_phage.csv" % config.data_directory, sep=',')
 
     fig, ax = plt.subplots(figsize=(4, 4))
 
@@ -389,6 +384,5 @@ def plot_pcoa_phage():
 #make_multiplicity_dict('host')
 #plot_pcoa_host()
 #plot_pcoa_phage()
-#plot_pcoa_host()
 
-corr_mult_pcoa_axes('host')
+#corr_mult_pcoa_axes('host')

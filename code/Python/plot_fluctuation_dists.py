@@ -260,10 +260,6 @@ def plot_ks_dist():
             ins_ks.plot(seed_bank_type_idx, D, markersize = 11, marker = 'o',  \
                 linewidth=0.4,  alpha=1, color=utils.color_dict[seed_bank_type], zorder=2)
 
-
-            print(ks_dist_dict[measure][seed_bank_type]['lower_ci'])
-            print(ks_dist_dict[measure][seed_bank_type]['upper_ci'])
-
             delta = 0.05
             fill_between_x = numpy.asarray([seed_bank_type_idx-delta, seed_bank_type_idx+delta])
             fill_between_y_lower = numpy.asarray([ks_dist_dict[measure][seed_bank_type]['lower_ci'], ks_dist_dict[measure][seed_bank_type]['lower_ci']])

@@ -21,6 +21,9 @@ subpop_types = ['filtered_phage', 'revived_total', 'revived_spore']
 references = ['delta6-ANC', 'dspoIIE-ANC', 'SPO1-ANC']
 replicates = [1, 2, 3]
 
+seedbank_pairs = [('no_seed_bank', 'short_seed_bank'), ('no_seed_bank', 'long_seed_bank'), ('short_seed_bank', 'long_seed_bank')]
+
+
 
 color_dict = {'no_seed_bank':'#87CEEB', 'short_seed_bank': '#FFA500', 'long_seed_bank':'#FF6347'}
 marker_dict = {'noPhage': 'o', 'SPO1': '^'}

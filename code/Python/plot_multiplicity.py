@@ -80,14 +80,17 @@ def make_multiplicity_dict(phage_or_host_type = 'host'):
 
                     frequency_trajectory = position_dict['frequency_trajectory']
 
-                    #if sum(frequency_trajectory>0) < utils.min_n_non_zero_freqs:
-                    #    continue
+                    if sum(frequency_trajectory>0) < utils.min_n_non_zero_freqs:
+                        continue
 
                     if gene not in  multiplicity_dict[replicate_name]:
                         multiplicity_dict[replicate_name][gene] = 0
 
                     # LLN argument for taking the mean?
-                    multiplicity_dict[replicate_name][gene] += numpy.mean(frequency_trajectory)
+                    frequency_trajectory_mean = max(frequency_trajectory)
+
+                    if frequency_trajectory_mean >= 0:
+                        multiplicity_dict[replicate_name][gene] += numpy.mean(frequency_trajectory)
 
             if exists_all == False:
                 continue
@@ -381,8 +384,8 @@ def plot_pcoa_phage():
 
 
 #make_multiplicity_dict('phage')
-#make_multiplicity_dict('host')
-#plot_pcoa_host()
+make_multiplicity_dict('host')
+plot_pcoa_host()
 #plot_pcoa_phage()
 
 #corr_mult_pcoa_axes('host')

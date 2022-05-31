@@ -23,6 +23,8 @@ phage <- c(rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3),
 adonis2(mydata ~ phage*seedbank, method = "euc", permutations = 9999)
 
 
+# interaction with euc, mult_host.csv,  
+
 # https://www.rdocumentation.org/packages/indicspecies/versions/1.7.9/topics/multipatt
 phi <- multipatt(mydata.db, cluster = seedbank*phage, func = "r.g", control = how(nperm = 9999))
 ​

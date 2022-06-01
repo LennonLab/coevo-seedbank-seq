@@ -80,14 +80,20 @@ def make_multiplicity_dict(phage_or_host_type = 'host'):
 
                     frequency_trajectory = position_dict['frequency_trajectory']
 
-                    #if sum(frequency_trajectory>0) < utils.min_n_non_zero_freqs:
-                    #    continue
+                    if sum(frequency_trajectory>0) < utils.min_n_non_zero_freqs:
+                        continue
 
-                    if gene not in  multiplicity_dict[replicate_name]:
+                    if gene not in multiplicity_dict[replicate_name]:
                         multiplicity_dict[replicate_name][gene] = 0
 
                     # LLN argument for taking the mean?
-                    multiplicity_dict[replicate_name][gene] += numpy.mean(frequency_trajectory)
+                    #frequency_trajectory_mean = max(frequency_trajectory)
+                    #frequency_trajectory_mean = frequency_trajectory[-1]
+                    #frequency_trajectory_mean = 10**numpy.mean(numpy.log10(frequency_trajectory[frequency_trajectory>0]))
+                    frequency_trajectory_mean = numpy.mean(frequency_trajectory[frequency_trajectory>0])
+
+                    if frequency_trajectory_mean >= 0:
+                        multiplicity_dict[replicate_name][gene] += frequency_trajectory_mean
 
             if exists_all == False:
                 continue
@@ -331,7 +337,7 @@ def plot_pcoa_host():
     ax.set_xlabel('PCo 1 (' + str(round(df_pcoa.proportion_explained[0],3)*100) + '%)' , fontsize = 12)
     ax.set_ylabel('PCo 2 (' + str(round(df_pcoa.proportion_explained[1]*100, 1)) + '%)' , fontsize = 12)
 
-    ax.legend(loc="upper left", fontsize=6)
+    ax.legend(loc="lower right", fontsize=6, markerscale=0.7)
 
     fig_name = '%spcoa_host.png' % (config.analysis_directory)
     fig.savefig(fig_name, bbox_inches = "tight", pad_inches = 0.4, dpi = 600)
@@ -382,7 +388,7 @@ def plot_pcoa_phage():
 
 #make_multiplicity_dict('phage')
 #make_multiplicity_dict('host')
-#plot_pcoa_host()
+plot_pcoa_host()
 #plot_pcoa_phage()
 
 #corr_mult_pcoa_axes('host')

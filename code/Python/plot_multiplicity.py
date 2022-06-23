@@ -35,9 +35,7 @@ def make_multiplicity_dict(phage_or_host_type = 'host'):
 
     gene_names_intersection = set(gene_names_1).intersection(set(gene_names_2))
     gene_names_union = set(gene_names_1).union(set(gene_names_2))
-
     mult_path = "%smultiplicity_dict_%s.pickle" % (config.data_directory, phage_or_host_type)
-
     metadata_dict = utils.get_sample_metadata_dict()
 
     if phage_or_host_type == 'host':
@@ -90,7 +88,7 @@ def make_multiplicity_dict(phage_or_host_type = 'host'):
                     #frequency_trajectory_mean = max(frequency_trajectory)
                     #frequency_trajectory_mean = frequency_trajectory[-1]
                     #frequency_trajectory_mean = 10**numpy.mean(numpy.log10(frequency_trajectory[frequency_trajectory>0]))
-                    frequency_trajectory_mean = numpy.mean(frequency_trajectory[frequency_trajectory>0])
+                    frequency_trajectory_mean = numpy.median(frequency_trajectory[frequency_trajectory>0])
 
                     if frequency_trajectory_mean >= 0:
                         multiplicity_dict[replicate_name][gene] += frequency_trajectory_mean
@@ -269,9 +267,19 @@ def corr_mult_pcoa_axes(phage_or_host_type, number_of_dimensions=2, iter=10000):
         rho_all = numpy.asarray(rho_all)
         p_value_all = numpy.asarray(p_value_all)
 
-        rho_values_to_keep = rho_all[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.7)]
-        p_values_to_keep = p_value_all[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.7)]
-        gene_names_to_keep = df_gene_names[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.7)]
+        #print(rho_all[(p_value_all<0.05)])
+        idx_sort = numpy.argsort(rho_all)[::-1]
+
+        df_gene_names_copy = numpy.copy(df_gene_names)
+
+        rho_all = rho_all[idx_sort]
+        p_value_all = p_value_all[idx_sort]
+        df_gene_names_copy = df_gene_names_copy[idx_sort]
+
+
+        rho_values_to_keep = rho_all[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.5)]
+        p_values_to_keep = p_value_all[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.5)]
+        gene_names_to_keep = df_gene_names_copy[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.5)]
         #genes_to_keep = genes[(p_value_all<0.05) & (numpy.absolute(rho_all) > 0.9)]
 
         output_filename = "%ssignificant_genes_%s.txt" % (config.data_directory, pc)
@@ -324,21 +332,94 @@ def plot_pcoa_host():
 
     fig, ax = plt.subplots(figsize=(4, 4))
 
+    fig = plt.figure(figsize = (8, 4)) #
+    fig.subplots_adjust(bottom= 0.15,  wspace=0.25)
+
+    ax_pcoa = plt.subplot2grid((1, 2), (0, 0), colspan=1)
+    ax_euc = plt.subplot2grid((1, 2), (0, 1), colspan=1)
+
+    ax_pcoa.scatter(0, 0, marker='o', c='k', alpha=1, s=20, zorder=2)
+
+    ax_pcoa.axhline(y=0, color='k', linestyle=':', alpha = 1, lw=1.5, zorder=1)
+    ax_pcoa.axvline(x=0, color='k', linestyle=':', alpha = 1, lw=1.5, zorder=1)
+
+    euc_distances_dict = {}
     for seed_bank_type in  utils.seed_bank_types:
         for phage_treatment_type in utils.phage_treatment_types:
 
+            if seed_bank_type == 'long_seed_bank':
+                edgecolor = 'k'
+            else:
+                edgecolor = 'grey'
+
+            if phage_treatment_type == 'noPhage':
+                facecolor = edgecolor
+            else:
+                facecolor = edgecolor
+
             seed_bank_phage_idx = numpy.asarray([numpy.where(df_index==e)[0][0] for e in df_index if '%s_%s' % (seed_bank_type, phage_treatment_type) in e])
-            ax.scatter(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], marker = utils.marker_dict[phage_treatment_type],
-                edgecolors='#244162', c = utils.color_dict[seed_bank_type], alpha = 0.8, s = 120, zorder=4, label=utils.seed_bank_types_format_dict[seed_bank_type] + ', ' + utils.phage_treatment_types_format_dict[phage_treatment_type])
+            #ax.scatter(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], marker = utils.marker_dict[phage_treatment_type],
+            #    edgecolors='#244162', c = utils.color_dict[seed_bank_type], alpha = 0.8, s = 120, zorder=4, label=utils.seed_bank_types_format_dict[seed_bank_type] + ', ' + utils.phage_treatment_types_format_dict[phage_treatment_type])
 
-            confidence_ellipse(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], ax, n_std=2, edgecolor=utils.color_dict[seed_bank_type], linestyle='--', lw=3)
+            ax_pcoa.scatter(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], marker = utils.marker_dict[phage_treatment_type],
+                edgecolors=edgecolor,linewidth=2, facecolors=facecolor, alpha = 0.8, s = 120, zorder=4, label=utils.seed_bank_types_format_dict[seed_bank_type] + ', ' + utils.phage_treatment_types_format_dict[phage_treatment_type])
+
+            confidence_ellipse(ord_matrix.values[seed_bank_phage_idx,0], ord_matrix.values[seed_bank_phage_idx,1], ax_pcoa, n_std=2, edgecolor=edgecolor, linestyle='--', lw=2, zorder=3)
 
 
-    ax.set_xlabel('PCo 1 (' + str(round(df_pcoa.proportion_explained[0],3)*100) + '%)' , fontsize = 12)
-    ax.set_ylabel('PCo 2 (' + str(round(df_pcoa.proportion_explained[1]*100, 1)) + '%)' , fontsize = 12)
+            euc_distances = numpy.sqrt((ord_matrix.values[seed_bank_phage_idx,0]**2) + (ord_matrix.values[seed_bank_phage_idx,1]**2))
 
-    ax.legend(loc="lower right", fontsize=6, markerscale=0.7)
+            #standard_error = numpy.std(euc_distances)/numpy.sqrt(len(euc_distances))
+            #mean = numpy.mean(euc_distances)
+            #
 
+            euc_distances_dict[(seed_bank_type, phage_treatment_type)] = euc_distances
+
+            #euc_count += 1
+
+    euc_count = 0
+    for phage_treatment_type in utils.phage_treatment_types:
+        for seed_bank_type in  utils.seed_bank_types:
+
+            if seed_bank_type == 'long_seed_bank':
+                edgecolor = 'k'
+            else:
+                edgecolor = 'grey'
+
+            if phage_treatment_type == 'noPhage':
+                facecolor = edgecolor
+            else:
+                facecolor = edgecolor
+
+
+            euc_distances = euc_distances_dict[(seed_bank_type, phage_treatment_type)]
+
+            standard_error = numpy.std(euc_distances)/numpy.sqrt(len(euc_distances))
+            mean = numpy.mean(euc_distances)
+
+            ax_euc.errorbar(euc_count, mean, yerr=standard_error, linestyle='-', c = edgecolor, marker= utils.marker_dict[phage_treatment_type], lw = 2.5, zorder=1)
+            ax_euc.scatter(euc_count, mean, marker = utils.marker_dict[phage_treatment_type], edgecolors=edgecolor, linewidth=2, facecolors=facecolor, alpha = 1, s = 120, zorder=2)
+
+            euc_count += 1
+
+
+    ax_pcoa.set_xlabel('PCo 1 (' + str(round(df_pcoa.proportion_explained[0],3)*100) + '%)' , fontsize = 12)
+    ax_pcoa.set_ylabel('PCo 2 (' + str(round(df_pcoa.proportion_explained[1]*100, 1)) + '%)' , fontsize = 12)
+    ax_pcoa.legend(loc="lower right", fontsize=6, markerscale=0.6)
+
+
+    ax_euc.set_ylabel('Euclidean distance from the ancestor' , fontsize = 11)
+
+    ax_euc.set_xticks([0, 1, 2, 3])
+    ax_euc.set_xticklabels(['With seed bank', 'No seed bank', 'With seed bank', 'No seed bank'], fontsize=7)
+
+    ax_euc.set_xlim([-0.25, 3.25])
+
+    ax_euc.text(0.22, -0.12, "With phage", fontsize=12, ha='center', va='center', transform=ax_euc.transAxes)
+    ax_euc.text(0.78, -0.12, "No phage", fontsize=12, ha='center', va='center', transform=ax_euc.transAxes)
+
+
+    # plot euclidean distances from origin
     fig_name = '%spcoa_host.png' % (config.analysis_directory)
     fig.savefig(fig_name, bbox_inches = "tight", pad_inches = 0.4, dpi = 600)
     plt.close()

@@ -14,13 +14,15 @@ rownames(mydata)
 #mydata.db <- vegdist(mydata, method = "bray")
 
 
-seedbank <- c(rep("short", 6), rep("long", 6), rep("none", 6))
-seedbank.binary <- c(rep("short", 12), rep("none", 6))
+seedbank <- c(rep("long", 6), rep("none", 6))
+#seedbank <- c(rep("short", 6), rep("long", 6), rep("none", 6))
+#seedbank.binary <- c(rep("short", 12), rep("none", 6))
 
-phage <- c(rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3) )
+#phage <- c(rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3) )
+phage <- c(rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3) )
 
 
-adonis2(mydata ~ phage*seedbank, method = "euc", permutations = 9999)
+adonis2(mydata ~ phage*seedbank, method = "euc", permutations = 10000)
 
 
 # interaction with euc, mult_host.csv,  

@@ -277,7 +277,7 @@ def plot_ks_dist():
     y_axis_labels = ['Fraction ' + r'$\geq f_{max}$', 'Fraction ' + r'$\geq |\Delta f| / \Delta t$', 'Fraction ' + r'$\geq f(t+\delta t)/f(t)$']
     for measure_idx, measure in enumerate(measures):
 
-        for phage_treatment_type_idx, phage_treatment_type in enumerate(utils.phage_treatment_types):
+        for phage_treatment_type_idx, phage_treatment_type in enumerate(['noPhage', 'SPO1']):
 
             ax = plt.subplot2grid((3, 2), (measure_idx, phage_treatment_type_idx), colspan=1)
 

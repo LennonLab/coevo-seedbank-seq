@@ -18,9 +18,11 @@ from sklearn.metrics import pairwise_distances
 from skbio.stats.ordination import pcoa
 
 from statsmodels.stats.multitest import multipletests
+import statsmodels.formula.api as smf
+import statsmodels.api as sm
 
 
-
+numpy.random.seed(123456789)
 
 def make_multiplicity_dict(phage_or_host_type = 'host'):
 
@@ -371,11 +373,11 @@ def plot_pcoa_host():
 
             #standard_error = numpy.std(euc_distances)/numpy.sqrt(len(euc_distances))
             #mean = numpy.mean(euc_distances)
-            #
-
             euc_distances_dict[(seed_bank_type, phage_treatment_type)] = euc_distances
 
             #euc_count += 1
+
+    euc_all = []
 
     euc_count = 0
     for phage_treatment_type in utils.phage_treatment_types:
@@ -402,6 +404,9 @@ def plot_pcoa_host():
 
             euc_count += 1
 
+            for rep in range(len(euc_distances)):
+                euc_all.append((phage_treatment_type, seed_bank_type, rep, euc_distances[rep]))
+
 
     ax_pcoa.set_xlabel('PCo 1 (' + str(round(df_pcoa.proportion_explained[0],3)*100) + '%)' , fontsize = 12)
     ax_pcoa.set_ylabel('PCo 2 (' + str(round(df_pcoa.proportion_explained[1]*100, 1)) + '%)' , fontsize = 12)
@@ -418,11 +423,61 @@ def plot_pcoa_host():
     ax_euc.text(0.22, -0.12, "With phage", fontsize=12, ha='center', va='center', transform=ax_euc.transAxes)
     ax_euc.text(0.78, -0.12, "No phage", fontsize=12, ha='center', va='center', transform=ax_euc.transAxes)
 
+    ax_pcoa.text(-0.1, 1.03, utils.subplot_labels[0], fontsize=11, fontweight='bold', ha='center', va='center', transform=ax_pcoa.transAxes)
+    ax_euc.text(-0.1, 1.03, utils.subplot_labels[1], fontsize=11, fontweight='bold', ha='center', va='center', transform=ax_euc.transAxes)
+
 
     # plot euclidean distances from origin
     fig_name = '%spcoa_host.png' % (config.analysis_directory)
     fig.savefig(fig_name, bbox_inches = "tight", pad_inches = 0.4, dpi = 600)
     plt.close()
+
+
+    labels = ['phage', 'seedbank', 'replicate', 'euc']
+    df = pandas.DataFrame.from_records(euc_all, columns=labels)
+    lmod = smf.ols(formula='euc ~ phage + seedbank + phage:seedbank', data=df).fit()
+    anova = sm.stats.anova_lm(lmod, typ=2)
+
+    print(anova)
+
+    #print(dir(anova))
+    anova_array = anova.to_numpy()
+    F_phage, F_seedbank, F_inter, F_resid = anova_array[:,2]
+
+    #lmod_params = lmod.params.values
+
+    phage_null = []
+    seedbank_null = []
+    inter_null = []
+    iter = 10000
+    for i in range(iter):
+
+        df['euc_null'] = numpy.random.permutation(df.euc)
+        lmod_null = smf.ols(formula='euc_null ~ phage + seedbank + phage:seedbank', data=df).fit()
+        anova_null = sm.stats.anova_lm(lmod_null, typ=2)
+        anova_null_array = anova_null.to_numpy()
+
+        F_phage_null, F_seedbank_null, F_inter_null, F_resid_null = anova_null_array[:,2]
+
+        phage_null.append(F_phage_null)
+        seedbank_null.append(F_seedbank_null)
+        inter_null.append(F_inter_null)
+
+    phage_null = numpy.asarray(phage_null)
+    seedbank_null = numpy.asarray(seedbank_null)
+    inter_null = numpy.asarray(inter_null)
+
+    p_value_phage = sum(phage_null > F_phage)/iter
+    p_value_seedbank = sum(seedbank_null > F_seedbank)/iter
+    p_value_inter = sum(inter_null > F_inter)/iter
+
+    print("F-phage = ", F_phage, 'P = ', p_value_phage)
+    print("F-seedbank = ", F_seedbank, 'P = ', p_value_seedbank)
+    print("F-inter = ", F_inter, 'P = ', p_value_inter)
+
+
+
+
 
 
 

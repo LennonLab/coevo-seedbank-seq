@@ -250,6 +250,19 @@ def plot_ks_dist():
     measure_dict = load_measure_dict()
     ks_dist_dict = load_ks_dict()
 
+
+    for measure_idx, measure in enumerate(measures):
+
+        for seed_bank_type in utils.seed_bank_types:
+
+            D = ks_dist_dict[measure][seed_bank_type]['D']
+            p_value = ks_dist_dict[measure][seed_bank_type]['p']
+
+            print(measure, seed_bank_type, D, p_value)
+
+
+
+
     fig = plt.figure(figsize = (10, 12)) #
     fig.subplots_adjust(bottom= 0.15,  wspace=0.25)
 
@@ -258,11 +271,13 @@ def plot_ks_dist():
     mpl.rcParams['xtick.labelsize'] = 6
     mpl.rcParams['ytick.labelsize'] = 7
 
+    plot_count = 0
+
     x_axis_labels = ['Maximum observed allele frequency, ' + r'$f_{max}$', 'Absolute change in allele frequencies per-transfer, ' + r'$|\Delta f| / \Delta t$', 'Ratio of allele frequency changes, ' + r'$f(t+\delta t)/f(t)$']
     y_axis_labels = ['Fraction ' + r'$\geq f_{max}$', 'Fraction ' + r'$\geq |\Delta f| / \Delta t$', 'Fraction ' + r'$\geq f(t+\delta t)/f(t)$']
     for measure_idx, measure in enumerate(measures):
 
-        for phage_treatment_type_idx, phage_treatment_type in enumerate(utils.phage_treatment_types):
+        for phage_treatment_type_idx, phage_treatment_type in enumerate(['noPhage', 'SPO1']):
 
             ax = plt.subplot2grid((3, 2), (measure_idx, phage_treatment_type_idx), colspan=1)
 
@@ -272,8 +287,8 @@ def plot_ks_dist():
 
                 log_ratio_array_sort = numpy.sort(measure_dict[seed_bank_type][phage_treatment_type][measure])
                 #cdf = 1-numpy.arange(len(log_ratio_array_sort))/float(len(log_ratio_array_sort))
-                label = utils.seed_bank_types_format_dict[seed_bank_type] + ', ' + utils.phage_treatment_types_format_dict[phage_treatment_type]
-                #ax.plot(log_ratio_array_sort, cdf, c =utils.color_dict[seed_bank_type], ls=utils.line_dict[phage_treatment_type], label=label, lw=2, alpha=1)
+                #label = utils.seed_bank_types_format_dict[seed_bank_type] + ', ' + utils.phage_treatment_types_format_dict[phage_treatment_type]
+                label = utils.phage_treatment_types_format_dict[phage_treatment_type]
 
                 # gaussian_kde
                 log_ratio_array_sort_log10 = numpy.log10(log_ratio_array_sort)
@@ -287,7 +302,7 @@ def plot_ks_dist():
 
                 log_ratio_array_sort = numpy.sort(measure_dict[seed_bank_type][phage_treatment_type][measure])
                 #cdf = 1-numpy.arange(len(log_ratio_array_sort))/float(len(log_ratio_array_sort))
-                label = utils.seed_bank_types_format_dict[seed_bank_type] + ', ' + utils.phage_treatment_types_format_dict[phage_treatment_type]
+                label = utils.seed_bank_types_format_dict[seed_bank_type]
                 #ax.plot(log_ratio_array_sort, cdf, c =utils.color_dict[seed_bank_type], ls=utils.line_dict[phage_treatment_type], label=label, lw=2, alpha=1)
 
                 # gaussian_kde
@@ -322,14 +337,20 @@ def plot_ks_dist():
                 density.covariance_factor = lambda : .25
                 density._compute_covariance()
 
-                ax.plot(10**xs, density(xs), lw=2, c=utils.color_dict[seed_bank_type],  ls=utils.line_dict[phage_treatment_type], label=label, alpha=1)
-
+                #ax.plot(10**xs, density(xs), lw=2, c=utils.color_dict[seed_bank_type],  ls=utils.line_dict[phage_treatment_type], label=label, alpha=1)
+                ax.plot(10**xs, density(xs), lw=2, c=utils.color_dict[seed_bank_type],  ls='-', label=label, alpha=1)
 
             #ax.set_xlabel('' , fontsize = 12)
             #ax.set_ylabel('PCo 2 (' + str(round(df_pcoa.proportion_explained[1]*100, 1)) + '%)' , fontsize = 12)
 
             if measure_idx == 0:
-                ax.legend(loc="upper left", fontsize=6)
+                #ax.legend(loc="upper left", fontsize=6)
+                ax.set_title(utils.phage_treatment_types_format_caps_dict[phage_treatment_type], fontsize=14, color='k')
+
+
+            if (measure_idx == 0) and (phage_treatment_type_idx == 0):
+                ax.legend(loc="lower right", fontsize=9)
+
 
 
             if measure == 'max_f':
@@ -390,30 +411,50 @@ def plot_ks_dist():
 
 
 
-            ins_ks = inset_axes(ax, width="100%", height="100%", loc='lower right', bbox_to_anchor=bbox_to_anchor, bbox_transform=ax.transAxes)
+            D = ks_dist_dict[measure][phage_treatment_type][utils.seedbank_pairs[0]]['D']
+            p_value = ks_dist_dict[measure][phage_treatment_type][utils.seedbank_pairs[0]]['p']
 
-            for seedbank_pair_idx, seedbank_pair in enumerate(utils.seedbank_pairs):
+            D_formatted = str('{:g}'.format(float('{:.{p}g}'.format(D, p=3))))
+            p_value_formatted = str('{:g}'.format(float('{:.{p}g}'.format(p_value, p=3))))
+            #ax.text(0.15,  0.95, r'$D =$' + str(round(D, 3)), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
+            ax.text(0.15,  0.95, r'$D =$' + D_formatted, fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
 
-                D = ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['D']
-                p_perm = ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['p']
+            if p_value == 0:
+                ax.text(0.18,  0.89, r'$P <$' + str(1/iter), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
+            else:
+                ax.text(0.15,  0.89, r'$P =$' + p_value_formatted, fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
 
-                marker_style = dict(color='k', marker='o',
-                    markerfacecoloralt=utils.color_dict[seedbank_pair[1]],
-                    markerfacecolor=utils.color_dict[seedbank_pair[0]],
-                    mew=0.5)
 
-                ins_ks.plot(seedbank_pair_idx, D, markersize = 11,   \
-                        linewidth=0.4,  alpha=1, zorder=3, fillstyle='left', **marker_style)
 
-                if p_perm < 0.05:
-                    ins_ks.text(seedbank_pair_idx, D+0.005, '*', ha='center', fontsize=10)
+            ax.text(-0.1, 1.03,utils.subplot_labels[plot_count], fontsize=11, fontweight='bold', ha='center', va='center', transform=ax.transAxes)
 
-                delta = 0.05
-                fill_between_x = numpy.asarray([seedbank_pair_idx-delta, seedbank_pair_idx+delta])
-                fill_between_y_lower = numpy.asarray([ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['lower_ci'], ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['lower_ci']])
-                fill_between_y_upper = numpy.asarray([ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['upper_ci'], ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['upper_ci']])
 
-                ins_ks.fill_between(fill_between_x, y1=fill_between_y_lower, y2=fill_between_y_upper, color='grey')
+            plot_count += 1
+
+            #ins_ks = inset_axes(ax, width="100%", height="100%", loc='lower right', bbox_to_anchor=bbox_to_anchor, bbox_transform=ax.transAxes)
+
+            #for seedbank_pair_idx, seedbank_pair in enumerate(utils.seedbank_pairs):
+
+            #    D = ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['D']
+            #    p_perm = ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['p']
+
+            #    marker_style = dict(color='k', marker='o',
+            #        markerfacecoloralt=utils.color_dict[seedbank_pair[1]],
+            #        markerfacecolor=utils.color_dict[seedbank_pair[0]],
+            #        mew=0.5)
+
+            #    ins_ks.plot(seedbank_pair_idx, D, markersize = 11,   \
+            #            linewidth=0.4,  alpha=1, zorder=3, fillstyle='left', **marker_style)
+
+            #    if p_perm < 0.05:
+            #        ins_ks.text(seedbank_pair_idx, D+0.005, '*', ha='center', fontsize=10)
+
+            #    delta = 0.05
+            #    fill_between_x = numpy.asarray([seedbank_pair_idx-delta, seedbank_pair_idx+delta])
+            #    fill_between_y_lower = numpy.asarray([ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['lower_ci'], ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['lower_ci']])
+            #    fill_between_y_upper = numpy.asarray([ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['upper_ci'], ks_dist_dict[measure][phage_treatment_type][seedbank_pair]['upper_ci']])
+
+            #    ins_ks.fill_between(fill_between_x, y1=fill_between_y_lower, y2=fill_between_y_upper, color='grey')
 
 
 
@@ -433,23 +474,23 @@ def plot_ks_dist():
             #    ins_ks.fill_between(fill_between_x, y1=fill_between_y_lower, y2=fill_between_y_upper, color='grey')
 
             # finish the ins_ks fiddling
-            ins_ks.tick_params(labelsize=4)
-            ins_ks.tick_params(axis='both', which='major', pad=1)
+            #ins_ks.tick_params(labelsize=4)
+            #ins_ks.tick_params(axis='both', which='major', pad=1)
 
-            ins_ks.set_xlim([-0.5, 2.5])
-            ins_ks.set_ylim(ylim_inset_dict[measure])
+            #ins_ks.set_xlim([-0.5, 2.5])
+            #ins_ks.set_ylim(ylim_inset_dict[measure])
 
-            ins_ks.set_xticks([0, 1, 2])
+            #ins_ks.set_xticks([0, 1, 2])
 
             #ins_ks.set_xticklabels([utils.seed_bank_types_format_split_dict[s] for s in utils.seed_bank_types] )
-            ins_ks.set_xticklabels(['No vs. short\nseed bank', 'No vs. long\nseed bank', 'Short vs. long\nseed bank'] )
+            #ins_ks.set_xticklabels(['No vs. short\nseed bank', 'No vs. long\nseed bank', 'Short vs. long\nseed bank'] )
 
 
-            ins_ks.set_ylabel("KS distance", fontsize=6)
-            ins_ks.tick_params(axis='x', labelsize=5, length = 0)
+            #ins_ks.set_ylabel("KS distance", fontsize=6)
+            #ins_ks.tick_params(axis='x', labelsize=5, length = 0)
 
-            ins_ks.axhline(y=0, color='k', linestyle=':', alpha = 0.8, zorder=1)
-            ins_ks.yaxis.set_tick_params(labelsize=4)
+            #ins_ks.axhline(y=0, color='k', linestyle=':', alpha = 0.8, zorder=1)
+            #ins_ks.yaxis.set_tick_params(labelsize=4)
 
 
     fig_name = '%sfluctuation_pdf.png' % (config.analysis_directory)

@@ -28,7 +28,7 @@ iter = 10000
 
 ks_path = "%sks_rho_dist.pickle" % (config.data_directory)
 
-seedbank_pairs = [('no_seed_bank', 'short_seed_bank'), ('no_seed_bank', 'long_seed_bank'), ('short_seed_bank', 'long_seed_bank')]
+seedbank_pairs = [('no_seed_bank', 'long_seed_bank')]
 
 
 gene_intersection = utils.get_gene_intersection()
@@ -257,7 +257,7 @@ def plot_distribution():
 
     ax.set_xlim(-1, 1)
     #ax.set_yscale('log', basey=10)
-    ax.set_xlabel('Corr. coefficient between host and phage trajectories, ' +  r'$\rho$', fontsize = 10)
+    ax.set_xlabel('Correlation coefficient between\nhost and phage mutation trajectories', fontsize = 10)
     ax.set_ylabel('Probability density', fontsize = 12)
     ax.legend(loc="upper right", fontsize=6)
 
@@ -324,9 +324,57 @@ def plot_distribution_null():
     #y_axis_labels = ['Fraction ' + r'$\geq f_{max}$', 'Fraction ' + r'$\geq |\Delta f| / \Delta t$', 'Fraction ' + r'$\geq f(t+\delta t)/f(t)$']
     #for measure_idx, measure in enumerate(measures):
 
-    for seed_bank_type_idx, seed_bank_type in enumerate(utils.seed_bank_types):
+    seed_bank_types = ['no_seed_bank', 'long_seed_bank']
 
-        ax = plt.subplot2grid((1, 3), (0, seed_bank_type_idx), colspan=1)
+    ax_concept = plt.subplot2grid((1, 3), (0, 0), colspan=1)
+
+    phage = ax_concept.twinx()
+
+    ax_concept.set_xlabel("Transfer", fontsize = 12)
+    ax_concept.set_ylabel("Allele frequency, host", fontsize = 12)
+    phage.set_ylabel("Allele frequency, phage", fontsize = 12)
+
+    t = numpy.asarray([1, 4, 7, 10, 14])
+    host_pos = numpy.asarray([0, 0, 0.25, 0.38, 0.68])
+    phage_pos = numpy.asarray([0, 0.2, 0.32, 0.4, 0.82])
+
+    host_neg = numpy.asarray([0, 0.22, 0.15, 0.08, 0.01])
+    phage_neg = numpy.asarray([0, 0.1, 0.3, 0.32, 0.54])
+
+
+    # dodgerblue, orangered
+    ax_host, = ax_concept.plot(t, host_pos, color=utils.color_dict['no_seed_bank'], ls='-')
+    ax_phage, = ax_concept.plot(t, phage_pos, color=utils.color_dict['long_seed_bank'], ls='-')
+
+    ax_concept.plot(t, host_neg, color=utils.color_dict['no_seed_bank'], ls=':')
+    ax_concept.plot(t, phage_neg, color=utils.color_dict['long_seed_bank'], ls=':')
+
+    ax_concept.yaxis.label.set_color(ax_host.get_color())
+    phage.yaxis.label.set_color(ax_phage.get_color())
+
+    phage.set_yticklabels([])
+    phage.set_yticks([])
+    ax_concept.set_yticklabels([])
+    ax_concept.set_yticks([])
+
+    ax_concept.set_xticklabels(['1', '4', '7', '10', '14'])
+    ax_concept.set_xticks(t)
+
+    ax_concept.set_xlim([1,14])
+    ax_concept.set_ylim([0,1])
+
+
+    from matplotlib.lines import Line2D
+    custom_lines = [Line2D([0], [0], color='k', lw=2, ls='-'),
+                    Line2D([0], [0], color='k', lw=2, ls='--')]
+
+    ax_concept.legend(custom_lines, [r'$\rho >0$', r'$\rho < 0$'], loc ='upper left')
+    ax_concept.text(-0.1, 1.08, utils.subplot_labels[0], fontsize=11, fontweight='bold', ha='center', va='center', transform=ax_concept.transAxes)
+
+
+    for seed_bank_type_idx, seed_bank_type in enumerate(seed_bank_types):
+
+        ax = plt.subplot2grid((1, 3), (0, seed_bank_type_idx+1), colspan=1)
 
         rho_all_sort = numpy.sort(frequency_trajectory_dict[seed_bank_type]['rho'])
         rho_null_all_sort = numpy.sort(frequency_trajectory_dict[seed_bank_type]['rho_null'])
@@ -343,19 +391,18 @@ def plot_distribution_null():
 
 
         ax.plot(xs, density(xs), ls='-', lw=2, c=utils.color_dict[seed_bank_type], label='Observed', alpha=1)
-        ax.plot(xs, density_null(xs), ls='-', lw=2, c='grey', label='Null', alpha=1)
+        ax.plot(xs, density_null(xs), ls='-', lw=2, c='lightgray', label='Null', alpha=1)
 
         ax.fill_between(xs, density(xs), color=utils.color_dict[seed_bank_type], alpha=0.7)
-        ax.fill_between(xs, density_null(xs), color='grey', alpha=0.4)
+        ax.fill_between(xs, density_null(xs), color='lightgray', alpha=0.4)
 
         ax.set_xlim(-1, 1)
         ax.set_ylim(0, 0.8)
         #ax.set_yscale('log', basey=10)
-        ax.set_xlabel('Corr. coefficient between\nhost and phage trajectories, ' +  r'$\rho$', fontsize = 11)
+        ax.set_xlabel('Correlation coefficient between\nhost and phage mutation trajectories, ' + r'$\rho$', fontsize = 11)
         ax.set_ylabel('Probability density', fontsize = 12)
         ax.legend(loc="upper right", fontsize=6)
         ax.set_title(utils.seed_bank_types_format_dict[seed_bank_type], fontsize=12, color='k')
-
 
         ax.text(0.15,  0.95, r'$D =$' + str(round(ks_dist_dict[seed_bank_type]['D'], 3)), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
 
@@ -367,11 +414,11 @@ def plot_distribution_null():
             ax.text(0.15,  0.89, r'$P =$' + str(round(p_value, 3)), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
 
 
+        ax.text(-0.1, 1.08, utils.subplot_labels[seed_bank_type_idx+1], fontsize=11, fontweight='bold', ha='center', va='center', transform=ax.transAxes)
 
-
-
+    fig.subplots_adjust(wspace=0.34) #hspace=0.3, wspace=0.5
     fig_name = '%srho_null_pdf.png' % (config.analysis_directory)
-    fig.savefig(fig_name, bbox_inches = "tight", pad_inches = 0.4, dpi = 600)
+    fig.savefig(fig_name, bbox_inches = "tight", pad_inches = 0.3, dpi = 600)
     plt.close()
 
 

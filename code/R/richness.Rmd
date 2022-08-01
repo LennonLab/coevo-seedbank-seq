@@ -1,0 +1,186 @@
+---
+title: "Richness"
+author: "Daniel Schwartz"
+date: "2022-08-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Load dependencies
+library(here)
+library(tidyverse)
+library(cowplot)
+require("vegan")
+
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## load data
+
+```{r load data}
+mutdat <- read_csv(here("data/mult_host.csv")) %>% 
+  rename("trt" = 1)
+```
+
+## Heatmap of matrix
+
+```{r}
+mut_mat <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  pivot_wider(names_from = trt, values_from = m) %>% 
+  select(-gene) %>% 
+  as.matrix()
+
+heatmap(as.matrix(mut_mat),
+        margins = c(13, 0))
+```
+## Observed richness
+
+### presence absence
+
+```{r}
+
+mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > 0, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()
+
+```
+
+### by multiplicity
+```{r}
+
+mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  group_by(trt) %>% 
+  summarise(sum.m = sum(m)) %>% 
+  arrange(sum.m) %>% 
+  ggplot(aes(trt, sum.m)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()
+
+```
+They all add up to 1, the data has been normalized.
+
+## Rank-abundance
+
+```{r}
+
+RAC <- function(x = ""){
+x = as.vector(x)
+x.ab = x[x > 0]
+x.ab.ranked = x.ab[order(x.ab, decreasing = TRUE)]
+return(x.ab.ranked)
+}
+
+d.rac <- tibble()
+for(i in 1:nrow(mutdat)){
+  
+ d.rac <- 
+  tibble(m = RAC(mutdat[i,-1]), 
+         rank = 1:length(m),
+         trt = mutdat$trt[i]) %>% 
+    bind_rows(d.rac, .)
+
+  
+}
+
+d.rac %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) %>% 
+           
+  ggplot(aes(x= rank, y = m)) + 
+  geom_line(aes(linetype = pop, color = seed.bank))+
+  theme_classic()+
+  facet_wrap(~phage)+
+  panel_border(color = "black")+
+  scale_y_log10()+
+  scale_x_log10()
+```
+
+```{r}
+d.rac %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) %>% 
+  ggplot(aes(m)) + 
+  geom_histogram(aes(fill  = seed.bank), bins = 50)+
+  theme_classic()+
+  facet_wrap(seed.bank~phage+pop, nrow = 2)+
+  panel_border(color = "black")+
+  scale_x_log10()
+```
+
+## repeat PA on high M
+
+```{r}
+cutoff = 1e-4
+p1 <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()+
+  ggtitle(paste("cut off =", cutoff))
+
+cutoff = 1e-3
+p2 <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()+
+  ggtitle(paste("cut off =", cutoff))
+
+cutoff = 1e-2
+p3 <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()+
+  ggtitle(paste("cut off =", cutoff))
+
+cutoff = 1e-1
+p4 <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()+
+  ggtitle(paste("cut off =", cutoff))
+
+plot_grid(p1,p2, p3, p4)
+```
+

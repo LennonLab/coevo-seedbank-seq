@@ -105,9 +105,84 @@ d.rac %>%
   theme_classic()+
   facet_wrap(~phage)+
   panel_border(color = "black")+
-  scale_y_log10()+
-  scale_x_log10()
+  scale_y_log10()
 ```
+
+# Model fitting to RAC
+
+```{r}
+
+x <- (mut_mat * 1e7) %>% t()
+mode(x) <- "integer"
+x <- as.data.frame(x)
+
+mod.radfit <- tibble()
+
+for(i in 1:nrow(x)){
+  trt <- rownames(x)[i]
+
+  RACresults<- radfit(x[i,]) 
+  
+  
+  mod.radfit <-  bind_rows(
+            RACresults$models$Null[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+ RACresults$models$Preemption[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+ RACresults$models$Lognorma[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+ RACresults$models$Zipf[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+ RACresults$models$Mandelbrot[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+            ) %>% 
+    mutate(trt = trt) %>% 
+    bind_rows(mod.radfit, .)
+  
+  plot(RACresults, main = trt)
+  
+}
+
+
+mod.radfit %>% 
+  
+  select(-coefficients) %>% 
+  distinct() %>% 
+  group_by(trt) %>% 
+  arrange(aic) %>% 
+  mutate(model.rank = row_number()) %>% 
+
+  ggplot(aes(model, aic)) +
+  geom_col(aes(fill = as.character(model.rank))) +
+  facet_wrap(~trt)+
+  coord_flip()+
+  theme_classic()+
+  theme(legend.position = "bottom")
+  
+```
+
+In all except 2 samples the best fitting model is the log-normal.
+
+from QB:
+"The expected abundance (a) of species at rank r is exp[log(µ) + log(σ)Φ], where Φ is a standard normal function, µ is the fitted mean abundance, and σ is the fitted standard deviation of abundances."
+
+
+## compare fitted log-normal paraeters
+ 
+ 
+```{r}
+log.radfit <- mod.radfit %>% 
+  filter(model == "Log-Normal") %>% 
+  mutate(param = rep(c("log.mu", "log.sigma" ),12)) %>% 
+  pivot_wider(names_from = param, values_from = coefficients) %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) 
+
+print("==== Two way ANOVA for log MU parameter ====")
+  mu.aov2 <- aov(log.mu ~ phage * seed.bank, data = log.radfit)
+summary(mu.aov2)
+
+print("==== Two way ANOVA for log SIGMA parameter ====")
+  sigma.aov2 <- aov(log.sigma ~ phage * seed.bank, data = log.radfit)
+summary(sigma.aov2)
+```
+
 
 ```{r}
 d.rac %>% 

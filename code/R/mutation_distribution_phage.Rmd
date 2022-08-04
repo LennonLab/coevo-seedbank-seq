@@ -1,7 +1,6 @@
 ---
-title: "Richness"
+title: "Richness Phage"
 author: "Daniel Schwartz"
-date: "2022-08-01"
 output: html_document
 ---
 
@@ -11,7 +10,7 @@ library(here)
 library(tidyverse)
 library(cowplot)
 require("vegan")
-
+library(scales)
 
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -19,8 +18,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ## load data
 
 ```{r load data}
-mutdat <- read_csv(here("data/mult_host.csv")) %>% 
-  rename("trt" = 1)
+mutdat <- read_csv(here("data/mult.csv")) %>% 
+  rename("trt" = 1) %>% 
+  filter(!str_detect(trt, "short"))
 ```
 
 ## Heatmap of matrix
@@ -95,25 +95,39 @@ for(i in 1:nrow(mutdat)){
   
 }
 
-d.rac %>% 
+
+p <- d.rac %>% 
   mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
   mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
   mutate(pop = str_remove(trt, ".*_")) %>% 
            
-  ggplot(aes(x= rank, y = m)) + 
-  geom_line(aes(linetype = pop, color = seed.bank))+
-  theme_classic()+
-  facet_wrap(~phage)+
-  panel_border(color = "black")+
-  scale_y_log10()
+  ggplot(aes(x= rank, y = m,  group = interaction(seed.bank,pop))) + 
+  geom_line(aes(color = seed.bank), size = 0.8)+
+  theme_classic(base_size = 18)+
+  panel_border(color = "black", size = 1.5)+
+  scale_y_log10(labels = trans_format("log10", math_format(10^.x)), 
+                # limits = c(1e-5, NA)
+                )+
+  scale_color_grey(start = 0, end = 0.7)+
+  annotation_logticks(sides = "l")+
+  ylab("relative gene multiplicity")+
+  theme(legend.position = c(0.8, 0.8),
+      legend.title = element_blank(),
+      legend.background = element_blank(),
+      strip.background = element_blank(),
+      strip.text = element_text(face = "bold"))
+
+ggsave2(here("analysis","RAC_Phage.png"), p, width = 7, height = 4)
+
+p
 ```
 
 # Model fitting to RAC
 
 ```{r}
 
-x <- (mut_mat * 1e7) %>% t()
-mode(x) <- "integer"
+x <- (mut_mat * 1) %>% t()
+# mode(x) <- "integer"
 x <- as.data.frame(x)
 
 mod.radfit <- tibble()
@@ -121,7 +135,7 @@ mod.radfit <- tibble()
 for(i in 1:nrow(x)){
   trt <- rownames(x)[i]
 
-  RACresults<- radfit(x[i,]) 
+  RACresults<- radfit(x[i,], family = Gamma) 
   
   
   mod.radfit <-  bind_rows(
@@ -156,106 +170,37 @@ mod.radfit %>%
   
 ```
 
-In all except 2 samples the best fitting model is the log-normal.
-
-from QB:
-"The expected abundance (a) of species at rank r is exp[log(µ) + log(σ)Φ], where Φ is a standard normal function, µ is the fitted mean abundance, and σ is the fitted standard deviation of abundances."
+In all except 1 sample the best fitting model is the Zipf-Mandelbrot.
 
 
-## compare fitted log-normal paraeters
- 
- 
+
+## compare fitted paraeters
 ```{r}
-log.radfit <- mod.radfit %>% 
-  filter(model == "Log-Normal") %>% 
-  mutate(param = rep(c("log.mu", "log.sigma" ),12)) %>% 
+preemption.radfit <- mod.radfit %>% 
+  filter(model == "Preemption") %>% 
+  mutate(param = "alpha" ) %>% 
   pivot_wider(names_from = param, values_from = coefficients) %>% 
   mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
   mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
   mutate(pop = str_remove(trt, ".*_")) 
 
-print("==== Two way ANOVA for log MU parameter ====")
-  mu.aov2 <- aov(log.mu ~ phage * seed.bank, data = log.radfit)
-summary(mu.aov2)
+print("==== t-test for alpha parameter ====")
+t.test(alpha ~  seed.bank, data = preemption.radfit)
 
-print("==== Two way ANOVA for log SIGMA parameter ====")
-  sigma.aov2 <- aov(log.sigma ~ phage * seed.bank, data = log.radfit)
-summary(sigma.aov2)
 ```
-
-
+ 
 ```{r}
-d.rac %>% 
+zpfm.radfit <- mod.radfit %>% 
+  filter(model == "Zipf-Mandelbrot") %>% 
+  mutate(param = rep(c("par1", "par2", "par3" ),6)) %>% 
+  pivot_wider(names_from = param, values_from = coefficients) %>% 
   mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
   mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
-  mutate(pop = str_remove(trt, ".*_")) %>% 
-  ggplot(aes(m)) + 
-  geom_histogram(aes(fill  = seed.bank), bins = 50)+
-  theme_classic()+
-  facet_wrap(seed.bank~phage+pop, nrow = 2)+
-  panel_border(color = "black")+
-  scale_x_log10()
+  mutate(pop = str_remove(trt, ".*_")) 
+
+print("==== t-test for par2 parameter ====")
+t.test(par2 ~  seed.bank, data = zpfm.radfit)
+
+print("==== t-test for par3 parameter ====")
+t.test(par3 ~  seed.bank, data = zpfm.radfit)
 ```
-
-## repeat PA on high M
-
-```{r}
-cutoff = 1e-4
-p1 <- mutdat %>% 
-  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
-  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
-  group_by(trt) %>% 
-  summarise(N.pa = sum(pa)) %>% 
-  arrange(N.pa) %>% 
-  ggplot(aes(trt, N.pa)) +
-  geom_col()+
-  coord_flip()+
-  scale_x_discrete(limits=rev)+
-  theme_classic()+
-  ggtitle(paste("cut off =", cutoff))
-
-cutoff = 1e-3
-p2 <- mutdat %>% 
-  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
-  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
-  group_by(trt) %>% 
-  summarise(N.pa = sum(pa)) %>% 
-  arrange(N.pa) %>% 
-  ggplot(aes(trt, N.pa)) +
-  geom_col()+
-  coord_flip()+
-  scale_x_discrete(limits=rev)+
-  theme_classic()+
-  ggtitle(paste("cut off =", cutoff))
-
-cutoff = 1e-2
-p3 <- mutdat %>% 
-  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
-  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
-  group_by(trt) %>% 
-  summarise(N.pa = sum(pa)) %>% 
-  arrange(N.pa) %>% 
-  ggplot(aes(trt, N.pa)) +
-  geom_col()+
-  coord_flip()+
-  scale_x_discrete(limits=rev)+
-  theme_classic()+
-  ggtitle(paste("cut off =", cutoff))
-
-cutoff = 1e-1
-p4 <- mutdat %>% 
-  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
-  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
-  group_by(trt) %>% 
-  summarise(N.pa = sum(pa)) %>% 
-  arrange(N.pa) %>% 
-  ggplot(aes(trt, N.pa)) +
-  geom_col()+
-  coord_flip()+
-  scale_x_discrete(limits=rev)+
-  theme_classic()+
-  ggtitle(paste("cut off =", cutoff))
-
-plot_grid(p1,p2, p3, p4)
-```
-

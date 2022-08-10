@@ -424,7 +424,5 @@ def plot_distribution_null():
 
 
 
-#get_frequency_trajectory_dict()
 #make_ks_dist_rho_dict()
-
 plot_distribution_null()

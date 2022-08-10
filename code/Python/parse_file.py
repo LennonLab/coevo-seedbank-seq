@@ -148,7 +148,7 @@ def parse_gene_list(reference, reference_sequence=None):
 
     filename = reference
     gene_features = ['CDS', 'tRNA', 'rRNA', 'ncRNA', 'tmRNA']
-    recs = [rec for rec in SeqIO.parse(filename, "genbank")]
+    recs = [rec for rec in SeqIO.parse(filename, "gb")]
     count_riboswitch = 0
     for rec in recs:
         reference_sequence = rec.seq
@@ -259,9 +259,14 @@ def parse_gene_list(reference, reference_sequence=None):
 
 
                 if feat.type == 'CDS':
-                    #  why was a -1 there originally?
+                    # biopython accounts for the -1
                     #gene_sequence = reference_sequence[start-1:stop]
                     gene_sequence = str(reference_sequence[start:stop])
+
+                    # gene_sequence and biopython_gene_sequence are equivalent
+                    gene_sequence_ = feat.location.extract(rec).seq
+                    #biopython_gene_sequence = biopython_gene_sequence.strip()
+
                 else:
                     gene_sequence = ""
 
@@ -419,7 +424,6 @@ def get_gene_annotation_dict(reference, reference_sequence=None):
 
 
                 if feat.type == 'CDS':
-                    #  why was a -1 there originally?
                     #gene_sequence = reference_sequence[start-1:stop]
                     gene_sequence = str(reference_sequence[start:stop])
                 else:
@@ -672,10 +676,17 @@ def create_annotation_map(reference, gene_data=None):
                 else:
                     position_in_gene = end-position
 
+                position_in_gene = position_in_gene-1
+
+
+                if position_in_gene < 0:
+                    continue
+
                 # calculate codon start
-                codon_start = int(position_in_gene/3)*3
+                codon_start = int((position_in_gene)/3)*3
                 if codon_start+3 > len(gene_sequence):
                     continue
+
 
                 #codon = gene_sequence[codon_start:codon_start+3]
                 codon = oriented_gene_sequence[codon_start:codon_start+3]
@@ -683,8 +694,13 @@ def create_annotation_map(reference, gene_data=None):
                     continue
                 position_in_codon = position_in_gene%3
 
+
                 if codon == '':
                     continue
+
+                #if position == 2093:
+                #    print(position, codon, strand, start, end, codon_start, position_in_gene, position_in_gene%3)
+
 
                 effective_gene_synonymous_sites[gene_name] += codon_synonymous_opportunity_table[codon][position_in_codon]/3.0
                 effective_gene_nonsynonymous_sites[gene_name] += 1-codon_synonymous_opportunity_table[codon][position_in_codon]/3.0

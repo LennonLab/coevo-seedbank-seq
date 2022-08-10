@@ -5,24 +5,11 @@ library(viridis)
 library(ggnewscale)
 
 
-# Phage annotation --------------------------------------------------------
-d.spo1 <- 
-  read_delim(here("data/SPO1-ANC_no_fasta.gff3"),
-             col_names = c(letters[1:9]),
-             trim_ws = T,
-             comment = "#") %>% 
-  select(seqname =a, feature =c, start = d, end = e,
-         strand = g, frame = h, attribute =i)
+# host annotation --------------------------------------------------------
 
-d.spo1_genes <- 
-  d.spo1 %>% 
-  filter(feature == "gene") %>% 
-  separate(attribute, into = c("Alias", "ID", "Name", "Pseudo"), sep = ";") %>% 
-  mutate(Alias = str_remove(Alias, ".*="),
-         ID = str_remove(ID, ".*="),
-         Name = str_remove(Name, ".*="),
-         Pseudo = str_remove(Pseudo, ".*="))
-  
+delta6_168 <- read_csv(here("data/teichoic_acid","delta6_168_cds_matched.csv"),trim_ws = T, name_repair = "universal")
+categories_168 <- read_csv(here("data/teichoic_acid","geneCategories-2022-06-27.csv"),trim_ws = T, name_repair = "universal")
+SW.export_168 <- read_csv(here("data/teichoic_acid","subtiwiki.gene.export.2022-06-27.csv"),trim_ws = T)
 
 
 # Find hi-freq loci --------------------------------------------------------
@@ -32,16 +19,15 @@ freq_cutoff <- 0.4
 
 f_freq <- list.files(here("data/timecourse_final_breseq/"))
 
-f_freq <- f_freq[str_detect(f_freq, "phage")]
+f_freq <- f_freq[str_detect(f_freq, "host")]
+f_freq <- f_freq[str_detect(f_freq, "total")]
 f_freq <- f_freq[str_detect(f_freq, "WL|SN")]
 
 hi_freq <- tibble()
 d.plot <- tibble()
 
 for(f in f_freq){
-  d <- read_csv((here("data/timecourse_final_breseq/", f)))  
-    # filter(Gene != "intergenic") %>% 
-    # filter(Annotation != "synonymous")
+  d <- read_csv((here("data/timecourse_final_breseq/", f)))
   
   # Mutations detected > twice
   mut_3 <- d %>% 
@@ -59,7 +45,7 @@ for(f in f_freq){
     filter (n > 2) %>% 
     pull(mut_id)
   
-  # Mutations (nearly) fixed
+  # Mutations fixed
   fixed <- d %>% 
     #make uniqe id
     mutate(mut_id = str_c(Position, Gene, Allele, sep = "_")) %>% 
@@ -94,12 +80,23 @@ for(f in f_freq){
 
 
 # gene name per hi-freq locus ---------------------------------------------
-hi_freq <- 
-  d.spo1_genes %>% 
-  select(Gene = ID, Name) %>% 
-  left_join(hi_freq,., by = "Gene") %>% 
-  mutate(mut_id = str_c(Position, Gene, Allele, sep = "_")) 
+
   
+hi_freq_tags <-
+  delta6_168 %>% 
+  filter(locus_tag.d6 %in% unique(hi_freq$Gene)) %>% 
+  select(locus_tag.d6,locus_tag.168)
+
+
+hi_freq <-
+  SW.export_168 %>% 
+  filter(locus %in% hi_freq_tags$locus_tag.168) %>% 
+  left_join(. ,hi_freq_tags, by = c("locus" = "locus_tag.168")) %>% 
+  rename(Gene = locus_tag.d6, Name = title, Function = `function`) %>% 
+  left_join(hi_freq,., by = "Gene")
+
+# categories_168 %>% 
+#   filter(gene.locus %in% hi_freq_tags) %>% view
 
 
 # Plot --------------------------------------------------------------------
@@ -108,36 +105,36 @@ hi_freq <-
 
 d <- d.plot %>%
   # parse treatments
-  mutate(trt = str_extract(f, "^..._L."),
+  mutate(trt = str_extract(f, "^.*_L."),
          seed.bank = if_else(str_detect(trt,"WL."), 
                              "with seed bank","without seed bank"),
+         phage=if_else(str_detect(trt,"O"), 
+                       "with phage","without phage"),
          pop = parse_number(trt)) %>% 
   #add T = 0  
   mutate(`Freq:0` = 0) %>%
-  select(mut_id,trt, seed.bank,pop, contains("Freq")) %>%
+  select(mut_id,trt, seed.bank,phage,pop, contains("Freq")) %>%
     # slice_head(n = 100) %>%
     pivot_longer(contains("Freq"), names_to = "t_sample", values_to = "freq") %>%
     mutate(t_sample = parse_number(t_sample))
-
 
 # hi freq trajectories
 d.hi <- 
   d %>% 
   filter(mut_id %in% hi_freq$mut_id) %>% 
   left_join(., select(hi_freq, mut_id, Name), by = "mut_id") %>% 
-  mutate(Name = if_else(str_detect(mut_id,"intergenic"), "intergenic", Name)) %>%
-  # filter(!str_detect(mut_id,"intergenic")) %>% 
+  mutate(Name = if_else(str_detect(mut_id,"intergenic"), "intergenic", Name)) %>% 
   #adjust legend order
   arrange(Name) %>% 
   mutate(Name = fct_inorder(Name))
 
 # hi freq names
 lab.hi <- d.hi %>% 
-  group_by(seed.bank, pop) %>% 
+  group_by(seed.bank, phage, pop) %>% 
   summarise(Name) %>% 
   distinct() %>% 
   mutate(y.idx = row_number(),
-         y.pos = 0.98- 0.12*(y.idx-1)) 
+         y.pos = 0.98- 0.12*(y.idx-1))
 
 # plot
 
@@ -148,25 +145,25 @@ lab.hi <- d.hi %>%
     
     new_scale_color() +
     geom_line(data = d.hi,
-              aes(group = mut_id, color = Name), size=.8, show.legend = T)+
+              aes(group = mut_id,color = Name), size=.8,alpha = 0.7 ,show.legend = T)+
     geom_point(data = d.hi,
               aes(group = mut_id, color = Name), shape=21, fill="white",
-              size=.8, show.legend = T)+
-    scale_color_viridis_d(guide = guide_legend(title = "SPO1 gene"))+
+              alpha = 0.7 ,size=.8, show.legend = T)+
+    scale_color_viridis_d()+
     
     geom_text(data = lab.hi, 
               aes(label = Name, color = Name, y=  y.pos),
-              x=-0.5, hjust = 0)+
+              x=0.1, hjust = 0)+
     
     theme_classic()+
     theme(legend.position = "none")+
-    facet_grid(pop ~ seed.bank)+
+    facet_grid(pop ~ phage + seed.bank)+
     panel_border(color = "black")+
     ylim(0,1)+
     ylab(expression("Allele frequency,"~italic("f(t)")))+
     xlab(expression("transfer,"~italic("t")))
-    # ggtitle("Phage SPO1 mutation frequencies")
+    # ggtitle("B. subtilis mutation frequencies")
 
-ggsave(here("analysis/phage_mutation_trajectories.png"),p, height = 5.52, width = 4.25, units = "in")
+ggsave(here("analysis/host_mutation_trajectories.png"),p, height = 6, width = 8, units = "in")
   
 

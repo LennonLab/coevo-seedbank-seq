@@ -67,7 +67,6 @@ data/timecourse_final/
 data/timecourse_final/
 data/timecourse_final/*
 ./data/timecourse_final/*
-data/breseq_output/
 data/pol_15/
 data/timecourse_final_15/
 data/breseq_output_old/

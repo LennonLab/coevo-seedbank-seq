@@ -39,9 +39,9 @@ hi_freq <- tibble()
 d.plot <- tibble()
 
 for(f in f_freq){
-  d <- read_csv((here("data/timecourse_final_breseq/", f)))  
-    # filter(Gene != "intergenic") %>% 
-    # filter(Annotation != "synonymous")
+  d <- read_csv((here("data/timecourse_final_breseq/", f))) %>%   
+    filter(Gene != "intergenic") %>%
+    filter(Annotation != "synonymous")
   
   # Mutations detected > twice
   mut_3 <- d %>% 

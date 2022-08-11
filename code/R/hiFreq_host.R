@@ -27,7 +27,9 @@ hi_freq <- tibble()
 d.plot <- tibble()
 
 for(f in f_freq){
-  d <- read_csv((here("data/timecourse_final_breseq/", f)))
+  d <- read_csv((here("data/timecourse_final_breseq/", f))) %>% 
+    filter(Gene != "intergenic") %>%
+    filter(Annotation != "synonymous")
   
   # Mutations detected > twice
   mut_3 <- d %>% 
@@ -60,7 +62,7 @@ for(f in f_freq){
   
   to_pull = intersect(mut_3, fixed)
   
-  if(length(to_pull) < 1) next
+  # if(length(to_pull) < 1) next
   
   hi_freq <- d %>% 
     #make uniqe id

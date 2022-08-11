@@ -169,3 +169,40 @@ lab.hi <- d.hi %>%
 ggsave(here("analysis/host_mutation_trajectories.png"),p, height = 6, width = 8, units = "in")
   
 
+# # distribution ------------------------------------------------------------
+# 
+# d.plot %>% 
+#   filter(!Annotation %in% c("noncoding", "unknown")) %>% 
+#   mutate(trt = str_extract(f, "^.*_L."),
+#          seed.bank = if_else(str_detect(trt,"WL."), 
+#                              "with seed bank","without seed bank"),
+#          phage=if_else(str_detect(trt,"O"), 
+#                        "with phage","without phage"),
+#          pop = parse_number(trt) %>% as.character()) %>% 
+#   select(mut_id,trt, seed.bank,phage,pop, contains("Freq")) %>%
+#   pivot_longer(contains("Freq"), names_to = "t_sample", values_to = "freq") %>%
+#   
+#   filter(freq > 0) %>% 
+#   
+#   mutate(t_sample = parse_number(t_sample)) %>% 
+#   arrange(desc(freq)) %>% 
+#   group_by(t_sample, trt, group=pop) %>% 
+#   mutate(rank = row_number()) %>% 
+#   
+#   ggplot(aes(rank, freq, group = interaction(seed.bank,pop)))+
+#   geom_line(aes( color = seed.bank), size = 0.8)+
+#   facet_grid(phage ~ t_sample)+
+#   theme_classic(base_size = 18)+
+#   panel_border(color = "black", size = 1.5)+
+#   scale_y_log10(labels = trans_format("log10", math_format(10^.x)), 
+#                 # limits = c(1e-5, NA)
+#   )+
+#   scale_color_grey(start = 0, end = 0.7)+
+#   annotation_logticks(sides = "l")+
+#   ylab("frequency")+
+#   theme(legend.position = "bottom",
+#         legend.title = element_blank(),
+#         legend.background = element_blank(),
+#         strip.background = element_blank(),
+#         strip.text = element_text(face = "bold"))
+# 

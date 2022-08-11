@@ -15,7 +15,7 @@ SW.export_168 <- read_csv(here("data/teichoic_acid","subtiwiki.gene.export.2022-
 # Find hi-freq loci --------------------------------------------------------
 
 # bottom threshold for mutation to be high frequency
-freq_cutoff <- 0.4
+freq_cutoff <- 0.3
 
 f_freq <- list.files(here("data/timecourse_final_breseq/"))
 
@@ -44,7 +44,7 @@ for(f in f_freq){
     mutate(detected = freq > 0) %>%
     group_by(mut_id) %>% 
     summarise(n = sum(detected)) %>% 
-    filter (n > 2) %>% 
+    filter (n > 0) %>% 
     pull(mut_id)
   
   # Mutations fixed
@@ -95,8 +95,8 @@ hi_freq <-
   filter(locus %in% hi_freq_tags$locus_tag.168) %>% 
   left_join(. ,hi_freq_tags, by = c("locus" = "locus_tag.168")) %>% 
   rename(Gene = locus_tag.d6, Name = title, Function = `function`) %>% 
-  left_join(hi_freq,., by = "Gene")
-
+  left_join(hi_freq,., by = "Gene") %>% 
+  filter(if_any(.cols = contains("Freq"), ~ . > 0.4))
 # categories_168 %>% 
 #   filter(gene.locus %in% hi_freq_tags) %>% view
 
@@ -124,10 +124,15 @@ d <- d.plot %>%
 d.hi <- 
   d %>% 
   filter(mut_id %in% hi_freq$mut_id) %>% 
+  # check that hi freq
+  mutate(hi = freq>freq_cutoff) %>% 
+  group_by(mut_id, trt) %>% 
+  filter(any(hi)) %>% 
+  
   left_join(., select(hi_freq, mut_id, Name), by = "mut_id") %>% 
   mutate(Name = if_else(str_detect(mut_id,"intergenic"), "intergenic", Name)) %>% 
   #adjust legend order
-  arrange(Name) %>% 
+  arrange(phage, seed.bank) %>% 
   mutate(Name = fct_inorder(Name))
 
 # hi freq names

@@ -186,17 +186,20 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
                     # calculate position in gene
                     if strand=='forward':
-                        position_in_gene = position-gene_start_position
+                        position_in_gene = (position-gene_start_position) -1
                         oriented_gene_sequence = gene_sequence
                         new_base = alt_allele
                     else:
-                        position_in_gene = gene_end_position-position
+                        position_in_gene = (gene_end_position-position) -1
                         oriented_gene_sequence = parse_file.calculate_reverse_complement_sequence(gene_sequence)
 
                         if alt_allele not in parse_file.base_table:
                             new_base = 'NA'
                         else:
                             new_base = parse_file.base_table[alt_allele]
+
+                    if position_in_gene < 0:
+                        continue
 
                     # calculate codon start
                     codon_start = int(position_in_gene/3)*3
@@ -320,4 +323,25 @@ def annotate_all_line():
 
 
 
-#annotate_all_line()
+
+
+#samples = utils.get_samples_from_metadata('phage', 'long_seed_bank', 'SPO1', 'filtered_phage', 1)
+
+# Daniel needs to rerun this sample
+#if ('WLO-L3' in samples[0]) and ('_filtered_phage' in samples[0]):
+#    continue
+
+#breseq_samples = [sample_metadata_breseq_dict[s] for s in samples]
+# get timepoints
+#transfer_all = []
+#for sample in samples:
+#    transfer_all.append(metadata_dict[sample]['transfer'])
+
+#transfer_all, breseq_samples, samples = zip(*sorted(zip(transfer_all, breseq_samples, samples)))
+#transfer_all = list(transfer_all)
+#breseq_samples = list(breseq_samples)
+#samples = list(samples)
+
+#parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, transfer_all)
+
+annotate_all_line()

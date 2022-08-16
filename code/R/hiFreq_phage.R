@@ -28,7 +28,7 @@ d.spo1_genes <-
 # Find hi-freq loci --------------------------------------------------------
 
 # bottom threshold for mutation to be high frequency
-freq_cutoff <- 0.4
+freq_cutoff <- 0.3
 
 f_freq <- list.files(here("data/timecourse_final_breseq/"))
 
@@ -56,7 +56,7 @@ for(f in f_freq){
     mutate(detected = freq > 0) %>%
     group_by(mut_id) %>% 
     summarise(n = sum(detected)) %>% 
-    filter (n > 2) %>% 
+    filter (n > 0) %>% 
     pull(mut_id)
   
   # Mutations (nearly) fixed
@@ -121,21 +121,37 @@ d <- d.plot %>%
 
 
 # hi freq trajectories
+# d.hi <- 
+#   d %>% 
+#   filter(mut_id %in% hi_freq$mut_id) %>% 
+#   left_join(., select(hi_freq, mut_id, Name), by = "mut_id") %>% 
+#   mutate(Name = if_else(str_detect(mut_id,"intergenic"), "intergenic", Name)) %>%
+#   # filter(!str_detect(mut_id,"intergenic")) %>% 
+#   #adjust legend order
+#   arrange(Name) %>% 
+#   mutate(Name = fct_inorder(Name))
 d.hi <- 
   d %>% 
   filter(mut_id %in% hi_freq$mut_id) %>% 
+  # check that hi freq
+  mutate(hi = freq>freq_cutoff) %>% 
+  group_by(mut_id, trt) %>% 
+  filter(any(hi)) %>% 
+  
   left_join(., select(hi_freq, mut_id, Name), by = "mut_id") %>% 
-  mutate(Name = if_else(str_detect(mut_id,"intergenic"), "intergenic", Name)) %>%
-  # filter(!str_detect(mut_id,"intergenic")) %>% 
+  mutate(Name = if_else(str_detect(mut_id,"intergenic"), "intergenic", Name))
+
   #adjust legend order
-  arrange(Name) %>% 
-  mutate(Name = fct_inorder(Name))
+  d.hi <- d.hi %>% 
+    ungroup() %>% 
+    mutate(Name = fct_relevel(Name,str_sort(unique(d.hi$Name), numeric = T)))
 
 # hi freq names
 lab.hi <- d.hi %>% 
   group_by(seed.bank, pop) %>% 
   summarise(Name) %>% 
   distinct() %>% 
+  arrange(str_order(Name, numeric = T), .by_group = T) %>% 
   mutate(y.idx = row_number(),
          y.pos = 0.98- 0.12*(y.idx-1)) 
 

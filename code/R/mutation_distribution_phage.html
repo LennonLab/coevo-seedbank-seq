@@ -546,20 +546,34 @@ two it is log-normal, and one is preemption.</p>
   mutate(seed.bank = if_else(str_detect(trt, &quot;long&quot;), &quot;with-seed-bank&quot;, &quot;no-seed_bank&quot;)) %&gt;% 
   mutate(pop = str_remove(trt, &quot;.*_&quot;)) 
 
-print(&quot;==== Two way ANOVA for log MU parameter ====&quot;)</code></pre>
-<pre><code>## [1] &quot;==== Two way ANOVA for log MU parameter ====&quot;</code></pre>
-<pre class="r"><code>  mu.aov2 &lt;- aov(log.mu ~  seed.bank, data = log.radfit)
-summary(mu.aov2)</code></pre>
-<pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)
-## seed.bank    1 0.1243 0.12431   3.081  0.154
-## Residuals    4 0.1614 0.04034</code></pre>
-<pre class="r"><code>print(&quot;==== Two way ANOVA for log SIGMA parameter ====&quot;)</code></pre>
-<pre><code>## [1] &quot;==== Two way ANOVA for log SIGMA parameter ====&quot;</code></pre>
-<pre class="r"><code>  sigma.aov2 &lt;- aov(log.sigma ~ seed.bank, data = log.radfit)
-summary(sigma.aov2)</code></pre>
-<pre><code>##             Df  Sum Sq Mean Sq F value Pr(&gt;F)
-## seed.bank    1 0.08318 0.08318   2.155  0.216
-## Residuals    4 0.15442 0.03860</code></pre>
+print(&quot;==== t-test for  log MU parameter ====&quot;)</code></pre>
+<pre><code>## [1] &quot;==== t-test for  log MU parameter ====&quot;</code></pre>
+<pre class="r"><code>t.test(log.mu ~  seed.bank, data = log.radfit)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  log.mu by seed.bank
+## t = -1.7554, df = 3.6866, p-value = 0.1601
+## alternative hypothesis: true difference in means between group no-seed_bank and group with-seed-bank is not equal to 0
+## 95 percent confidence interval:
+##  -0.7588713  0.1831238
+## sample estimates:
+##   mean in group no-seed_bank mean in group with-seed-bank 
+##                    -3.878130                    -3.590256</code></pre>
+<pre class="r"><code>print(&quot;==== t-test for log SIGMA parameter ====&quot;)</code></pre>
+<pre><code>## [1] &quot;==== t-test for log SIGMA parameter ====&quot;</code></pre>
+<pre class="r"><code>t.test(log.sigma ~  seed.bank, data = log.radfit)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  log.sigma by seed.bank
+## t = 1.4679, df = 3.9486, p-value = 0.2169
+## alternative hypothesis: true difference in means between group no-seed_bank and group with-seed-bank is not equal to 0
+## 95 percent confidence interval:
+##  -0.2122189  0.6832029
+## sample estimates:
+##   mean in group no-seed_bank mean in group with-seed-bank 
+##                     1.688532                     1.453040</code></pre>
 <p><strong>No Difference</strong></p>
 <p>I will also test using parameters of the other two models.</p>
 <pre class="r"><code>zpfm.radfit &lt;- mod.radfit %&gt;% 

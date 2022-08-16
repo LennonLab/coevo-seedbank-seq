@@ -185,13 +185,13 @@ log.radfit <- mod.radfit %>%
   mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
   mutate(pop = str_remove(trt, ".*_")) 
 
-print("==== Two way ANOVA for log MU parameter ====")
-  mu.aov2 <- aov(log.mu ~  seed.bank, data = log.radfit)
-summary(mu.aov2)
+print("==== t-test for  log MU parameter ====")
+t.test(log.mu ~  seed.bank, data = log.radfit)
 
-print("==== Two way ANOVA for log SIGMA parameter ====")
-  sigma.aov2 <- aov(log.sigma ~ seed.bank, data = log.radfit)
-summary(sigma.aov2)
+print("==== t-test for log SIGMA parameter ====")
+t.test(log.sigma ~  seed.bank, data = log.radfit)
+
+
 ```
 **No Difference**
 

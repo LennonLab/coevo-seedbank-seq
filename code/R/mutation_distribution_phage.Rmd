@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## load data
 
 ```{r load data}
-mutdat <- read_csv(here("data/mult.csv")) %>% 
+mutdat <- read_csv(here("data/mult_phage.csv")) %>% 
   rename("trt" = 1) %>% 
   filter(!str_detect(trt, "short"))
 ```
@@ -170,24 +170,32 @@ mod.radfit %>%
   
 ```
 
-In all except 1 sample the best fitting model is the Zipf-Mandelbrot.
+In three samples the best fitting model is the Zipf-Mandelbrot, in two it is log-normal, and one is preemption. 
 
 
 
-## compare fitted paraeters
+## compare fitted parameters
+
+For consistency with host test I will use the Log-Normal model.
 ```{r}
-preemption.radfit <- mod.radfit %>% 
-  filter(model == "Preemption") %>% 
-  mutate(param = "alpha" ) %>% 
+log.radfit <- mod.radfit %>% 
+  filter(model == "Log-Normal") %>% 
+  mutate(param = rep(c("log.mu", "log.sigma" ),6)) %>% 
   pivot_wider(names_from = param, values_from = coefficients) %>% 
   mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
-  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
   mutate(pop = str_remove(trt, ".*_")) 
 
-print("==== t-test for alpha parameter ====")
-t.test(alpha ~  seed.bank, data = preemption.radfit)
+print("==== Two way ANOVA for log MU parameter ====")
+  mu.aov2 <- aov(log.mu ~  seed.bank, data = log.radfit)
+summary(mu.aov2)
 
+print("==== Two way ANOVA for log SIGMA parameter ====")
+  sigma.aov2 <- aov(log.sigma ~ seed.bank, data = log.radfit)
+summary(sigma.aov2)
 ```
+**No Difference**
+
+I will also test using parameters of the other two models.
  
 ```{r}
 zpfm.radfit <- mod.radfit %>% 
@@ -204,3 +212,22 @@ t.test(par2 ~  seed.bank, data = zpfm.radfit)
 print("==== t-test for par3 parameter ====")
 t.test(par3 ~  seed.bank, data = zpfm.radfit)
 ```
+
+**No Difference**
+
+```{r}
+preemption.radfit <- mod.radfit %>% 
+  filter(model == "Preemption") %>% 
+  mutate(param = "alpha" ) %>% 
+  pivot_wider(names_from = param, values_from = coefficients) %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) 
+
+print("==== t-test for alpha parameter ====")
+t.test(alpha ~  seed.bank, data = preemption.radfit)
+
+```
+
+
+**No Difference**

@@ -525,6 +525,6 @@ def plot_pcoa_phage():
 #make_multiplicity_dict('phage')
 #make_multiplicity_dict('host')
 #plot_pcoa_host()
-#plot_pcoa_phage()
+plot_pcoa_phage()
 
-corr_mult_pcoa_axes('host')
+#corr_mult_pcoa_axes('host')

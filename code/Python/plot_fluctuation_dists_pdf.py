@@ -606,6 +606,6 @@ def plot_f_vs_f_ratio():
         print(seed_bank_type, p)
 
 
-make_measure_dict()
-make_ks_dist_dict()
-plot_ks_dist()
+#make_measure_dict()
+#make_ks_dist_dict()
+#plot_ks_dist()

@@ -402,7 +402,7 @@ def plot_distribution_null():
         ax.set_xlabel('Correlation coefficient between\nhost and phage mutation trajectories, ' + r'$\rho$', fontsize = 11)
         ax.set_ylabel('Probability density', fontsize = 12)
         ax.legend(loc="upper right", fontsize=6)
-        ax.set_title(utils.seed_bank_types_format_dict[seed_bank_type], fontsize=12, color='k')
+        ax.set_title(utils.seed_bank_types_format_dict[seed_bank_type], fontsize=12, color='k', fontweight="bold")
 
         ax.text(0.15,  0.95, r'$D =$' + str(round(ks_dist_dict[seed_bank_type]['D'], 3)), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
 
@@ -416,7 +416,7 @@ def plot_distribution_null():
 
         ax.text(-0.1, 1.08, utils.subplot_labels[seed_bank_type_idx+1], fontsize=11, fontweight='bold', ha='center', va='center', transform=ax.transAxes)
 
-    fig.subplots_adjust(wspace=0.34) #hspace=0.3, wspace=0.5
+    fig.subplots_adjust(wspace=0.35) #hspace=0.3, wspace=0.5
     fig_name = '%srho_null_pdf.png' % (config.analysis_directory)
     fig.savefig(fig_name, bbox_inches = "tight", pad_inches = 0.3, dpi = 600)
     plt.close()

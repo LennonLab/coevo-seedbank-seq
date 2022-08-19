@@ -50,7 +50,7 @@ low_coverage_idx = numpy.asarray([2,3])
 #seed_bank_types_format_dict = {'short_seed_bank': 'Short seed bank', 'long_seed_bank': 'Long seed bank', 'no_seed_bank': 'No seed bank'}
 #seed_bank_types_format_split_dict = {'short_seed_bank': 'Short\nseed bank', 'long_seed_bank': 'Long\nseed bank', 'no_seed_bank': 'No\nseed bank'}
 
-seed_bank_types_format_dict = {'long_seed_bank': 'With seed bank', 'no_seed_bank': 'No seed bank'}
+seed_bank_types_format_dict = {'long_seed_bank': 'with seed bank', 'no_seed_bank': 'no seed bank'}
 seed_bank_types_format_split_dict = {'long_seed_bank': 'With\nseed bank', 'no_seed_bank': 'No\nseed bank'}
 
 

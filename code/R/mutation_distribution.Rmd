@@ -1,0 +1,341 @@
+---
+title: "Distribution of host mutatations"
+author: "Daniel Schwartz"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Load dependencies
+library(here)
+library(tidyverse)
+library(cowplot)
+require("vegan")
+library(scales)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## load data
+
+```{r load data}
+mutdat <- read_csv(here("data/mult_host.csv")) %>% 
+  rename("trt" = 1)
+```
+
+## Heatmap of matrix
+
+```{r}
+mut_mat <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  pivot_wider(names_from = trt, values_from = m) %>% 
+  select(-gene) %>% 
+  as.matrix()
+
+heatmap(as.matrix(mut_mat),
+        margins = c(13, 0))
+```
+## Observed richness
+
+### presence absence
+
+```{r}
+
+mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > 0, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()
+
+```
+
+### by multiplicity
+```{r}
+
+mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  group_by(trt) %>% 
+  summarise(sum.m = sum(m)) %>% 
+  arrange(sum.m) %>% 
+  ggplot(aes(trt, sum.m)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()
+
+```
+They all add up to 1, the data has been normalized.
+
+## Rank-abundance
+
+```{r}
+
+RAC <- function(x = ""){
+x = as.vector(x)
+x.ab = x[x > 0]
+x.ab.ranked = x.ab[order(x.ab, decreasing = TRUE)]
+return(x.ab.ranked)
+}
+
+d.rac <- tibble()
+for(i in 1:nrow(mutdat)){
+  
+ d.rac <- 
+  tibble(m = RAC(mutdat[i,-1]), 
+         rank = 1:length(m),
+         trt = mutdat$trt[i]) %>% 
+    bind_rows(d.rac, .)
+
+  
+}
+
+p <- d.rac %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with seed bank", "no seed bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with phage", "no phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) %>% 
+           
+  ggplot(aes(x= rank, y = m,  group = interaction(seed.bank,pop))) + 
+  geom_line(aes(color = seed.bank), size = 0.8)+
+  facet_wrap(~phage)+
+  theme_classic(base_size = 18)+
+  panel_border(color = "black", size = 1.5)+
+  scale_y_log10(labels = trans_format("log10", math_format(10^.x)), 
+                # limits = c(1e-5, NA)
+                )+
+  scale_color_grey(start = 0, end = 0.7)+
+  annotation_logticks(sides = "l")+
+  ylab("relative gene multiplicity")+
+  theme(legend.position = c(0.8, 0.14),
+      legend.title = element_blank(),
+      legend.background = element_blank(),
+      strip.background = element_blank(),
+      strip.text = element_text(face = "bold"))
+
+ggsave2(here("analysis","RAC_host-bySeedBank.png"), p, width = 7, height = 4)
+
+p
+```
+
+```{r}
+d.rac %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) %>% 
+           
+  ggplot(aes(x= rank, y = m)) + 
+  geom_line(aes(linetype = pop, color = phage), size =1)+
+  theme_classic()+
+  facet_wrap(~seed.bank)+
+  panel_border(color = "black")+
+  scale_y_log10()
+
+p <- d.rac %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with seed bank", "no seed bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with phage", "no phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) %>% 
+           
+  ggplot(aes(x= rank, y = m,  group = interaction(seed.bank,pop))) + 
+  geom_line(aes(color = phage), size = 0.8)+
+  facet_wrap(~seed.bank)+
+  theme_classic(base_size = 18)+
+  panel_border(color = "black", size = 1.5)+
+  scale_y_log10(labels = trans_format("log10", math_format(10^.x)), 
+                # limits = c(1e-5, NA)
+                )+
+  scale_color_grey(start = 0, end = 0.7)+
+  annotation_logticks(sides = "l")+
+  ylab("relative gene multiplicity")+
+  theme(legend.position = c(0.8, 0.14),
+      legend.title = element_blank(),
+      legend.background = element_blank(),
+      strip.background = element_blank(),
+      strip.text = element_text(face = "bold"))
+
+ggsave2(here("analysis","RAC_host_byPhage.png"), p, width = 7, height = 4)
+
+p
+```
+
+# Model fitting to RAC
+
+```{r}
+
+x <- (mut_mat * 1) %>% t()
+# mode(x) <- "integer"
+x <- as.data.frame(x)
+
+mod.radfit <- tibble()
+
+for(i in 1:nrow(x)){
+  trt <- rownames(x)[i]
+
+  RACresults<- radfit(x[i,], family= Gamma) 
+  
+  
+  mod.radfit <-  bind_rows(
+            RACresults$models$Null[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+ RACresults$models$Preemption[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+ RACresults$models$Lognorma[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+ RACresults$models$Zipf[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+ RACresults$models$Mandelbrot[c("model","aic","rank", "coefficients")] %>% as_tibble(),
+            ) %>% 
+    mutate(trt = trt) %>% 
+    bind_rows(mod.radfit, .)
+  
+  plot(RACresults, main = trt)
+  
+}
+
+
+mod.radfit %>% 
+  
+  select(-coefficients) %>% 
+  distinct() %>% 
+  group_by(trt) %>% 
+  arrange(aic) %>% 
+  mutate(model.rank = row_number()) %>% 
+
+  ggplot(aes(model, aic)) +
+  geom_col(aes(fill = as.character(model.rank))) +
+  facet_wrap(~trt)+
+  coord_flip()+
+  theme_classic()+
+  theme(legend.position = "bottom")
+  
+```
+
+In all the best fitting model is the log-normal.
+
+from QB:
+"The expected abundance (a) of species at rank r is exp[log(µ) + log(σ)Φ], where Φ is a standard normal function, µ is the fitted mean abundance, and σ is the fitted standard deviation of abundances."
+
+
+## compare fitted log-normal paraeters
+ 
+ 
+```{r}
+log.radfit <- mod.radfit %>% 
+  filter(model == "Log-Normal") %>% 
+  mutate(param = rep(c("log.mu", "log.sigma" ),12)) %>% 
+  pivot_wider(names_from = param, values_from = coefficients) %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) 
+
+print("==== Two way ANOVA for log MU parameter ====")
+  mu.aov2 <- aov(log.mu ~ phage * seed.bank, data = log.radfit)
+summary(mu.aov2)
+
+print("==== Two way ANOVA for log SIGMA parameter ====")
+  sigma.aov2 <- aov(log.sigma ~ phage * seed.bank, data = log.radfit)
+summary(sigma.aov2)
+```
+
+
+```{r}
+d.rac %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
+  mutate(pop = str_remove(trt, ".*_")) %>% 
+  ggplot(aes(m)) + 
+  geom_density(aes(fill  = seed.bank), alpha = 0.5)+
+  theme_classic()+
+  facet_wrap(phage~pop, nrow = 2)+
+  panel_border(color = "black")+
+  scale_x_log10()
+```
+
+## repeat PA on high M
+
+```{r}
+cutoff = 1e-4
+p1 <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()+
+  ggtitle(paste("cut off =", cutoff))
+
+cutoff = 1e-3
+p2 <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()+
+  ggtitle(paste("cut off =", cutoff))
+
+cutoff = 1e-2
+p3 <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()+
+  ggtitle(paste("cut off =", cutoff))
+
+cutoff = 1e-1
+p4 <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  mutate(pa = if_else(m > cutoff, 1,0)) %>% 
+  group_by(trt) %>% 
+  summarise(N.pa = sum(pa)) %>% 
+  arrange(N.pa) %>% 
+  ggplot(aes(trt, N.pa)) +
+  geom_col()+
+  coord_flip()+
+  scale_x_discrete(limits=rev)+
+  theme_classic()+
+  ggtitle(paste("cut off =", cutoff))
+
+plot_grid(p1,p2, p3, p4)
+```
+
+```{r}
+top_genes <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  group_by(trt) %>% 
+  arrange(desc(m), .by_group = T) %>% 
+  slice_head(n = 10) %>% 
+  pivot_wider(names_from = trt, values_from = m, values_fill = 0)
+
+
+
+heatmap(as.matrix(top_genes %>% select(-gene)),
+        margins = c(13, 0))
+```
+
+```{r}
+top_genes <- mutdat %>% 
+  pivot_longer(!trt, names_to = "gene", values_to = "m") %>% 
+  group_by(trt) %>% 
+  arrange(desc(m), .by_group = T) %>% 
+  slice_head(n = 4) %>% 
+  pivot_wider(names_from = trt, values_from = m, values_fill = 0)
+
+
+
+heatmap(as.matrix(top_genes %>% select(-gene)),
+        margins = c(13, 0))
+```

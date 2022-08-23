@@ -94,13 +94,26 @@ for(i in 1:nrow(mutdat)){
   
 }
 
+
+# KS test for differences between distributions, done by Will in Python code
+d.ks <- 
+  tibble(phage = c("with phage", "no phage"),
+         # seed.bank=NA, pop = NA,
+         d.stat = c(expression(italic("D")~"= 0.4073"),
+                    expression(italic("D")~"= 0.4117")),
+         lab = expression(italic("P")~"< 0.0001"),
+         # lab = expression(italic("P")~"<"~10^{-4}),
+         x= 200, y = 1e-1)
+
 p <- d.rac %>% 
   mutate(seed.bank = if_else(str_detect(trt, "long"), "with seed bank", "no seed bank")) %>% 
   mutate(phage = if_else(str_detect(trt, "SPO1"), "with phage", "no phage")) %>% 
   mutate(pop = str_remove(trt, ".*_")) %>% 
            
-  ggplot(aes(x= rank, y = m,  group = interaction(seed.bank,pop))) + 
-  geom_line(aes(color = seed.bank), size = 0.8)+
+  ggplot(aes(x= rank, y = m)) + 
+  geom_line(aes(group = interaction(seed.bank,pop), color = seed.bank), size = 0.8)+
+  geom_text(data = d.ks, aes(label = d.stat,x = x, y=y), parse = T, hjust = 0)+
+  geom_text(data = d.ks, aes(label = lab,x = x, y=y/2), parse = T, hjust = 0)+
   facet_wrap(~phage)+
   theme_classic(base_size = 18)+
   panel_border(color = "black", size = 1.5)+

@@ -1,0 +1,253 @@
+---
+title: "Coevolution with a seed bank"
+authors: "Jay T. Lennon & Daniel A Schwartz"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+  - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+Analyze composition of mutations from pooled population sequencing
+
+# Setup Work Environment
+
+```{r}
+# Load dependencies
+library(here)
+library(tidyverse)
+require("vegan")
+
+```
+
+# Load data
+
+Matrix of multiplicity data organized as population X gene.
+
+```{r}
+mutdat <- read_csv(here("data/mult_host.csv")) %>% 
+  rename(trt = 1)
+```
+
+# PCoA procedures
+
+```{r}
+
+# Define treatments and data
+seed <- str_detect(mutdat$trt, "long")
+phage <- str_detect(mutdat$trt, "SPO1")
+
+# add treatment codes to data
+mut <- cbind(seed, phage, mutdat[,2:ncol(mutdat)])
+
+
+# Calculate pairwise distances
+
+# BC distance gave issues with PCoA where the first two axes explained >100% of variation.
+# WRS pointed out this is fue to  there being a negative eigenvalue on the order of the second largest eigenvalue
+
+# Hellinger distance
+  # https://www.davidzeleny.net/anadat-r/doku.php/en:similarity#double-zero_problem
+  # https://www.flutterbys.com.au/stats/tut/tut13.4.html
+mut.hellinger <-
+    mutdat %>% 
+    select(-trt) %>% 
+    # Hellinger transformation
+    decostand(.,method="hellinger")  
+    # Eucledian distance
+mut.dist <-   vegdist(mut.hellinger ,method = "euclidean", binary = "FALSE")
+
+
+# Principal Coordinates Analysis (PCoA)
+pc <- cmdscale(mut.dist, eig = TRUE, k = nrow(mut)-1)
+explainvar1 <- round(pc$eig[1] / sum(pc$eig), 3) * 100
+explainvar2 <- round(pc$eig[2] / sum(pc$eig), 3) * 100
+explainvar3 <- round(pc$eig[3] / sum(pc$eig), 3) * 100
+sum.eig <- sum(explainvar1, explainvar2, explainvar3)
+
+
+
+p <- cbind(mut[,1:2],pc$points) %>% 
+  as.data.frame %>%
+    mutate(seed = if_else(seed==1, "with seed bank", "no seed bank"),
+         phage= if_else(phage==1, "with phage", "no phage") ) %>% 
+  ggplot(aes(x=`1`,y=`2`)) + 
+  geom_point(aes(color = seed, shape = phage), size=3, stroke=1)+
+  # geom_polygon(data = dl, linetype = 3 ,fill="transparent",
+  #              aes(x=x, y =y, group = interaction(seed, phage),color = seed))+
+  theme_bw(base_size=32) + 
+  labs(x=paste0("PCoA1: ",round(explainvar1,1),"%"),
+       y=paste0("PCoA2: ",round(explainvar2,1),"%")) +
+  geom_hline(yintercept = 0, linetype = 3)+
+  geom_vline(xintercept = 0, linetype = 3)+
+  scale_shape_manual(values = c(21,22))+
+  scale_x_continuous(sec.axis = dup_axis(name = NULL, labels = NULL),
+                     limits = c(-0.5,0.5)) +
+  scale_y_continuous(sec.axis = dup_axis(name = NULL, labels = NULL),
+                     limits = c(-0.5,0.5))+
+  theme_classic(base_size = 16)
+
+ggsave(here("analysis","PCA_hellinger.png"),p, width = 5, height = 3)
+
+p
+```
+
+No negative eigenvalues
+
+```{r}
+qplot(1:12,pc$eig)+ theme_classic()
+```
+How many PCs to include in stats?
+
+```{r}
+plot(1:length(pc$eig),pc$eig,type = "b", 
+     xlab = "PC", ylab = "Eigenvalue")
+
+
+prop_var <- round(pc$eig / sum(pc$eig), 3) * 100
+plot(1:length(pc$eig),prop_var, type = "b", 
+     xlab = "PC", ylab = "Proportion of Variance")
+
+# PCs explainin 90% variation
+pc_var90 <- min(which(cumsum(prop_var)>90))
+plot(1:length(pc$eig),cumsum(prop_var), type = "b", 
+     xlab = "PC", ylab = "Cumulative Proportion", ylim = c(0,100))
+abline(v=pc_var90,h=90, col = "blue")
+
+
+
+
+```
+
+First `r pc_var90` PCs explain >90% of the variartion
+
+
+# PERMANOVA
+
+```{r}
+seed <- mut$seed
+phage <- mut$phage
+
+# on transformed data
+perm <-
+  adonis2(mut.dist ~ seed * phage,
+          binary = FALSE, permutations = 9999)
+
+# # on PCs explaining >90% var
+# perm <-
+#   adonis2(pc$points[,1:pc_var90] ~ seed * phage,method = "euclidean",
+#           binary = FALSE, permutations = 9999)
+
+perm
+```
+
+
+# Gene correlations
+
+```{r}
+library(BiodiversityR)
+# spe.corr <- add.spec.scores(pca.matrix, multiplicity.matrix, method = "cor.scores")$cproj
+gene.corr <- add.spec.scores(pc, mut.hellinger, method = "cor.scores")$cproj  
+gene.corr <- 
+  tibble(gene = rownames(gene.corr)) %>% 
+  bind_cols(as_tibble(gene.corr ))
+
+# 
+# corrcut  <- 0.7       # user defined cutoff
+# imp.gene  <- gene.corr %>% 
+#   filter(abs(Dim1) >=  corrcut | abs(Dim2) >= corrcut)
+
+# Permutation Test for Species Abundances Across Axes
+fit <- envfit(pc, mut.hellinger,choices=1, perm = 999)
+
+d.fit1 <- tibble(gene = names(fit$vectors$r),
+       r = fit$vectors$r,
+       pvals = fit$vectors$pvals)
+
+sig_genes1 <- d.fit1 %>% 
+  filter(pvals<0.05) %>% 
+  left_join(., gene.corr)
+
+
+imp.gene %>% 
+  filter(gene %in% sig_genes1) %>% 
+  select(gene, Dim1, Dim2) %>% 
+  arrange(desc(Dim1)) %>% 
+  tail()
+
+fit <- envfit(pc, mut.hellinger,choices=2, perm = 999)
+
+d.fit2 <- tibble(gene = names(fit$vectors$r),
+       r = fit$vectors$r,
+       pvals = fit$vectors$pvals)
+
+sig_genes2 <- d.fit2 %>% 
+  filter(pvals<0.05) %>% 
+  left_join(., gene.corr)
+  
+
+
+```
+
+# Ellipses
+
+The ggplot function of stat_ellipse does not allow CI ellipses on less than 4 data points. We have three points per treatment. However three points should be alowed "because your CI depends on the variance, which takes two degrees of freedom".
+
+According to stat_ellipses help "The method for calculating the ellipses has been modified from car::dataEllipse (Fox and Weisberg, 2011)". The limit on 3 points does not exist in the original function.
+
+```{r}
+
+library(car)
+d.ellipse <-  cbind(mut[,1:2],pc$points) %>% 
+  as.data.frame %>%
+  mutate(seed = if_else(seed, "with seed bank", "no seed bank"),
+         phage= if_else(phage, "with phage", "no phage"),
+         grp=interaction(seed,phage))
+
+el <- dataEllipse(d.ellipse$`1`, d.ellipse$`2`, groups = d.ellipse$grp)
+
+
+# unpack list
+dl <- rbind(
+cbind("no seed bank.no phage",el$`no seed bank.no phage`$`0.95`),
+cbind("with seed bank.no phage",el$`with seed bank.no phage`$`0.95`),
+cbind("no seed bank.with phage",el$`no seed bank.with phage`$`0.95`),
+cbind("with seed bank.with phage",el$`with seed bank.with phage`$`0.95`)
+)
+
+
+dl <- dl %>% 
+  as_tibble() %>% 
+  mutate(x= as.numeric(x), y=as.numeric(y)) %>% 
+  separate(V1, into = c("seed", "phage"),remove = F, sep = "\\.")
+
+```
+
+# PCA with ellipses
+
+```{r}
+p <- cbind(mut[,1:2],pc$points) %>% 
+  as.data.frame %>%
+    mutate(seed = if_else(seed==1, "with seed bank", "no seed bank"),
+         phage= if_else(phage==1, "with phage", "no phage") ) %>% 
+  ggplot(aes(x=`1`,y=`2`)) + 
+  geom_point(aes(color = seed, shape = phage), size=4, stroke=1)+
+    geom_polygon(data = dl, linetype = 2 ,fill="transparent", size =  1,
+               aes(x=x, y =y, group = interaction(seed, phage), color = seed, linetype = phage))+
+  theme_bw(base_size=32) + 
+  labs(x=paste0("PCoA1: ",round(explainvar1,1),"%"),
+       y=paste0("PCoA2: ",round(explainvar2,1),"%")) +
+  geom_hline(yintercept = 0, linetype = 3)+
+  geom_vline(xintercept = 0, linetype = 3)+
+  scale_shape_manual(values = c(21,22))+
+  # scale_x_continuous(sec.axis = dup_axis(name = NULL, labels = NULL),
+  #                    limits = c(-1,1)) +
+  # scale_y_continuous(sec.axis = dup_axis(name = NULL, labels = NULL),
+  #                    limits = c(-1,1))+
+  theme_classic(base_size = 16)
+
+# ggsave(here("analysis","PCA_hellinger2.png"),p, width = 5, height = 3)
+
+p  
+
+```

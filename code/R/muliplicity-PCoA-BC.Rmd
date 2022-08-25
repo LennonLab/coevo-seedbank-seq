@@ -16,7 +16,8 @@ Analyze composition of mutations from pooled population sequencing
 # Load dependencies
 library(here)
 library(tidyverse)
-require("vegan")
+library(vegan)
+library(BiodiversityR)
 
 ```
 
@@ -37,25 +38,12 @@ mutdat <- read_csv(here("data/mult_host.csv")) %>%
 seed <- str_detect(mutdat$trt, "long")
 phage <- str_detect(mutdat$trt, "SPO1")
 
-# add treatment codes to data
-mut <- cbind(seed, phage, mutdat[,2:ncol(mutdat)])
+# multiplicity data only
+mut <- mutdat %>% select(-trt)
 
 
 # Calculate pairwise distances
-
-# BC distance gave issues with PCoA where the first two axes explained >100% of variation.
-# WRS pointed out this is fue to  there being a negative eigenvalue on the order of the second largest eigenvalue
-
-# Hellinger distance
-  # https://www.davidzeleny.net/anadat-r/doku.php/en:similarity#double-zero_problem
-  # https://www.flutterbys.com.au/stats/tut/tut13.4.html
-mut.hellinger <-
-    mutdat %>% 
-    select(-trt) %>% 
-    # Hellinger transformation
-    decostand(.,method="hellinger")  
-    # Eucledian distance
-mut.dist <-   vegdist(mut.hellinger ,method = "euclidean", binary = "FALSE")
+mut.dist <- vegdist(mut, method = "bray", binary = "FALSE")
 
 
 # Principal Coordinates Analysis (PCoA)
@@ -67,35 +55,46 @@ sum.eig <- sum(explainvar1, explainvar2, explainvar3)
 
 
 
-p <- cbind(mut[,1:2],pc$points) %>% 
-  as.data.frame %>%
+p <-  
+  as_tibble(pc$points, .name_repair = "universal" ) %>% 
+  rename_with(~gsub("...", "PCoA", .x, fixed = TRUE)) %>% 
+  mutate(seed = seed, phage = phage) %>% 
+  relocate(seed,phage,.before = 1) %>% 
     mutate(seed = if_else(seed==1, "with seed bank", "no seed bank"),
          phage= if_else(phage==1, "with phage", "no phage") ) %>% 
-  ggplot(aes(x=`1`,y=`2`)) + 
-  geom_point(aes(color = seed, shape = phage), size=3, stroke=1)+
+  ggplot(aes(x=PCoA1,y=PCoA2)) + 
+  geom_point(aes(color = seed, fill = seed, shape = phage), size=3, stroke=1,alpha=0.8)+
   # geom_polygon(data = dl, linetype = 3 ,fill="transparent",
   #              aes(x=x, y =y, group = interaction(seed, phage),color = seed))+
   theme_bw(base_size=32) + 
-  labs(x=paste0("PCoA1: ",round(explainvar1,1),"%"),
-       y=paste0("PCoA2: ",round(explainvar2,1),"%")) +
+  labs(x=paste0("PCo 1 (",round(explainvar1,1),"%)"),
+       y=paste0("PCo 2 (",round(explainvar2,1),"%)")) +
   geom_hline(yintercept = 0, linetype = 3)+
   geom_vline(xintercept = 0, linetype = 3)+
-  scale_shape_manual(values = c(21,22))+
+  scale_shape_manual(values = c(21,24))+
+  scale_fill_grey(end = 0.8)+
+  scale_color_grey(end = 0.6)+
   scale_x_continuous(sec.axis = dup_axis(name = NULL, labels = NULL),
-                     limits = c(-0.5,0.5)) +
+                     limits = c(-0.4,0.4)) +
   scale_y_continuous(sec.axis = dup_axis(name = NULL, labels = NULL),
-                     limits = c(-0.5,0.5))+
+                     limits = c(-0.4,0.4))+
   theme_classic(base_size = 16)
 
-ggsave(here("analysis","PCA_hellinger.png"),p, width = 5, height = 3)
+ggsave(here("analysis","PCoA_mult_host.png"),p, width = 5, height = 3)
 
 p
+
+
+
 ```
 
 No negative eigenvalues
 
 ```{r}
-qplot(1:12,pc$eig)+ theme_classic()
+qplot(1:12,pc$eig, geom = "col")+ 
+  theme_classic()+
+  scale_x_continuous(breaks = 1:12)+
+  xlab("PCo")
 ```
 How many PCs to include in stats?
 
@@ -108,11 +107,11 @@ prop_var <- round(pc$eig / sum(pc$eig), 3) * 100
 plot(1:length(pc$eig),prop_var, type = "b", 
      xlab = "PC", ylab = "Proportion of Variance")
 
-# PCs explainin 90% variation
+# PCs explaining 90% variation
 pc_var90 <- min(which(cumsum(prop_var)>90))
 plot(1:length(pc$eig),cumsum(prop_var), type = "b", 
      xlab = "PC", ylab = "Cumulative Proportion", ylim = c(0,100))
-abline(v=pc_var90,h=90, col = "blue")
+abline(v=pc_var90,h=90, col = c("grey", "blue"))
 
 
 
@@ -125,18 +124,15 @@ First `r pc_var90` PCs explain >90% of the variartion
 # PERMANOVA
 
 ```{r}
-seed <- mut$seed
-phage <- mut$phage
-
-# on transformed data
-perm <-
-  adonis2(mut.dist ~ seed * phage,
-          binary = FALSE, permutations = 9999)
-
-# # on PCs explaining >90% var
+# # on multiplicity data
 # perm <-
-#   adonis2(pc$points[,1:pc_var90] ~ seed * phage,method = "euclidean",
+#   adonis2(mut.dist ~ seed * phage,
 #           binary = FALSE, permutations = 9999)
+
+# on PCs explaining >90% var
+perm <-
+  adonis2(pc$points[,1:pc_var90] ~ seed * phage,method = "euclidean",
+          binary = FALSE, permutations = 9999)
 
 perm
 ```
@@ -145,47 +141,80 @@ perm
 # Gene correlations
 
 ```{r}
-library(BiodiversityR)
-# spe.corr <- add.spec.scores(pca.matrix, multiplicity.matrix, method = "cor.scores")$cproj
-gene.corr <- add.spec.scores(pc, mut.hellinger, method = "cor.scores")$cproj  
+# genes in delta6 ---------------------------------
+delta6_168 <- read_csv(here("data/teichoic_acid","delta6_168_cds_matched.csv"),trim_ws = T, name_repair = "universal")
+# categories_168 <- read_csv(here("data/teichoic_acid","geneCategories-2022-06-27.csv"),trim_ws = T, name_repair = "universal")
+SW.export_168 <- read_csv(here("data/teichoic_acid","subtiwiki.gene.export.2022-06-27.csv"),trim_ws = T)
+d.genes <- left_join(delta6_168,SW.export_168 , by = c("locus_tag.168"="locus"))
+
+
+# Test correlation to PCoA axes ---------------------------------------
+gene.corr <- add.spec.scores(pc, mut, method = "cor.scores")$cproj  
 gene.corr <- 
   tibble(gene = rownames(gene.corr)) %>% 
   bind_cols(as_tibble(gene.corr ))
 
-# 
-# corrcut  <- 0.7       # user defined cutoff
-# imp.gene  <- gene.corr %>% 
-#   filter(abs(Dim1) >=  corrcut | abs(Dim2) >= corrcut)
+# Genes correlated with PCo1 --------------------------------
 
-# Permutation Test for Species Abundances Across Axes
-fit <- envfit(pc, mut.hellinger,choices=1, perm = 999)
+fit <- envfit(pc, mut, choices=1, perm = 999)
 
 d.fit1 <- tibble(gene = names(fit$vectors$r),
        r = fit$vectors$r,
        pvals = fit$vectors$pvals)
 
+# combine with Correlation for significant genes
 sig_genes1 <- d.fit1 %>% 
   filter(pvals<0.05) %>% 
-  left_join(., gene.corr)
+  left_join(., gene.corr %>% select(gene, cor = Dim1)) 
+
+# add annotations
+sig_genes1 <- sig_genes1 %>% 
+  left_join(., d.genes, by = c("gene" = "locus_tag.d6")) 
+
+# export positively correlated
+sig_genes1 %>% 
+  filter(cor > 0) %>% 
+  arrange(desc(abs(cor))) %>% 
+  select(locus_tag.d6=gene, locus_tag.168, title, description, `function`, strand, cor,   P_value = pvals) %>% 
+  write_csv(here("data", "significant_genes_pc1_positive.csv"))
+
+# export negatively correlated
+sig_genes1 %>% 
+  filter(cor < 0) %>% 
+  arrange(desc(abs(cor))) %>% 
+  select(locus_tag.d6=gene, locus_tag.168, title, description, `function`, strand, cor,   P_value = pvals) %>% 
+  write_csv(here("data", "significant_genes_pc1_negative.csv"))
 
 
-imp.gene %>% 
-  filter(gene %in% sig_genes1) %>% 
-  select(gene, Dim1, Dim2) %>% 
-  arrange(desc(Dim1)) %>% 
-  tail()
-
-fit <- envfit(pc, mut.hellinger,choices=2, perm = 999)
+# Genes correlated wit PCo2 ---------------------------------------------
+fit <- envfit(pc, mut, choices=2, perm = 999)
 
 d.fit2 <- tibble(gene = names(fit$vectors$r),
        r = fit$vectors$r,
        pvals = fit$vectors$pvals)
 
+# Correlation of significant genes
 sig_genes2 <- d.fit2 %>% 
   filter(pvals<0.05) %>% 
-  left_join(., gene.corr)
-  
+  left_join(., gene.corr %>% select(gene, cor = Dim2)) 
 
+# add annotations
+sig_genes2 <- sig_genes2 %>% 
+  left_join(., d.genes, by = c("gene" = "locus_tag.d6")) 
+
+# export positively correlated
+sig_genes2 %>% 
+  filter(cor > 0) %>% 
+  arrange(desc(abs(cor))) %>% 
+  select(locus_tag.d6=gene, locus_tag.168, title, description, `function`, strand, cor,   P_value = pvals) %>% 
+  write_csv(here("data", "significant_genes_pc2_positive.csv"))
+
+# export negatively correlated
+sig_genes2 %>% 
+  filter(cor < 0) %>% 
+  arrange(desc(abs(cor))) %>% 
+  select(locus_tag.d6=gene, locus_tag.168, title, description, `function`, strand, cor,  P_value = pvals) %>% 
+  write_csv(here("data", "significant_genes_pc2_negative.csv"))
 
 ```
 
@@ -226,24 +255,29 @@ dl <- dl %>%
 # PCA with ellipses
 
 ```{r}
-p <- cbind(mut[,1:2],pc$points) %>% 
-  as.data.frame %>%
+p <-  
+  as_tibble(pc$points, .name_repair = "universal" ) %>% 
+  rename_with(~gsub("...", "PCoA", .x, fixed = TRUE)) %>% 
+  mutate(seed = seed, phage = phage) %>% 
+  relocate(seed,phage,.before = 1) %>% 
     mutate(seed = if_else(seed==1, "with seed bank", "no seed bank"),
          phage= if_else(phage==1, "with phage", "no phage") ) %>% 
-  ggplot(aes(x=`1`,y=`2`)) + 
-  geom_point(aes(color = seed, shape = phage), size=4, stroke=1)+
-    geom_polygon(data = dl, linetype = 2 ,fill="transparent", size =  1,
-               aes(x=x, y =y, group = interaction(seed, phage), color = seed, linetype = phage))+
+  ggplot(aes(x=PCoA1,y=PCoA2)) + 
+  geom_point(aes(color = seed, fill = seed, shape = phage), size=3, stroke=1,alpha=0.8)+
+  geom_polygon(data = dl, linetype = 3 ,fill="transparent",
+               aes(x=x, y =y, group = interaction(seed, phage),color = seed))+
   theme_bw(base_size=32) + 
-  labs(x=paste0("PCoA1: ",round(explainvar1,1),"%"),
-       y=paste0("PCoA2: ",round(explainvar2,1),"%")) +
+  labs(x=paste0("PCo 1 (",round(explainvar1,1),"%)"),
+       y=paste0("PCo 2 (",round(explainvar2,1),"%)")) +
   geom_hline(yintercept = 0, linetype = 3)+
   geom_vline(xintercept = 0, linetype = 3)+
-  scale_shape_manual(values = c(21,22))+
+  scale_shape_manual(values = c(21,24))+
+  scale_fill_grey(end = 0.8)+
+  scale_color_grey(end = 0.6)+
   # scale_x_continuous(sec.axis = dup_axis(name = NULL, labels = NULL),
-  #                    limits = c(-1,1)) +
+  #                    limits = c(-0.4,0.4)) +
   # scale_y_continuous(sec.axis = dup_axis(name = NULL, labels = NULL),
-  #                    limits = c(-1,1))+
+  #                    limits = c(-0.4,0.4))+
   theme_classic(base_size = 16)
 
 # ggsave(here("analysis","PCA_hellinger2.png"),p, width = 5, height = 3)

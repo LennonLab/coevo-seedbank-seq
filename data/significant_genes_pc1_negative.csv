@@ -1,0 +1,196 @@
+locus_tag.d6,locus_tag.168,title,description,function,strand,cor,P_value
+A8O17_RS01585,BSU_02800,ycdC,unknown,unknown,+,-0.9956600801475809,0.001
+A8O17_RS00185,BSU_00250,xpaC,hydrolysis of 5-bromo-4-chloroindolyl phosphate,unknown,+,-0.9947384828638138,0.001
+A8O17_RS03570,BSU_06710,swrC,similar to acriflavin resistance protein,unknown,+,-0.9884800178660402,0.001
+A8O17_RS19065,BSU_38780,yxkI,similar to heat shock protein,unknown,+,-0.9878188279489808,0.001
+A8O17_RS17980,BSU_36700,moaA,molybdopterin precursor biosynthesis,nitrate respiration,-,-0.9876219578843011,0.001
+A8O17_RS14330,BSU_29890,ytnP,lactonase-homolog protein,BSU_29890,-,-0.9856243045368431,0.001
+A8O17_RS11595,BSU_24090,ptb,phosphate butyryltransferase,utilization of branched-chain keto acids,-,-0.9826558245580845,0.001
+A8O17_RS10005,BSU_19230,azoR1,azoreductase,BSU_19230,-,-0.9776725577441189,0.001
+A8O17_RS13710,BSU_28690,glcF,probable glycolate oxidase,BSU_28690,+,-0.9774791387597468,0.002
+A8O17_RS17345,BSU_35490,degU,two-component response regulator,[wiki|genetic competence],-,-0.9764274043184432,0.002
+A8O17_RS04100,BSU_07750,yflA,general stress protein,required for protection against paraquat stress,+,-0.9753794964418097,0.002
+A8O17_RS05380,BSU_10070,sndC,sulphur compound N-deacetylase,unknown,-,-0.9728604570344314,0.001
+A8O17_RS16760,BSU_34350,epsC,UDP-N-acetylglucosamine 4,required for extracellular polysaccharide synthesis,-,-0.9709517453790334,0.001
+A8O17_RS18340,BSU_37390,albC,[wiki|ABC transporter ](ATP-binding protein),BSU_37390,+,-0.9694575773475038,0.001
+A8O17_RS18785,BSU_38240,ywcA,similar to Na+-dependent acetate symporter,unknown,+,-0.9686948105928368,0.002
+A8O17_RS13650,BSU_28580,rqcU,ribosome quality control (RQC) upstream factor,NA,-,-0.9684401455924952,0.002
+A8O17_RS07970,BSU_15300,bpr,bacillopeptidase F,protein degradation,+,-0.9678725143576131,0.001
+A8O17_RS15290,BSU_31520,malK,two-component sensor kinase,BSU_31520,+,-0.9677837323390335,0.002
+A8O17_RS03985,BSU_07500,fecE,iron/citrate [wiki|ABC transporter] (permease),iron uptake,-,-0.967184680938775,0.002
+A8O17_RS05175,BSU_09660,yheN,putative polysaccharide deacetylase,unknown,-,-0.9669397747642314,0.002
+A8O17_RS01975,BSU_03550,ycxC,unknown,unknown,-,-0.966337100710019,0.002
+A8O17_RS01145,BSU_01750,cdaA,diadenylate cyclase,BSU_01750,+,-0.9643297926018894,0.001
+A8O17_RS15770,BSU_32480,pucD,xanthine dehydrogenase,purine utilization,-,-0.9614539626087487,0.002
+A8O17_RS03900,BSU_07350,yfmT,vanillin dehydrogenase,unknown,+,-0.960652780284111,0.002
+A8O17_RS06085,BSU_11440,oppB,oligopeptide [wiki|ABC transporter] (permease),initiation of [wiki|sporulation],+,-0.957649454382831,0.001
+A8O17_RS14400,BSU_30035,ytzG,similar to 16S pseudouridylate synthase,16S rRNA modification,-,-0.9566539262410375,0.002
+A8O17_RS13915,BSU_29090,polA,DNA polymerase I,processing of Okazaki fragments,-,-0.9560175016768098,0.002
+A8O17_RS18880,BSU_38430,gspA,general stress protein,BSU_38430,-,-0.9554601014499887,0.002
+A8O17_RS13140,BSU_27620,recJ,single-strand DNA-specific exonuclease,crucial for the [[protein|A44D4677FB70BE8F554BF1001A500F817C7DA95F]]-dependent acquisition of homologous genes from related species by natural transformation,-,-0.9551421627483794,0.001
+A8O17_RS15795,BSU_32530,pucF,allantoate amidohydrolase,purine utilization,-,-0.9537338258890863,0.001
+A8O17_RS04535,BSU_08600,csbB,lipoteichoic acid glycosyltransferase,general stress protein,+,-0.9525673707180694,0.001
+A8O17_RS05655,BSU_10620,addB,ATP-dependent deoxyribonuclease (subunit B),responsible for end resection during dsDNA break repair,+,-0.9500648398846506,0.001
+A8O17_RS12290,BSU_25420,yqeW,putative sodium-dependent phosphate transporter,phosphate uptake,+,-0.9495603212806206,0.002
+A8O17_RS15860,BSU_32650,yurS,sporulation protein,unknown,+,-0.9472544895120173,0.002
+A8O17_RS08265,BSU_15890,plsX,acyl-acyl carrier protein (ACP):phosphate acyltransferase,BSU_15890,+,-0.9471173188115876,0.002
+A8O17_RS11895,BSU_24660,spoIIIL,component of the [[protein|SpoIIIA]]-[[protein|3282D2C25468776881778006F182FCF322C4821D]] trans-envelope complex,BSU_24660,-,-0.9453704431441312,0.001
+A8O17_RS05315,BSU_09950,prsA,lipoprotein,BSU_09950,-,-0.9450210578637379,0.002
+A8O17_RS02110,BSU_03800,fpbN,petrobactin (3.4-catecholate siderophore) [wiki|ABC transporter] (permease),acquisition of iron,+,-0.9429421680881629,0.002
+A8O17_RS09350,BSU_18090,parE,subunit of DNA topoisomerase IV,chromosome segregation and compaction,+,-0.9421578088965006,0.001
+A8O17_RS10770,BSU_22500,ypjD,putative pyrophosphatase,unknown,-,-0.9419837513249933,0.002
+A8O17_RS02830,BSU_05310,ydeR,similar to antibiotic resistance protein,unknown,-,-0.9416929908824258,0.002
+A8O17_RS17715,BSU_36190,ywqJ,LXG toxin,unknown,-,-0.9415479000234303,0.001
+A8O17_RS06855,BSU_13250,ykoG,two-component response regulator ([wiki|OmpR family]),unknown,+,-0.9411239823129854,0.002
+A8O17_RS14380,BSU_29990,pbuO,similar to hypoxanthine/guanine permease [[protein|41DDD3AAFE89D0F52AB5ABD08CEE30A1767FFD7A]],unknown,+,-0.9395620819616723,0.001
+A8O17_RS16365,BSU_33570,yvaE,similar to multidrug-efflux transporter,unknown,-,-0.9389436797985051,0.001
+A8O17_RS20275,BSU_41000,gidB,7-methylguanosine methyltransferase specific for the 16S rRNA,BSU_41000,-,-0.93780986322747,0.001
+A8O17_RS14255,BSU_29730,motP,Na<sup>+</sup>-coupled [[protein|3D42584D65D80A1C73F057714647E29FF6BBD58A]]-[[protein|6617D785D08C5919F0B774D2AF9EA6A84215486B]] flagellar stator,[wiki|motility and chemotaxis],-,-0.9377222168631119,0.001
+A8O17_RS08290,BSU_15940,smc,part of the [wiki|condensin] complex,BSU_15940,+,-0.937243633877689,0.002
+A8O17_RS04220,BSU_07980,pdaA,N-acetylmuramic acid deacetylase,BSU_07980,+,-0.9335056850762025,0.001
+A8O17_RS04755,BSU_08830,ssuB,aliphatic sulfonate [wiki|ABC transporter] (binding protein),sulfonate uptake,+,-0.9322620801737532,0.002
+A8O17_RS17015,BSU_34840,yvcB,unknown,unknown,-,-0.9309840288664681,0.002
+A8O17_RS01845,BSU_03310,nasC,nitrate reductase (catalytic subunit),utilization of nitrate,-,-0.9307663010586941,0.002
+A8O17_RS20180,BSU_40820,yyaL,unknown,unknown,+,-0.9304815640303077,0.001
+A8O17_RS15120,BSU_31220,rhaEW,bifunctional-rhamnulose-phosphate aldolase/L-lactate dehydrogenase,utilizatio of rhamnose and rhamnogalacturonan (pectin),-,-0.9303694191505829,0.001
+A8O17_RS05790,BSU_10880,yisV,similar to transcriptional regulator ([wiki|MocR/ GabR family]),unknown,+,-0.9297833234448007,0.002
+A8O17_RS16650,BSU_34120,ganB,endo-1,BSU_34120,-,-0.9284263165848797,0.002
+A8O17_RS07695,BSU_14790,ylaI,unknown,unknown,-,-0.9281073800978595,0.002
+A8O17_RS08165,BSU_15690,yloH,omega subunit of [wiki|RNA polymerase],unknown,+,-0.9280125295233899,0.001
+A8O17_RS11500,BSU_23910,yqjE,similar to tripeptidase,unknown,-,-0.9251688881908687,0.001
+A8O17_RS17850,BSU_36460,ywoF,unknown,unknown,-,-0.9245666708998872,0.002
+A8O17_RS04145,BSU_07840,yfkN,cell wall-anchored 3'5' cyclic dinucleotide 3' phosphodiesterase,BSU_07840,-,-0.9224891560992665,0.002
+A8O17_RS06225,BSU_11700,thiF,hydroxyethylthiazole phosphate biosynthesis,biosynthesis of thiamine,+,-0.9219700225601027,0.002
+A8O17_RS11635,BSU_24170,mmgA,degradative acetoacetyl-CoA thiolase,mother cell metabolism,-,-0.9210515165056011,0.001
+A8O17_RS07470,BSU_14350,yknX,ABC-type antimicrobial peptide transporter (permease) for the export of the [[protein|820635420B3980B620F3E3D7ACF7EDE9DC6275AD]] toxin,resistence against [[protein|820635420B3980B620F3E3D7ACF7EDE9DC6275AD]] toxin,+,-0.9197534403031017,0.002
+A8O17_RS18405,BSU_37510,pbpG,class A penicillin-binding protein 2d,bifunctional glucosyltransferase/ transpeptidase,+,-0.9196469003633079,0.002
+A8O17_RS13080,BSU_27510,yrvO,cysteine desulfurase,involved in 2-thiouridine (s2U) modification of the wobble position in glutamate,-,-0.9185771498462155,0.001
+A8O17_RS11770,BSU_24410,spoIIIAC,component of the [[protein|SpoIIIA]]-[[protein|3282D2C25468776881778006F182FCF322C4821D]] type III secretion system residing in the forespore membrane,BSU_24410,-,-0.917872131868394,0.002
+A8O17_RS18200,BSU_37110,ywjH,transaldolase,pentose phosphate pathway,-,-0.917233263595945,0.002
+A8O17_RS08170,BSU_15700,yloI,Coenzyme A biosynthesis bifunctional protein CoaBC; putative phosphopantothenoylcysteine synthetase/decarboxylase,biosynthesis of coenzyme A,+,-0.916823414081522,0.001
+A8O17_RS19230,BSU_39080,licT,transcriptional antiterminator of the [[gene|35E6C81BE481C3E57CF47B781580368C3AC15D83]]-[[gene|8D98212930CF6613D332BF99452B231CB6426E93]]-[[gene|yxiE ]]operon and the [[gene|bglS ]]gene,control of beta-glucan and beta-glucoside utilization,-,-0.9143801451273704,0.002
+A8O17_RS12885,BSU_27140,oatA,O-acetyl transferase,BSU_27140,+,-0.9100943184480477,0.001
+A8O17_RS11020,BSU_22970,ypbH,putative adaptor protein for [[protein|86A2F2F65290F4471D6FD03B694821C66C180D8A]]-[[protein|CB06A70DE7462CEB7AF5D8C28943C878DD56DE1A]],unknown,-,-0.9097067424005252,0.001
+A8O17_RS08060,BSU_15480,pyrP,uracil permease,uracil transport in/out via proton symport,+,-0.9093855516463827,0.001
+A8O17_RS17235,BSU_35280,yvjA,unknown,unknown,-,-0.9079106377865,0.001
+A8O17_RS16300,BSU_33440,cysJ,sulfite reductase (NADPH<sub>2</sub>) (alpha subunit),sulfite reduction,-,-0.9077648399001937,0.001
+A8O17_RS02340,BSU_04230,amj,lipid II flippase,BSU_04230,+,-0.9075028818340705,0.001
+A8O17_RS19690,BSU_39990,qdoR,transcriptional regulator ([wiki|TetR family]),BSU_39990,-,-0.9067955155981876,0.002
+A8O17_RS09720,BSU_18750,yoaT,unknown,unknown,+,-0.9059897130028142,0.002
+A8O17_RS02070,BSU_03730,yclH,similar to [wiki|ABC transporter] (ATP-binding protein),unknown,-,-0.9030574573081095,0.002
+A8O17_RS15370,BSU_31680,comA,two-component system response regulator,BSU_31680,-,-0.9027402895366732,0.002
+A8O17_RS20855,new_2069984_2070118_c,NA,NA,NA,+,-0.8991732833689206,0.001
+A8O17_RS15580,BSU_32110,yumC,ferredoxin/flavodoxin-NAD(P)  oxidoreductase,redox reactions that involve ferredoxin and flavodoxin,+,-0.8967019485229077,0.001
+A8O17_RS07905,BSU_15180,murE,UDP-N-acetylmuramoyl-L-alanyl-D-glutamyl-meso-2,BSU_15180,+,-0.8966202431208501,0.001
+A8O17_RS13255,BSU_27830,coxA,spore cortex protein,resistance of the spore,-,-0.8962458149516888,0.002
+A8O17_RS13305,BSU_27930,spo0B,[[category|SW.4.2]] initiation phosphotransferase of the [wiki|phosphorelay],initiation of [wiki|sporulation],-,-0.8958334161609898,0.002
+A8O17_RS11035,BSU_23000,ypbE,peptidoglycan-binding protein,BSU_23000,-,-0.8945979956882274,0.001
+A8O17_RS13675,BSU_28630,pheT,phenylalanyl-tRNA synthetase (beta subunit),translation,-,-0.8944610524606696,0.002
+A8O17_RS09665,BSU_18660,yoaM,unknown,unknown,+,-0.8915112240255634,0.001
+A8O17_RS06610,BSU_12380,uxaB,tagaturonate reductase,hexuronate utilization,+,-0.8907125971216819,0.002
+A8O17_RS16875,BSU_34570,yvdK,maltose phosphorylase,utilization of maltose,-,-0.8878828178723959,0.001
+A8O17_RS00350,BSU_00570,yabM,may function in a previously observed alternate pathway for peptidoglycan strand synthesis,alternate pathway for peptidoglycan strand synthesis,+,-0.8869762720851834,0.002
+A8O17_RS13840,BSU_28950,thrS,threonyl-tRNA synthetase (major),translation,-,-0.8866953548548497,0.001
+A8O17_RS11705,BSU_24280,yqiD,geranyltransferase,biosynthesis of peptidoglycan and teichoic acid,-,-0.8858420051199036,0.002
+A8O17_RS04380,BSU_08290,lnrJ,two-component sensor kinase,BSU_08290,+,-0.883569321421081,0.001
+A8O17_RS03725,BSU_07000,rhiN,galacturonyl hydrolase,BSU_07000,+,-0.8831157524242449,0.002
+A8O17_RS18845,BSU_38360,ywbD,similar to ribosomal RNA large subunit methyltransferase I,unknown,-,-0.8828043621003052,0.002
+A8O17_RS03770,BSU_07090,yetA,similar to exo-rhamnogalacturonan lyase,utilization of rhamnogalacturonan,+,-0.8824476744226427,0.002
+A8O17_RS08480,BSU_16310,fliM,flagellar motor switch protein,BSU_16310,+,-0.8796262066275695,0.002
+A8O17_RS03040,BSU_05680,ydgK,similar to bicyclomycin resistance protein,unknown,+,-0.8790640735688082,0.001
+A8O17_RS01705,BSU_03030,ycgB,unknown,unknown,+,-0.8755773496275221,0.002
+A8O17_RS11505,BSU_23920,yqjD,propionyl-CoA carboxylase,lipid metabolism,-,-0.8749744354580462,0.002
+A8O17_RS16655,BSU_34130,ganA,beta-galactosidase,galactan utilization,-,-0.8727092632228773,0.001
+A8O17_RS05230,BSU_09780,yheC,ATP-binding spore coat protein,unknown,-,-0.8713856261938325,0.002
+A8O17_RS06635,BSU_12830,spoIISA,lethal when synthesized during vegetative growth in the absence of [[protein|6C9F403D67CDC2EE66C534B0F23D973E24C9A089]],programmed cell death,-,-0.8709474021823014,0.002
+A8O17_RS04540,BSU_08610,yfhO,required for lipoteichoic acid glycosylation,lipoteichoic acid glycosylation,+,-0.869580945081707,0.002
+A8O17_RS18485,BSU_37660,pta,phosphotransacetylase,overflow metabolism,-,-0.8635816689237403,0.001
+A8O17_RS11720,BSU_24310,folD,methylenetetrahydrofolate dehydrogenase (NADP),formylation of Met-tRNA(fMet),-,-0.8608624658004783,0.002
+A8O17_RS12525,BSU_26450,yrkN,unknown,unknown,+,-0.8592794119621596,0.001
+A8O17_RS18475,BSU_37640,lipL,N-amidotransferase,[[protein|262C9FD20C7A70B6F1FEB57735FA800F38EAB25A]],-,-0.8588569896847151,0.001
+A8O17_RS05035,BSU_09370,lytF,gamma-D-glutamate-meso-diaminopimelate muropeptidase,BSU_09370,-,-0.8581587323928662,0.002
+A8O17_RS10530,BSU_22030,dynA,dynamin-like protein,BSU_22030,-,-0.8541746061826234,0.001
+A8O17_RS16200,BSU_33250,rsiO,anti-Sig([[protein|6359025A73C0BD313F5BCC6F56FE88B820902AAA]]-[[protein|AE8D4F07EFB17DA727D80229C3E72075928AA352]]),control of Sig([[protein|6359025A73C0BD313F5BCC6F56FE88B820902AAA]]-[[protein|AE8D4F07EFB17DA727D80229C3E72075928AA352]]) activity,+,-0.8539791922977171,0.001
+A8O17_RS01405,BSU_02460,ycbC,5-dehydro-4-deoxyglucarate dehydratase,utilization of D-glucarate/galactarate,+,-0.853000586081738,0.002
+A8O17_RS05870,BSU_11040,yitM,[wiki|biofilm] toxin,protection of <i>B. subtilis</i> biofilms against competitors,-,-0.8483079308798578,0.002
+A8O17_RS01370,BSU_02400,ybgF,uncharacterized amino acid permase,unknown,-,-0.8446582241652787,0.001
+A8O17_RS15685,BSU_32320,yutC,unknown,unknown,+,-0.8437290113797037,0.001
+A8O17_RS03855,BSU_07260,yfnI,polyglycerolphosphate lipoteichoic acid synthase,major secreted protein,+,-0.8425911140144813,0.001
+A8O17_RS08355,BSU_16070,ylqG,unknown,unknown,+,-0.8423058092227244,0.002
+A8O17_RS14605,BSU_30460,ytrA,transcriptional repressor,control of cell envelope stress responses in response to ramoplanin,-,-0.8411613156102916,0.001
+A8O17_RS03705,BSU_06960,yesN,two-component response regulator,unknown,+,-0.8407690858336017,0.002
+A8O17_RS19415,BSU_39440,yxxB,unknown,unknown,-,-0.840624471019642,0.001
+A8O17_RS12360,BSU_25560,holA,DNA polymerase III,part of the clamp-loader complex and the [wiki|replisome],-,-0.8375698912950025,0.002
+A8O17_RS05840,BSU_10980,yitG,similar to multidrug resistance protein,unknown,-,-0.8374657640358014,0.002
+A8O17_RS14315,BSU_29860,ytoP,similar to glutamyl aminopeptidase,unknown,-,-0.8362607815717182,0.005
+A8O17_RS00595,BSU_00880,disA,DNA integrity scanning protein,delays [wiki|sporulation] in the case of chromosome damage,+,-0.8362393882479774,0.002
+A8O17_RS00360,BSU_00590,rqcP,ribosome-associated quality control factor,similar to heat shock protein Hsp15,+,-0.836160212120301,0.001
+A8O17_RS01295,BSU_02250,ybfJ,unknown,unknown,+,-0.8360584097077879,0.005
+A8O17_RS19845,BSU_40260,yycQ,unknown,unknown,-,-0.835013183332582,0.003
+A8O17_RS00345,BSU_00560,spoVT,transcription activator and repressor of [[protein|5F24258282F3166B7696B9E9ABC1706E4D06C944]]-dependent genes,regulation of forespore gene expression,+,-0.8342126142116861,0.002
+A8O17_RS17230,BSU_35270,cccB,cytochrome c551,BSU_35270,-,-0.8340001674861888,0.002
+A8O17_RS01570,BSU_02770,yccK,similar to aldo/ ketoreductase,unknown,+,-0.8321201883071787,0.001
+A8O17_RS19695,BSU_40000,yxnA,general stress protein,survival of ethanol stress,+,-0.8320747775337654,0.001
+A8O17_RS05055,BSU_09410,phoA,alkaline phosphatase A,aquisition of phosphate upon phosphate starvation,-,-0.8311904636532386,0.001
+A8O17_RS15225,BSU_31400,alaT,PLP-dependent L-alanine aminotransferase,biosynthesis of L-alanine,-,-0.8227632965842323,0.002
+A8O17_RS05290,BSU_09900,yhaP,similar to [wiki|ABC transporter] (membrane protein),unknown,+,-0.822634995814557,0.001
+A8O17_RS14740,BSU_30720,ythB,cytochrome bd2,BSU_30720,+,-0.8100303386355466,0.006
+A8O17_RS18760,BSU_38200,galK,galactokinase,galactose utilization,-,-0.8084824813476162,0.002
+A8O17_RS12185,BSU_25230,yqxD,unknown,unknown,-,-0.8053646986075713,0.002
+A8O17_RS09480,BSU_18310,ppsD,plipastatin synthetase,production of the antibacterial compound plipastatin,-,-0.8046003116888181,0.008
+A8O17_RS19710,BSU_40022,yxaC,holin-like auxilary protein,unknown,+,-0.8027366556244491,0.001
+A8O17_RS16750,BSU_34330,epsE,inhibitor of motility and glycosyltransferase required for EPS biosynthesis,biofilm formation,-,-0.8012490138853647,0.001
+A8O17_RS08040,BSU_15440,ylyA,modulator of [[protein|5F24258282F3166B7696B9E9ABC1706E4D06C944]]-containing [wiki|RNA polymerase],control of [[protein|5F24258282F3166B7696B9E9ABC1706E4D06C944]]-dependent [wiki|transcription],+,-0.7989940570579359,0.002
+A8O17_RS16980,BSU_34770,yvcJ,GTPase,similar to RNase adaptor protein,-,-0.7978134260812929,0.011
+A8O17_RS02050,BSU_03690,gerKD,negative effector (D protein) of the [[protein|EDB2F4C132211F01654F2A2ED3D220EC15CE6F22]]-[[protein|D1AFCB1BE693AB6B8461B7764B6641E6EB1404FA]]-[[protein|D5D4E1E182F972BEF6BB432A7FF25EF45F1F0D95]] germinant receptor,germination,-,-0.7975668644271101,0.001
+A8O17_RS15330,BSU_31600,mrpA,Na<sup>+</sup> transporter subunit of the Na<sup>+</sup>/H<sup>+</sup> antiporter,BSU_31600,+,-0.7966807401385871,0.002
+A8O17_RS04920,BSU_09130,tcyP,cystine and diaminopimelate transporter,cystine and diaminopimelate uptake,+,-0.793365347780301,0.002
+A8O17_RS17505,BSU_35780,lytD,peptidoglycan N-acetylglucosaminidase,major autolysin,-,-0.7763348635548459,0.001
+A8O17_RS15720,BSU_32390,yunF,unknown,unknown,-,-0.7752848354291538,0.002
+A8O17_RS17775,BSU_36300,glcR,transcriptional repressor ([wiki|DeoR family]) of the [[gene|6F5831A480B72D17B7B3F0BF7AF147603B65CA49]]-[[gene|AF9523D3AA3C032B70175BCFFED34E9A42ED01AF]] operon,unknown,-,-0.7746504098457248,0.008
+A8O17_RS12325,BSU_25490,hrcA,transcriptional repressor of class I heat-shock genes,regulation of chaperone gene expression,-,-0.7717736976518191,0.004
+A8O17_RS16900,BSU_34620,yvdF,glucan 1,neopullulanase,-,-0.765850560198883,0.001
+A8O17_RS12370,BSU_25570,comEC,channel protein for DNA binding and uptake,genetic competence,-,-0.7569643227811497,0.01
+A8O17_RS19045,BSU_38740,cydC,[wiki|ABC transporter] required for expression of cytochrome bd (ATP-binding protein),required for expression of cytochrome bd,-,-0.7555196991346643,0.013
+A8O17_RS15810,BSU_32550,frlP,aminosugar [wiki|ABC transporter] (ATP-binding protein),uptake of sugar amines,-,-0.7541375923679133,0.013
+A8O17_RS11010,BSU_22950,bdr,thioredoxin reductase-like flavoprotein with bacillithiol-disulfide (BSSB) reductase activity,BSU_22950,-,-0.7483129582934712,0.002
+A8O17_RS16090,BSU_33050,gerAA,nutrient receptor,triggers premature [wiki|germination] in response to morphological defects during [wiki|sporulation],+,-0.74364889725366,0.002
+A8O17_RS18630,BSU_37940,ywdJ,unknown,unknown,-,-0.7389183450218235,0.001
+A8O17_RS13410,BSU_28120,hemL,glutamate-1-semialdehyde aminotransferase,heme biosynthesis,-,-0.7343161502922022,0.01
+A8O17_RS13320,BSU_27950,prp,protein cysteine protease,BSU_27950,-,-0.7298045703661308,0.011
+A8O17_RS18470,BSU_37630,ywfM,unknown,unknown,-,-0.7274072429344367,0.007
+A8O17_RS15960,BSU_32830,fadA,acetyl-CoA C-acyltransferase,fatty acid degradation,-,-0.7263988880265799,0.002
+A8O17_RS04340,BSU_08210,yfiB,similar to [wiki|ABC transporter] (ATP-binding protein),unknown,+,-0.7234109179624455,0.001
+A8O17_RS17625,BSU_36010,alsS,acetolactate synthase,overflow metabolism,-,-0.7216465388494828,0.002
+A8O17_RS00525,NA,NA,NA,NA,NA,-0.7179998585633892,0.001
+A8O17_RS06615,BSU_12390,uxaA,altronate hydrolase,hexuronate utilization,+,-0.7087722117997873,0.002
+A8O17_RS16055,BSU_33000,htrB,membrane-anchored protein quality control protease,response to secretion and heat stresses,-,-0.7072518957729192,0.002
+A8O17_RS01220,BSU_02100,cypC,long chain-fatty acid beta-hydroxylating cytochrome P450,hydroxylates myristic acid to beta-hydroxymyristic acid,+,-0.698359508655632,0.016
+A8O17_RS16315,BSU_33470,bdbC,thiol-disulfide oxidoreductase,BSU_33470,-,-0.6969402831183003,0.002
+A8O17_RS06865,BSU_13270,ykoI,unknown,unknown,+,-0.6965557601444963,0.01
+A8O17_RS00400,BSU_00650,yabS,unknown,unknown,+,-0.6946787759020825,0.015
+A8O17_RS10355,BSU_21710,ypnP,putative damage inducible,BSU_21710,-,-0.6933573190127053,0.001
+A8O17_RS05670,BSU_10650,sbcC,DNA exonuclease,DNA inter-strand cross-link repair,+,-0.692060674531753,0.002
+A8O17_RS01945,BSU_03480,srfAA,surfactin synthetase / competence,antibiotic synthesis,+,-0.690840757850336,0.01
+A8O17_RS08760,BSU_16870,ymfI,[[protein|3054CD45713BBD69C2A528DE24AF6AF37175FD9D]]-5 aminopentanone reductase,modification of [[protein|3054CD45713BBD69C2A528DE24AF6AF37175FD9D]],+,-0.6901016935930521,0.009
+A8O17_RS19995,BSU_40490,yycA,unknown,unknown,+,-0.6885389594152235,0.002
+A8O17_RS04015,BSU_07570,yflS,malate transporter,malate uptake,+,-0.6843573092267549,0.009
+A8O17_RS12310,BSU_25460,dnaJ,heat-shock protein (activation of [[protein|30E0AAABB803E577D0D9FBAEF9031319CABD3D89]]),protein quality control,-,-0.6752362973498598,0.026
+A8O17_RS01090,BSU_01690,murR,transcriptional repressor of genes required for the utilization of N-acetylmuramic acid,regulation of muramic acid utilization,-,-0.6710373599838183,0.009
+A8O17_RS02180,BSU_03940,ycnI,putative copper chaperone,copper homeostasis,-,-0.6634326449569702,0.008
+A8O17_RS03740,BSU_07030,yesU,carbohydrate-binding protein,BSU_07030,+,-0.6590456091045509,0.025
+A8O17_RS04740,BSU_08800,ygaK,uncharacterized FAD-linked oxidoreductase,unknown,-,-0.6533452159624725,0.009
+A8O17_RS11330,BSU_23580,ansA,L-asparaginase,asparagine degradation,-,-0.6523955627158388,0.049
+A8O17_RS02430,BSU_04400,gsiB,general stress protein,BSU_04400,+,-0.6405096057272667,0.03
+A8O17_RS16870,BSU_34560,malL,alpha-glucosidase,starch and maltodextrin utilization,-,-0.6382255646599989,0.013
+A8O17_RS02240,BSU_04039,yczO,unknown,unknown,-,-0.6273921619743705,0.042
+A8O17_RS11870,BSU_24610,sinR,transcriptional regulator ([wiki|Xre family]) of post-exponential-phase responses genes,control of [wiki|biofilm formation],+,-0.6252792669912902,0.005
+A8O17_RS14105,BSU_29440,argH,argininosuccinate lyase,biosynthesis of arginine,-,-0.6202781104005263,0.002
+A8O17_RS18950,BSU_38550,ywaA,branched-chain amino acid aminotransferase,biosynthesis of branched-chain amino acids,+,-0.6171214120921595,0.047
+A8O17_RS09125,BSU_17690,yncM,unknown,unknown,-,-0.6141252195542941,0.021
+A8O17_RS08080,BSU_15520,pyrAB,carbamoyl-phosphate synthetase (catalytic subunit),pyrimidine biosynthesis,+,-0.603736485634712,0.046
+A8O17_RS04770,BSU_08860,ssuD,aliphatic sulfonate monooxygenase,sulfonate reduction,+,-0.5974136219632346,0.004
+A8O17_RS01660,BSU_02950,niaP,nicotinate transporter,uptake of niacin,+,-0.5658742950772669,0.018
+A8O17_RS01290,BSU_02240,mpr,extracellular metalloprotease,protein degradation,+,-0.5480576332118341,0.037
+A8O17_RS07450,BSU_14310,moaD,molybdopterin synthase (small subunit),nitrate respiration,+,-0.5114189474681556,0.038
+A8O17_RS04130,BSU_07810,treA,phospho-alpha-glucosidase,trehalose utilization,+,-0.4598967227420571,0.045

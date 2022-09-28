@@ -104,13 +104,12 @@ hi_freq <-
 
 # Plot --------------------------------------------------------------------
 
-# d <- read_csv((here("data/timecourse_final_breseq/SNO_L1_host_no_seed_bank_SPO1_revived_total_annotated_timecourse.txt")))
 
 d <- d.plot %>%
   # parse treatments
   mutate(trt = str_extract(f, "^..._L."),
          seed.bank = if_else(str_detect(trt,"WL."), 
-                             "with seed bank","without seed bank"),
+                             "with seed bank","w/o seed bank"),
          pop = parse_number(trt)) %>% 
   #add T = 0  
   mutate(`Freq:0` = 0) %>%
@@ -144,7 +143,9 @@ d.hi <-
   #adjust legend order
   d.hi <- d.hi %>% 
     ungroup() %>% 
-    mutate(Name = fct_relevel(Name,str_sort(unique(d.hi$Name), numeric = T)))
+    mutate(Name = fct_relevel(Name,str_sort(unique(d.hi$Name), numeric = T))) %>% 
+    mutate(seed.bank = as_factor(seed.bank) %>% fct_rev()) %>% 
+    mutate(phage = as_factor("with phage") %>% fct_rev())
 
 # hi freq names
 lab.hi <- d.hi %>% 
@@ -153,11 +154,15 @@ lab.hi <- d.hi %>%
   distinct() %>% 
   arrange(str_order(Name, numeric = T), .by_group = T) %>% 
   mutate(y.idx = row_number(),
-         y.pos = 0.98- 0.12*(y.idx-1)) 
+         y.pos = 0.98- 0.12*(y.idx-1)) %>% 
+  mutate(seed.bank = as_factor(seed.bank) %>% fct_rev()) %>% 
+  mutate(phage = as_factor("with phage") %>% fct_rev())
 
 # plot
 
   p <- d %>%
+    mutate(seed.bank = as_factor(seed.bank) %>% fct_rev()) %>% 
+    mutate(phage = as_factor("with phage") %>% fct_rev())%>% 
     ggplot(aes(t_sample, freq))+
     geom_line(aes(color = mut_id), size=.8, show.legend = F)+
     scale_color_grey(guide = "none")+
@@ -172,17 +177,17 @@ lab.hi <- d.hi %>%
     
     geom_text(data = lab.hi, 
               aes(label = Name, color = Name, y=  y.pos),
-              x=-0.5, hjust = 0)+
+              x=-0.5, hjust = 0, size = 2)+
     
     theme_classic()+
     theme(legend.position = "none")+
-    facet_grid(pop ~ seed.bank)+
+    facet_grid(pop ~ phage + seed.bank)+
     panel_border(color = "black")+
     ylim(0,1)+
     ylab(expression("Allele frequency,"~italic("f(t)")))+
     xlab(expression("transfer,"~italic("t")))
     # ggtitle("Phage SPO1 mutation frequencies")
-
-ggsave(here("analysis/phage_mutation_trajectories.png"),p, height = 5.52, width = 4.25, units = "in")
+  s = 0.6
+ggsave(here("analysis/phage_mutation_trajectories2.png"),p, height = s*6, width = 2.8, units = "in")
   
 

@@ -20,6 +20,10 @@ mult_dict['phage']['seedbank'] = []
 mult_dict['phage']['no_seedbank'] = []
 mult_dict['no_phage']['seedbank'] = []
 mult_dict['no_phage']['no_seedbank'] = []
+
+mult_dict['seedbank_pool'] = []
+mult_dict['no_seedbank_pool'] = []
+
 for line in open("%smult_host.csv" % config.data_directory, 'r'):
 
     if 'A8O17_RS00100' in line:
@@ -32,14 +36,18 @@ for line in open("%smult_host.csv" % config.data_directory, 'r'):
 
         if 'no_seed_bank_' in population:
             mult_dict['no_phage']['no_seedbank'].extend(mult)
+            mult_dict['no_seedbank_pool'].extend(mult)
         else:
             mult_dict['no_phage']['seedbank'].extend(mult)
+            mult_dict['seedbank_pool'].extend(mult)
 
     else:
         if 'no_seed_bank_' in population:
             mult_dict['phage']['no_seedbank'].extend(mult)
+            mult_dict['no_seedbank_pool'].extend(mult)
         else:
             mult_dict['phage']['seedbank'].extend(mult)
+            mult_dict['seedbank_pool'].extend(mult)
 
 
 
@@ -70,6 +78,33 @@ for phage_status in ['phage', 'no_phage']:
 
     print(phage_status, D, p_perm)
 
+
+
+
+# pool results
+seedbank = numpy.asarray(mult_dict['seedbank_pool'])
+no_seedbank = numpy.asarray(mult_dict['no_seedbank_pool'])
+
+D, p = stats.ks_2samp(seedbank, no_seedbank)
+
+measure_array_merged = numpy.concatenate((seedbank, no_seedbank))
+
+D_null_all = []
+for i in range(iter):
+    numpy.random.shuffle(measure_array_merged)
+
+    seedbank_null = measure_array_merged[:len(seedbank)]
+    no_seedbank_null = measure_array_merged[len(no_seedbank):]
+
+    D_null, p_null = stats.ks_2samp(seedbank_null, no_seedbank_null)
+    D_null_all.append(D_null)
+
+D_null_all = numpy.asarray(D_null_all)
+D_null_all = numpy.sort(D_null_all)
+
+p_perm = sum(D_null_all > D)/iter
+
+print('Pooled', D, p_perm)
 
 
 # same thing for phage

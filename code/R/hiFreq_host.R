@@ -103,15 +103,14 @@ hi_freq <-
 
 # Plot --------------------------------------------------------------------
 
-# d <- read_csv((here("data/timecourse_final_breseq/SNO_L1_host_no_seed_bank_SPO1_revived_total_annotated_timecourse.txt")))
 
 d <- d.plot %>%
   # parse treatments
   mutate(trt = str_extract(f, "^.*_L."),
          seed.bank = if_else(str_detect(trt,"WL."), 
-                             "with seed bank","without seed bank"),
+                             "with seed bank","w/o seed bank"),
          phage=if_else(str_detect(trt,"O"), 
-                       "with phage","without phage"),
+                       "with phage","w/o phage"),
          pop = parse_number(trt)) %>% 
   #add T = 0  
   mutate(`Freq:0` = 0) %>%
@@ -133,7 +132,9 @@ d.hi <-
   mutate(Name = if_else(str_detect(mut_id,"intergenic"), "intergenic", Name)) %>% 
   #adjust legend order
   arrange(phage, seed.bank) %>% 
-  mutate(Name = fct_inorder(Name))
+  mutate(Name = fct_inorder(Name)) %>% 
+  mutate(phage = as_factor(phage) %>% fct_rev(),
+         seed.bank = as_factor(seed.bank) %>% fct_rev()) 
 
 # hi freq names
 lab.hi <- d.hi %>% 
@@ -141,11 +142,14 @@ lab.hi <- d.hi %>%
   summarise(Name) %>% 
   distinct() %>% 
   mutate(y.idx = row_number(),
-         y.pos = 0.98- 0.12*(y.idx-1))
-
+         y.pos = 0.98- 0.12*(y.idx-1)) %>% 
+  mutate(phage = as_factor(phage) %>% fct_rev(),
+         seed.bank = as_factor(seed.bank) %>% fct_rev())
 # plot
 
   p <- d %>%
+    mutate(phage = as_factor(phage) %>% fct_rev(),
+           seed.bank = as_factor(seed.bank) %>% fct_rev()) %>% 
     ggplot(aes(t_sample, freq))+
     geom_line(aes(color = mut_id), size=.8, show.legend = F)+
     scale_color_grey(guide = "none")+
@@ -160,7 +164,7 @@ lab.hi <- d.hi %>%
     
     geom_text(data = lab.hi, 
               aes(label = Name, color = Name, y=  y.pos),
-              x=0.1, hjust = 0)+
+              x=0.1, hjust = 0, size=2)+
     
     theme_classic()+
     theme(legend.position = "none")+
@@ -170,8 +174,8 @@ lab.hi <- d.hi %>%
     ylab(expression("Allele frequency,"~italic("f(t)")))+
     xlab(expression("transfer,"~italic("t")))
     # ggtitle("B. subtilis mutation frequencies")
-
-ggsave(here("analysis/host_mutation_trajectories.png"),p, height = 6, width = 8, units = "in")
+s = 0.6
+ggsave(here("analysis/host_mutation_trajectories2.png"),p, height = s* 6, width = s* 8, units = "in")
   
 
 # # distribution ------------------------------------------------------------

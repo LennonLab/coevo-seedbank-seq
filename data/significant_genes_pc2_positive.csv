@@ -1,5 +1,6 @@
 locus_tag.d6,locus_tag.168,title,description,function,strand,cor,P_value
-A8O17_RS03905,BSU_07360,yfmS,soluble chemotaxis receptor,control of chemotaxis,+,0.7735439860159181,0.006
-A8O17_RS06095,BSU_11460,oppD,oligopeptide [wiki|ABC transporter ](ATP-binding protein),initiation of [wiki|sporulation],+,0.695208457396497,0.019
-A8O17_RS19050,BSU_38750,cydB,cytochrome bd ubiquinol oxidase (subunit II),BSU_38750,-,0.6609700926206022,0.028
-A8O17_RS19155,BSU_38950,yxjH,putative methionine synthase,unknown,+,0.5999051704913737,0.048
+A8O17_RS03905,BSU_07360,yfmS,soluble chemotaxis receptor,control of chemotaxis,+,0.7735439860159181,0.003
+A8O17_RS06095,BSU_11460,oppD,oligopeptide [wiki|ABC transporter ](ATP-binding protein),initiation of [wiki|sporulation],+,0.695208457396497,0.016
+A8O17_RS19050,BSU_38750,cydB,cytochrome bd ubiquinol oxidase (subunit II),BSU_38750,-,0.6609700926206022,0.013
+A8O17_RS19155,BSU_38950,yxjH,putative methionine synthase,unknown,+,0.5999051704913737,0.04
+A8O17_RS19990,BSU_40480,yycB,similar to permeases,unknown,+,0.5714025175777231,0.04

@@ -87,7 +87,7 @@ d.rac <- tibble()
 for(i in 1:nrow(mutdat)){
   
  d.rac <- 
-  tibble(m = RAC(mutdat[i,-1]), 
+  tibble(m = RAC(mutdat[i,-1]%>% as_vector()), 
          rank = 1:length(m),
          trt = mutdat$trt[i]) %>% 
     bind_rows(d.rac, .)
@@ -103,8 +103,8 @@ d.ks <-
          x= 13, y = 0.4)
 
 p <- d.rac %>% 
-  mutate(seed.bank = if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed_bank")) %>% 
-  mutate(phage = if_else(str_detect(trt, "SPO1"), "with-phage", "no-phage")) %>% 
+  mutate(seed.bank = if_else(str_detect(trt, "long"), "+seed bank", "-seed bank")) %>% 
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "+phage", "-phage")) %>% 
   mutate(pop = str_remove(trt, ".*_")) %>% 
            
   ggplot(aes(x= rank, y = m)) + 

@@ -1,5 +1,5 @@
 locus_tag.d6,locus_tag.168,title,description,function,strand,cor,P_value
 A8O17_RS17485,BSU_35740,tagD,glycerol-3-phosphate cytidylyltransferase,biosynthesis of teichoic acid,-,-0.7851101919997072,0.009
-A8O17_RS05005,BSU_09310,pgcA,alpha-phosphoglucomutase,inhibits [[protein|41872E2EF00C79918DD077F2EF78F37E24FEB110]] ring assembly (indirect effect due to a defect in UDP-glucose synthesis),+,-0.7011199211432458,0.007
-A8O17_RS18830,BSU_38330,ywbG,holin-like auxilary protein,unknown,+,-0.6112884876599566,0.025
-A8O17_RS03775,BSU_07100,lplA,lipoprotein,BSU_07100,+,-0.5840721385476269,0.032
+A8O17_RS05005,BSU_09310,pgcA,alpha-phosphoglucomutase,inhibits [[protein|41872E2EF00C79918DD077F2EF78F37E24FEB110]] ring assembly (indirect effect due to a defect in UDP-glucose synthesis),+,-0.7011199211432458,0.013
+A8O17_RS18830,BSU_38330,ywbG,holin-like auxilary protein,unknown,+,-0.6112884876599566,0.04
+A8O17_RS03775,BSU_07100,lplA,lipoprotein,BSU_07100,+,-0.5840721385476269,0.041

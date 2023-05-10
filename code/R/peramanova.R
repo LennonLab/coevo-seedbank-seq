@@ -23,7 +23,7 @@ phage <- c(rep("noPhage", 3), rep('SPO1', 3), rep("noPhage", 3), rep('SPO1', 3) 
 
 
 adonis2(mydata ~ phage*seedbank, method = "euc", permutations = 10000)
-
+#bray
 
 # interaction with euc, mult_host.csv,  
 

@@ -9,9 +9,9 @@ import parse_file
 import matplotlib.colors as clr
 
 
-from Bio.Alphabet import generic_dna
+#from Bio.Alphabet import generic_dna
 from Bio import SeqIO
-from BCBio import GFF
+#from BCBio import GFF
 
 
 phage_or_host_types = [ 'host', 'phage']

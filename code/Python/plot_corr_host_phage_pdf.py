@@ -17,16 +17,17 @@ import matplotlib.transforms as transforms
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 from sklearn.metrics import pairwise_distances
-from skbio.stats.ordination import pcoa
 import scipy.stats as stats
 from scipy.stats import gaussian_kde
 
 numpy.random.seed(123456789)
 
-iter = 10000
+n_iter = 10000
 
 
 ks_path = "%sks_rho_dist.pickle" % (config.data_directory)
+
+frequency_trajectory_dict_path = '%sfrequency_trajectory_dict' % config.data_directory
 
 seedbank_pairs = [('no_seed_bank', 'long_seed_bank')]
 
@@ -65,7 +66,7 @@ def filter_trajectoties(phage_or_host_type, annotated_mapgd_dict):
 
 
 
-def get_frequency_trajectory_dict():
+def make_frequency_trajectory_dict():
 
     frequency_trajectory_dict = {}
 
@@ -73,6 +74,8 @@ def get_frequency_trajectory_dict():
 
         rho_all = []
         rho_null_all = []
+        rho_delta_all = []
+        rho_delta_null_all = []
 
         for replicate in utils.replicates:
             exists_host, annotated_mapgd_dict_host = utils.load_annotated_breseq('host', seed_bank_type, phage_treatment_type, 'revived_total', replicate)
@@ -100,12 +103,23 @@ def get_frequency_trajectory_dict():
                     if (sum(frequency_trajectory_host_i_to_keep==1) == len(frequency_trajectory_host_i_to_keep)) or (sum(frequency_trajectory_phage_i_to_keep==1) == len(frequency_trajectory_phage_i_to_keep)):
                         continue
 
+                    delta_frequency_trajectory_host_i_to_keep = frequency_trajectory_host_i_to_keep[1:] - frequency_trajectory_host_i_to_keep[:-1]
+                    delta_frequency_trajectory_phage_i_to_keep = frequency_trajectory_phage_i_to_keep[1:] - frequency_trajectory_phage_i_to_keep[:-1]
+
                     rho = numpy.corrcoef(frequency_trajectory_host_i_to_keep, frequency_trajectory_phage_i_to_keep)[1,0]
 
                     if numpy.isnan(rho) == True:
                         continue
 
                     rho_all.append(rho)
+
+                    if len(delta_frequency_trajectory_host_i_to_keep) >= 3:
+                        rho_delta = numpy.corrcoef(delta_frequency_trajectory_host_i_to_keep, delta_frequency_trajectory_phage_i_to_keep)[1,0]
+
+                        if numpy.isnan(rho_delta) == True:
+                            continue
+
+                        rho_delta_all.append(rho_delta)
 
                     for i in range(100):
 
@@ -118,19 +132,43 @@ def get_frequency_trajectory_dict():
 
                         rho_null_all.append(rho_null)
 
+                        # delta
+                        if len(delta_frequency_trajectory_host_i_to_keep) >= 3:
+                            delta_frequency_trajectory_host_i_to_keep = frequency_trajectory_host_i_to_keep[1:] - frequency_trajectory_host_i_to_keep[:-1]
+                            delta_frequency_trajectory_phage_i_to_keep = frequency_trajectory_phage_i_to_keep[1:] - frequency_trajectory_phage_i_to_keep[:-1]
+
+                            rho_delta_null = numpy.corrcoef(delta_frequency_trajectory_host_i_to_keep, delta_frequency_trajectory_phage_i_to_keep)[1,0]
+
+                            if numpy.isnan(rho_delta_null) == True:
+                                continue
+
+                            rho_delta_null_all.append(rho_delta_null)
+
 
         frequency_trajectory_dict[seed_bank_type] = {}
         frequency_trajectory_dict[seed_bank_type]['rho'] = numpy.asarray(rho_all)
         frequency_trajectory_dict[seed_bank_type]['rho_null'] = numpy.asarray(rho_null_all)
+        frequency_trajectory_dict[seed_bank_type]['rho_delta'] = numpy.asarray(rho_delta_all)
+        frequency_trajectory_dict[seed_bank_type]['rho_delta_null'] = numpy.asarray(rho_delta_null_all)
 
-    return frequency_trajectory_dict
+    with open(frequency_trajectory_dict_path, 'wb') as handle:
+        pickle.dump(frequency_trajectory_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    
+    #return frequency_trajectory_dict
+
+
+def load_frequency_trajectory_dict():
+
+    with open(frequency_trajectory_dict_path, 'rb') as handle:
+        dict_ = pickle.load(handle)
+    return dict_
 
 
 
 
 def make_ks_dist_rho_dict():
 
-    frequency_trajectory_dict = get_frequency_trajectory_dict()
+    frequency_trajectory_dict = load_frequency_trajectory_dict()
 
     ks_dist_dict = {}
 
@@ -147,7 +185,7 @@ def make_ks_dist_rho_dict():
         measure_array_merged = numpy.concatenate((rho_i, rho_j))
 
         D_null_all = []
-        for i in range(iter):
+        for i in range(n_iter):
             numpy.random.shuffle(measure_array_merged)
 
             null_i = measure_array_merged[:len(rho_i)]
@@ -158,9 +196,9 @@ def make_ks_dist_rho_dict():
 
         D_null_all = numpy.asarray(D_null_all)
         D_null_all = numpy.sort(D_null_all)
-        p_perm = sum(D_null_all > D)/iter
-        lower_ci = D_null_all[int(iter*0.025)]
-        upper_ci = D_null_all[int(iter*0.975)]
+        p_perm = sum(D_null_all > D)/n_iter
+        lower_ci = D_null_all[int(n_iter*0.025)]
+        upper_ci = D_null_all[int(n_iter*0.975)]
 
         ks_dist_dict[seedbank_pair] = {}
         ks_dist_dict[seedbank_pair]['D'] = D
@@ -183,7 +221,7 @@ def make_ks_dist_rho_dict():
         measure_array_merged = numpy.concatenate((rho_i, rho_j))
 
         D_null_all = []
-        for i in range(iter):
+        for i in range(n_iter):
             numpy.random.shuffle(measure_array_merged)
 
             null_i = measure_array_merged[:len(rho_i)]
@@ -194,9 +232,9 @@ def make_ks_dist_rho_dict():
 
         D_null_all = numpy.asarray(D_null_all)
         D_null_all = numpy.sort(D_null_all)
-        p_perm = sum(D_null_all > D)/iter
-        lower_ci = D_null_all[int(iter*0.025)]
-        upper_ci = D_null_all[int(iter*0.975)]
+        p_perm = sum(D_null_all > D)/n_iter
+        lower_ci = D_null_all[int(n_iter*0.025)]
+        upper_ci = D_null_all[int(n_iter*0.975)]
 
         ks_dist_dict[seed_bank_type] = {}
         ks_dist_dict[seed_bank_type]['D'] = D
@@ -225,7 +263,7 @@ def load_ks_dict():
 
 def plot_distribution():
 
-    frequency_trajectory_dict = get_frequency_trajectory_dict()
+    frequency_trajectory_dict = load_frequency_trajectory_dict()
     ks_dist_dict = load_ks_dict()
 
     #fig = plt.figure(figsize = (5, 8)) #
@@ -314,10 +352,11 @@ def plot_distribution():
 
 def plot_distribution_null():
 
-    frequency_trajectory_dict = get_frequency_trajectory_dict()
+    frequency_trajectory_dict = load_frequency_trajectory_dict()
+    
     ks_dist_dict = load_ks_dict()
 
-    fig = plt.figure(figsize = (12, 4)) #
+    fig = plt.figure(figsize = (20, 4)) #
     fig.subplots_adjust(bottom= 0.15,  wspace=0.25)
 
     #x_axis_labels = ['Maximum observed allele frequency, ' + r'$f_{max}$', 'Absolute change in allele frequencies per-transfer, ' + r'$|\Delta f| / \Delta t$', 'Ratio of allele frequency changes, ' + r'$f(t+\delta t)/f(t)$']
@@ -377,7 +416,7 @@ def plot_distribution_null():
         ax = plt.subplot2grid((1, 3), (0, seed_bank_type_idx+1), colspan=1)
 
         rho_all_sort = numpy.sort(frequency_trajectory_dict[seed_bank_type]['rho'])
-        rho_null_all_sort = numpy.sort(frequency_trajectory_dict[seed_bank_type]['rho_null'])
+        rho_null_all_sort = numpy.sort(frequency_trajectory_dict[seed_bank_type]['rho_delta'])
 
         xs = numpy.linspace(-1,1,1000)
 
@@ -399,22 +438,36 @@ def plot_distribution_null():
         ax.set_xlim(-1, 1)
         ax.set_ylim(0, 0.8)
         #ax.set_yscale('log', basey=10)
-        ax.set_xlabel('Correlation coefficient between\nhost and phage mutation trajectories, ' + r'$\rho$', fontsize = 11)
-        ax.set_ylabel('Probability density', fontsize = 12)
-        ax.legend(loc="upper right", fontsize=6)
-        ax.set_title(utils.seed_bank_types_format_dict[seed_bank_type], fontsize=12, color='k', fontweight="bold")
+        #ax.set_xlabel('Correlation coefficient between\nhost and phage mutation trajectories, ' + r'$\rho$', fontsize = 11)
+        #ax.set_ylabel('Probability density', fontsize = 12)
+        #ax.legend(loc="upper right", fontsize=6)
+        #ax.set_title(utils.seed_bank_types_format_dict[seed_bank_type], fontsize=12, color='k', fontweight="bold")
 
-        ax.text(0.15,  0.95, r'$D =$' + str(round(ks_dist_dict[seed_bank_type]['D'], 3)), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
+        #ax.text(0.15,  0.95, r'$D =$' + str(round(ks_dist_dict[seed_bank_type]['D'], 3)), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
+        #ax.text(0.15,  0.95, 'D = ' + str(round(ks_dist_dict[seed_bank_type]['D'], 3)), fontsize=10, color='k', ha='center', va='center', transform=ax.transAxes  )
 
         p_value = ks_dist_dict[seed_bank_type]['p']
 
-        if p_value == 0:
-            ax.text(0.18,  0.89, r'$P <$' + str(1/iter), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
-        else:
-            ax.text(0.15,  0.89, r'$P =$' + str(round(p_value, 3)), fontsize=8, color='k', ha='center', va='center', transform=ax.transAxes  )
+        ax.tick_params(width=2)
+        plt.setp(ax.spines.values(), linewidth=2)
 
 
-        ax.text(-0.1, 1.08, utils.subplot_labels[seed_bank_type_idx+1], fontsize=11, fontweight='bold', ha='center', va='center', transform=ax.transAxes)
+        #from matplotlib.pyplot import rcParams
+        #rcParams['mathtext.fontset'] = 'custom'
+        #rcParams['mathtext.it'] = 'STIXGeneral:italic'
+        #rcParams['mathtext.bf'] = 'STIXGeneral:italic:bold'
+
+        #if p_value == 0:
+        #    ax.text(0.18,  0.89, r'$\mathbf{p \, <}$' + str(1/n_iter), fontsize=10, weight='bold', color='k', ha='center', va='center', transform=ax.transAxes  )
+        #    #ax.text(0.18,  0.89, r'$\mathbf{p \, <}$' + str(1/n_iter), fontsize=10, weight='bold', color='k', ha='center', va='center', transform=ax.transAxes  )
+
+        #else:
+        #    ax.text(0.15,  0.89, r'$p =$' + str(round(p_value, 3)), fontsize=10, weight='bold', color='k', ha='center', va='center', transform=ax.transAxes  )
+
+
+        #ax.text(-0.1, 1.08, utils.subplot_labels[seed_bank_type_idx+1], fontsize=11, fontweight='bold', ha='center', va='center', transform=ax.transAxes)
+
+    
 
     fig.subplots_adjust(wspace=0.35) #hspace=0.3, wspace=0.5
     fig_name = '%srho_null_pdf.png' % (config.analysis_directory)
@@ -425,4 +478,5 @@ def plot_distribution_null():
 
 
 #make_ks_dist_rho_dict()
+#make_frequency_trajectory_dict()
 plot_distribution_null()

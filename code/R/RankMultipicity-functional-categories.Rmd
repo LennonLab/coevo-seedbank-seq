@@ -1,0 +1,324 @@
+---
+title: "Functional categories of mutated host genes"
+author: "Daniel Schwartz"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Load dependencies
+library(here)
+library(tidyverse)
+library(cowplot)
+library(broom)
+library(scales)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In a previous analysis we found that there is a difference in the rank-multiplicity distribution of genes between populations with vs. without seed banks.
+
+![](analysis/RAC_host-bySeedBank_linetype.png)
+
+We now ask if there are functional categories that are enriched in the genes mutated in each population, separating the genes between the top ranked genes and the genes in the tail (found only in seed bank populations.
+
+### load and arrange data
+
+```{r, include=FALSE}
+#SubtiWiki categories of B. subtilis genes ----------------
+
+delta6_168 <- read_csv(here("data/teichoic_acid","delta6_168_cds_matched.csv"),trim_ws = T, name_repair = "universal")
+categories_168 <- read_csv(here("data/teichoic_acid","geneCategories-2022-06-27.csv"),trim_ws = T, name_repair = "universal")
+SW.export_168 <- read_csv(here("data/teichoic_acid","subtiwiki.gene.export.2022-06-27.csv"),trim_ws = T)
+
+
+# host gene multiplicity ----------------------------------
+
+gene_mult <- read_csv(here("data/mult_host.csv")) %>% 
+  rename(trt = 1) %>% 
+  # long format
+  pivot_longer(-1, names_to = "locus_tag.d6", values_to = "mult")
+
+# Add Subtiwiki categories to multiplicity
+gene_mult <- 
+  gene_mult %>% 
+  # add 168 locus tag
+  left_join(.,
+  delta6_168 %>% select(locus_tag.d6, locus_tag.168))
+
+  # # There are two loci that don't have corresponding 168 tags
+  # gene_mult %>% 
+  #   filter(is.na(locus_tag.168)) %>% 
+  #   pull(locus_tag.d6) %>% 
+  #   unique()
+  # # "A8O17_RS00525" "A8O17_RS14955"
+  # # inspection in GFF file shows they are both tRNA-Gly
+  # # discarding these
+  gene_mult <- gene_mult%>%
+    filter(!is.na(locus_tag.168))
+  ####
+  
+  # add annotations
+  gene_mult <- 
+    gene_mult %>% 
+    left_join(., SW.export_168, by = c("locus_tag.168" = "locus")) %>% 
+  # parse treatments
+  mutate(phage = if_else(str_detect(trt, "SPO1"), "SPO1", "no Phage") %>% fct_rev(),
+         seed.bank =if_else(str_detect(trt, "long"), "with-seed-bank", "no-seed-bank")%>% fct_rev(),
+         replicate_pop = str_remove(trt, ".*_")) %>% 
+    select(-trt) %>% 
+    relocate(seed.bank, phage, replicate_pop, mult)
+  
+  
+# add rank ----------------------------------------------
+gene_mult <- gene_mult %>% 
+    filter(mult > 0) %>% 
+    group_by(seed.bank, phage, replicate_pop) %>% 
+    mutate(rank = rank(-mult, ties.method = "first")) %>% 
+    relocate(rank, .after = mult)
+```
+
+### Focus on high level Subtiwiki categories
+
+```{r, include = FALSE}
+# named of high level categories
+# http://subtiwiki.uni-goettingen.de/v4/category
+high_cats <- 
+  tibble(category.id = c("SW.1","SW.2","SW.3","SW.4","SW.5","SW.6"),
+         category = c("Cellular processes","Metabolism",
+                      "Information processing",
+                      "Lifestyles","Prophages and mobile genetic elements",
+                      "Groups of genes"
+))
+
+# match 168 SW categories to delta6 genes
+#   delta6 high level categories 
+categories_delta6 <- 
+  categories_168 %>% 
+  select(locus_tag.168 = gene.locus, category.id) %>% 
+  # reduce all to high level category
+  mutate(category.id = str_extract(category.id, "SW..")) %>% 
+  left_join(., delta6_168 %>% select(locus_tag.168,locus_tag.d6)) %>% 
+  filter(!is.na(locus_tag.d6)) %>% 
+  select(-locus_tag.168) %>% 
+  distinct() %>% 
+  # number of categories per gene
+  group_by(locus_tag.d6) %>% 
+  mutate(n_category = n()) %>% 
+  ungroup() %>% 
+  # add category label
+  left_join(., high_cats)
+
+# remove category "groups of genes" when it is not unique
+categories_delta6 <-
+  categories_delta6 %>%
+  filter(!(category.id == "SW.6" &
+           n_category > 1)) %>%
+  # recount number of categories per gene
+  group_by(locus_tag.d6) %>%
+  mutate(n_category = n()) %>%
+  ungroup()
+
+# join multiplicity and category data
+sw_rank <- gene_mult %>% 
+  # add categories
+  right_join(., categories_delta6) %>%
+  ungroup() %>% 
+  # http://www.minibacillus.org/results/category
+  # In case that a gene is assigned to multiple (n > 1) categories, 
+  # the sum of each category simply increments itself by 1/n, 
+  # so that a relative overview of functional distribution of genes is achieved.
+  mutate(weighted_category = 1/n_category)
+```
+
+recreate RAC plot
+
+```{r}
+sw_rank %>% 
+  filter(!is.na(rank)) %>% 
+  ggplot(aes(x= rank, y = mult)) + 
+  geom_vline(xintercept = 150, color = "red")+
+  geom_line(aes(group = interaction(seed.bank,phage,replicate_pop), 
+                color = seed.bank,
+                linetype = phage), size = 0.8)+
+  theme_classic(base_size = 18)+
+  panel_border(color = "black", size = 1.5)+
+  scale_y_log10(labels = trans_format("log10", math_format(10^.x)), 
+                # limits = c(1e-5, NA)
+                )+
+  scale_color_grey(start = 0, end = 0.7)+
+  annotation_logticks(sides = "l")+
+  ylab("relative gene multiplicity")+
+  theme(legend.position = "bottom",#c(0.7, 0.8),
+        legend.direction = "vertical",
+      legend.title = element_blank(),
+      legend.background = element_blank(),
+      legend.margin = margin(t=-10,b=0,l=5,r=5))
+
+```
+
+```{r}
+sw_rank <- sw_rank %>% 
+  # mark if left or right side of the distribution
+  mutate(LR = if_else(rank<=150, "left", "right")) %>% 
+  mutate(phage = if_else(phage=="SPO1", "with-phage","without-phage"))
+```
+
+```{r, out.width = "120%"}
+p.observed <- sw_rank %>% 
+  mutate(category = as_factor(category)) %>% 
+  filter(!is.na(rank)) %>%
+  # relative abundance
+  group_by(LR, seed.bank, phage, replicate_pop) %>% 
+  mutate(rel_weighted_category = weighted_category/sum(weighted_category)) %>% 
+  ggplot(aes(replicate_pop, rel_weighted_category))+
+  geom_col(aes(fill = category), show.legend = F)+ 
+  scale_fill_viridis_d(drop = F)+
+  facet_wrap(LR+phage ~ seed.bank, nrow = 1)+
+  theme_classic()+
+  scale_y_continuous(limits = c(0,1), expand = c(0, 0)) 
+
+
+p.expected <- 
+  categories_delta6 %>% 
+  mutate(category = str_replace(category,"mobile genetic elements", "MGE")) %>% 
+  group_by(category) %>% 
+  summarise(weighted_category = sum(n_category)) %>% 
+  ungroup() %>% 
+  # relative abundance
+  mutate(rel_weighted_category = weighted_category/sum(weighted_category)) %>% 
+  ggplot(aes("genome", rel_weighted_category))+
+  geom_col(aes(fill = category), show.legend = T)+ 
+  scale_fill_viridis_d()+
+  facet_wrap("delta6" ~ "whole" + "genome", nrow = 1)+
+  theme_classic()+
+  theme(axis.title.y = element_blank(), 
+        axis.text.y = element_blank())+
+  scale_y_continuous(limits = c(0,1), expand = c(0, 0)) 
+
+plot_grid(p.observed, p.expected, rel_widths = c(12, 5.5), nrow = 1)
+```
+
+### Test if gene categories are representation of genome categories
+
+Using chi-square test observed vs expected
+```{r, warning=FALSE}
+
+# Expected category distribution
+# categories in whole genome 
+expected_delta6 <- 
+  categories_delta6 %>% 
+  mutate(weighted_category = 1/n_category) %>% 
+  group_by(category.id, category) %>% 
+  summarise(expected = sum(weighted_category))
+
+observed <- 
+  sw_rank %>% 
+  group_by(category.id, category, replicate_pop, phage, seed.bank, LR) %>% 
+  summarise(observed = sum(weighted_category)) %>% 
+  ungroup()
+
+# chi-square Observed vs. expected
+d.chi <- tibble()
+
+for(sb in unique(observed$seed.bank)){
+  for (phg in unique(observed$phage)){
+    for (pop in unique(observed$replicate_pop)){
+      for (lr in unique(observed$LR)){
+       cur_d <- 
+      observed %>%
+      filter( seed.bank == sb &
+              phage == phg &
+              replicate_pop==pop &
+              LR == lr  ) %>%
+        select(category.id, observed) %>% 
+        left_join(expected_delta6,., by = "category.id") %>%
+        mutate(observed = replace_na(observed, 0))
+       
+       if(sum(cur_d$observed)==0) next
+      
+      d.chi <-
+        bind_cols(tibble(LR=lr , seed.bank = sb, 
+                         phage = phg, replicate_pop=pop),  
+                  chisq.test(cur_d$observed,p =cur_d$expected,
+                             rescale.p = T) %>% tidy()) %>% 
+        bind_rows(d.chi, .) 
+      }
+    }
+  }
+}
+
+
+d.chi %>%
+  mutate(p.adj = p.adjust(p.value, method = "BH")) %>%
+  arrange(p.value)
+
+```
+
+Category proportions for genes in the left-hand side of the distribution are clearly no  different than the whole genome proportions. However, genes on the right-hand side are hovering around the significance threshold in this test, if we consider the un-adjusted p-value.
+
+## post hoc
+
+I want to see if there is any specific category of genes driving the results of test above for gene on the right-hand side of the distribution. To address this I will use a binomial test to test if the proportion of genes in each category in each sample,  deviate from the whole genome proportion.
+
+
+```{r}
+# add whole genome proportions
+expected_delta6 <- expected_delta6 %>% 
+  mutate(p.exp= expected/sum(.$expected))
+
+# focus on right0hannd side genes
+obs_right <- observed %>% 
+  filter(LR == "right")
+
+d_test <- obs_right %>% 
+  #binomial requires integers
+  mutate(r_obs = round(observed)) %>% 
+  # sum for sample proportions
+  group_by(seed.bank,phage, replicate_pop) %>% 
+  summarise(n_sample = sum(r_obs)) %>% 
+  left_join(obs_right,.) %>%
+  #binomial requires integers
+   mutate(r_obs = round(observed)) %>%
+  # add expected proportion
+  left_join(., expected_delta6) %>% 
+  ungroup()
+
+# for each sample and each category, do binomial test
+for(i in 1:nrow(d_test)){
+  d_test$pval[i] <- 
+    binom.test(x = d_test$r_obs[i],
+               n = d_test$n_sample[i],
+               p = d_test$p.exp[i])$p.value
+  
+  
+}
+
+# multiple testing adjustment
+d_test$p.adj <- p.adjust(d_test$pval, method = "BH")
+d_test %>% arrange(p.adj)
+
+d_test %>% 
+  ggplot(aes(replicate_pop, category)) +
+  geom_tile(aes(fill = -log10(p.adj)))+
+  facet_wrap(~phage)+
+  scale_fill_viridis_b(direction = -1)+
+  theme_bw(base_size = 14)+
+  theme(strip.background = element_blank())
+```
+
+All are non-significant. Next plot is to look at the direction of change.
+
+```{r}
+
+d_test %>% 
+  # filter(category == "Information processing") %>% 
+  ggplot(aes(replicate_pop, y=r_obs/n_sample))+
+  geom_col()+
+  geom_hline(aes(yintercept = p.exp), color = "blue")+
+  facet_grid(phage ~ category %>% fct_rev())+
+  scale_fill_viridis_b()+
+  theme_bw()+
+  theme(strip.background = element_blank())+
+  ylab("proportion of genes")
+```
+

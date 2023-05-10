@@ -172,7 +172,7 @@ lab.hi <- d.hi %>%
     panel_border(color = "black")+
     ylim(0,1)+
     ylab(expression("Allele frequency,"~italic("f(t)")))+
-    xlab(expression("transfer,"~italic("t")))
+    xlab(expression("Transfer,"~italic("t")))
     # ggtitle("B. subtilis mutation frequencies")
 s = 0.6
 ggsave(here("analysis/host_mutation_trajectories2.png"),p, height = s* 6, width = s* 8, units = "in")

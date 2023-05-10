@@ -5,20 +5,29 @@ library(viridis)
 library(ggnewscale)
 library(ggh4x)
 
+#change label
+lab_change <- function(df) {
+  df <- df %>% 
+    mutate(seed.bank = str_replace(seed.bank, "with ", "+")) %>% 
+    mutate(seed.bank = str_replace(seed.bank, "without ", "-")) %>% 
+    mutate(phage = str_replace(phage, "with ", "+")) %>% 
+    mutate(phage = str_replace(phage, "without ", "-"))
 
+  return(df)
+}
 # load data ---------------------------------------------------------------
 
 # host, from "hiFreq_host.R"
 load(here("data","host_trajectories.Rdata"))
-d_host <- d %>% mutate(who = "host"); rm(d)
-d.hi_host <- d.hi %>% mutate(who = "host"); rm(d.hi)
-lab.hi_host <- lab.hi %>% mutate(who = "host"); rm(lab.hi)
+d_host <- d %>% lab_change() %>% mutate(who = "host"); rm(d)
+d.hi_host <- d.hi %>% lab_change() %>% mutate(who = "host"); rm(d.hi)
+lab.hi_host <- lab.hi %>% lab_change() %>% mutate(who = "host"); rm(lab.hi)
 
 # phage, from "hiFreq_phage.R"
 load(here("data","phage_trajectories.Rdata"))
-d_phage <- d %>% mutate(phage = "with phage", who = "phage"); rm(d)
-d.hi_phage <- d.hi %>% mutate(phage = "with phage", who = "phage"); rm(d.hi)
-lab.hi_phage <- lab.hi %>% mutate(phage = "with phage", who = "phage"); rm(lab.hi)
+d_phage <- d %>% mutate(phage = "with phage", who = "phage")%>% lab_change(); rm(d)
+d.hi_phage <- d.hi %>% mutate(phage = "with phage", who = "phage")%>% lab_change(); rm(d.hi)
+lab.hi_phage <- lab.hi %>% mutate(phage = "with phage", who = "phage")%>% lab_change(); rm(lab.hi)
 
 
 
@@ -26,31 +35,31 @@ lab.hi_phage <- lab.hi %>% mutate(phage = "with phage", who = "phage"); rm(lab.h
 
 # all mutations
 d <- bind_rows(d_host,d_phage) %>% 
-  filter(phage == "with phage") %>% 
-  filter(seed.bank == "without seed bank")
+  filter(phage == "+phage") %>% 
+  filter(seed.bank == "-seed bank")
 
 # high frequency mutations
 d.hi <- bind_rows(d.hi_host,d.hi_phage)%>%
   ungroup() %>% 
-  filter(phage == "with phage") %>% 
+  filter(phage == "+phage") %>% 
   # needed to make gene colors conistent across plots
   mutate(Name = droplevels(Name) %>% fct_inseq()) %>% 
-  filter(seed.bank == "without seed bank")
+  filter(seed.bank == "-seed bank")
 
 # high frequency gene labels
 lab.hi <- bind_rows(lab.hi_host,lab.hi_phage)%>% 
   ungroup() %>% 
-  filter(phage == "with phage") %>% 
+  filter(phage == "+phage") %>% 
   # needed to make gene colors conistent across plots
   mutate(Name = droplevels(Name) %>% fct_inseq()) %>% 
-  filter(seed.bank == "without seed bank")
+  filter(seed.bank == "-seed bank")
 
 # plot
 p_noSB <- d %>%
   ggplot(aes(t_sample, freq))+
   
   #all mutations
-  geom_line(aes(color = mut_id), size=.8, show.legend = F)+
+  geom_line(aes(color = mut_id), linewidth=.8, show.legend = F)+
   scale_color_grey(guide = "none")+
   
   # high frequency mutations
@@ -76,37 +85,37 @@ p_noSB <- d %>%
   panel_border(color = "black")+
   ylim(0,1)+
   ylab(expression("Allele frequency,"~italic("f(t)")))+
-  xlab(expression("transfer,"~italic("t")))
+  xlab(expression("Transfer,"~italic("t")))
 
 # plot infected populations with a seed bank ------------------------------
 
 # all mutations
 d <- bind_rows(d_host,d_phage) %>% 
-  filter(phage == "with phage") %>% 
-  filter(seed.bank == "with seed bank")
+  filter(phage == "+phage") %>% 
+  filter(seed.bank == "+seed bank")
 
 # high frequency mutations
 d.hi <- bind_rows(d.hi_host,d.hi_phage)%>% 
   ungroup() %>% 
-  filter(phage == "with phage") %>% 
+  filter(phage == "+phage") %>% 
   # needed to make gene colors conistent across plots
   mutate(Name = droplevels(Name) %>% fct_inseq()) %>% 
-  filter(seed.bank == "with seed bank")
+  filter(seed.bank == "+seed bank")
 
 # high frequency gene labels
 lab.hi <- bind_rows(lab.hi_host,lab.hi_phage)%>% 
   ungroup() %>% 
-  filter(phage == "with phage") %>% 
+  filter(phage == "+phage") %>% 
   # needed to make gene colors conistent across plots
   mutate(Name = droplevels(Name) %>% fct_inseq()) %>% 
-  filter(seed.bank == "with seed bank")
+  filter(seed.bank == "+seed bank")
 
 
 # plot
 p_wSB <- d %>%
   ggplot(aes(t_sample, freq))+
   #all mutations
-  geom_line(aes(color = mut_id), size=.8, show.legend = F)+
+  geom_line(aes(color = mut_id), linewidth=.8, show.legend = F)+
   scale_color_grey(guide = "none")+
   
   # high frequency mutations
@@ -132,13 +141,13 @@ p_wSB <- d %>%
   panel_border(color = "black")+
   ylim(0,1)+
   ylab(expression("Allele frequency,"~italic("f(t)")))+
-  xlab(expression("transfer,"~italic("t")))
+  xlab(expression("Transfer,"~italic("t")))
 
 
 # combine plots and save --------------------------------------------------
 
 ggsave(here("analysis/main_mutation_trajectories.png"),
-       plot_grid(p_noSB, p_wSB, labels = c("(a)","(b)")),
+       plot_grid(p_noSB, p_wSB, labels = c("a","b")),
        height = 5, width =8, units = "in")
 
 
@@ -148,18 +157,18 @@ ggsave(here("analysis/main_mutation_trajectories.png"),
 
 # all mutations
 d <- bind_rows(d_host,d_phage) %>%
-  filter(phage == "without phage")
+  filter(phage == "-phage")
 
 # high frequency mutations
 d.hi <- bind_rows(d.hi_host,d.hi_phage)%>%
   ungroup() %>%
-  filter(phage == "without phage") %>%
+  filter(phage == "-phage") %>%
   mutate(Name = droplevels(Name))
 
 # high frequency gene labels
 lab.hi <- bind_rows(lab.hi_host,lab.hi_phage)%>%
   ungroup() %>%
-  filter(phage == "without phage")%>%
+  filter(phage == "-phage")%>%
   mutate(Name = droplevels(Name))
 
 
@@ -189,11 +198,11 @@ p_sup <- d %>%
   theme(legend.position = "none",
         strip.text = element_text(face = "bold"),
         strip.background.x = element_blank())+
-  facet_nested(pop ~ phage + fct_rev(seed.bank), nest_line = element_line())+
+  facet_nested(pop ~ phage + seed.bank, nest_line = element_line())+
   panel_border(color = "black")+
   ylim(0,1)+
   ylab(expression("Allele frequency,"~italic("f(t)")))+
-  xlab(expression("transfer,"~italic("t")))
+  xlab(expression("Transfer,"~italic("t")))
 
 
 ggsave(here("analysis/noPhage_mutation_trajectories.png"),p_sup,
@@ -205,16 +214,16 @@ ggsave(here("analysis/noPhage_mutation_trajectories.png"),p_sup,
 # 
 # 
 # d <- bind_rows(d_host,d_phage) %>% 
-#   filter(phage == "with phage")
+#   filter(phage == "+phage")
 # 
 # d.hi <- bind_rows(d.hi_host,d.hi_phage)%>%
 #   ungroup() %>% 
-#   filter(phage == "with phage") %>%   
+#   filter(phage == "+phage") %>%   
 #   mutate(Name = droplevels(Name) %>% fct_inseq())
 # 
 # lab.hi <- bind_rows(lab.hi_host,lab.hi_phage)%>% 
 #   ungroup() %>% 
-#   filter(phage == "with phage")%>%  
+#   filter(phage == "+phage")%>%  
 #   mutate(Name = droplevels(Name) %>% fct_inseq())
 # 
 # 
@@ -244,7 +253,7 @@ ggsave(here("analysis/noPhage_mutation_trajectories.png"),p_sup,
 #   panel_border(color = "black")+
 #   ylim(0,1)+
 #   ylab(expression("Allele frequency,"~italic("f(t)")))+
-#   xlab(expression("transfer,"~italic("t")))
+#   xlab(expression("Transfer,"~italic("t")))
 # 
 # ggsave(here("analysis/main2_mutation_trajectories.png"),p,
 #        height = 5, width =8, units = "in")

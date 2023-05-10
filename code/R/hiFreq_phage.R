@@ -185,7 +185,7 @@ lab.hi <- d.hi %>%
     panel_border(color = "black")+
     ylim(0,1)+
     ylab(expression("Allele frequency,"~italic("f(t)")))+
-    xlab(expression("transfer,"~italic("t")))
+    xlab(expression("Transfer,"~italic("t")))
     # ggtitle("Phage SPO1 mutation frequencies")
   s = 0.6
 ggsave(here("analysis/phage_mutation_trajectories2.png"),p, height = s*6, width = 2.8, units = "in")

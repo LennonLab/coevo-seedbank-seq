@@ -85,7 +85,7 @@ p_noSB <- d %>%
   panel_border(color = "black")+
   ylim(0,1)+
   ylab(expression("Allele frequency,"~italic("f(t)")))+
-  xlab(expression("transfer,"~italic("t")))
+  xlab(expression("Transfer,"~italic("t")))
 
 # plot infected populations with a seed bank ------------------------------
 
@@ -141,13 +141,13 @@ p_wSB <- d %>%
   panel_border(color = "black")+
   ylim(0,1)+
   ylab(expression("Allele frequency,"~italic("f(t)")))+
-  xlab(expression("transfer,"~italic("t")))
+  xlab(expression("Transfer,"~italic("t")))
 
 
 # combine plots and save --------------------------------------------------
 
 ggsave(here("analysis/main_mutation_trajectories.png"),
-       plot_grid(p_noSB, p_wSB, labels = c("(a)","(b)")),
+       plot_grid(p_noSB, p_wSB, labels = c("a","b")),
        height = 5, width =8, units = "in")
 
 
@@ -202,7 +202,7 @@ p_sup <- d %>%
   panel_border(color = "black")+
   ylim(0,1)+
   ylab(expression("Allele frequency,"~italic("f(t)")))+
-  xlab(expression("transfer,"~italic("t")))
+  xlab(expression("Transfer,"~italic("t")))
 
 
 ggsave(here("analysis/noPhage_mutation_trajectories.png"),p_sup,
@@ -253,7 +253,7 @@ ggsave(here("analysis/noPhage_mutation_trajectories.png"),p_sup,
 #   panel_border(color = "black")+
 #   ylim(0,1)+
 #   ylab(expression("Allele frequency,"~italic("f(t)")))+
-#   xlab(expression("transfer,"~italic("t")))
+#   xlab(expression("Transfer,"~italic("t")))
 # 
 # ggsave(here("analysis/main2_mutation_trajectories.png"),p,
 #        height = 5, width =8, units = "in")

@@ -98,7 +98,7 @@ for(i in 1:nrow(mutdat)){
 # KS test for differences between distributions, done by Will in Python code
 d.ks <- 
   tibble(d.stat = c(expression(italic("D")~"= 0.0833")),
-         lab = expression(italic("P")~"= 0.896"),
+         lab = expression(italic("p")~"= 0.896"),
          # lab = expression(italic("P")~"<"~10^{-4}),
          x= 13, y = 0.4)
 
@@ -118,7 +118,8 @@ p <- d.rac %>%
                 )+
   scale_color_grey(start = 0, end = 0.7)+
   annotation_logticks(sides = "l")+
-  ylab("relative gene multiplicity")+
+  xlab("Rank")+
+  ylab("Relative gene multiplicity")+
   theme(legend.position = c(0.2, 0.14),
       legend.title = element_blank(),
       legend.background = element_blank(),

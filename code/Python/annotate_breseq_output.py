@@ -81,6 +81,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
                     pol_dict[position]['coverage_trajectory'].append(coverage_total)
 
+
     # go back through and set frequencies of observations with no coverage succeeding fixations to zero
     all_positions = list(pol_dict.keys())
     for position in all_positions:
@@ -127,8 +128,6 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
 
     all_positions = list(pol_dict.keys())
-
-
     # get annotation for these sites
     all_positions = list(set(all_positions))
 
@@ -148,19 +147,25 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             codon=None
             position_in_codon=None
             fold_count=None
+            position_in_gene=None
 
         elif gene_name=='intergenic':
             var_type = 'noncoding'
             codon=None
             position_in_codon=None
             fold_count=None
+            position_in_gene=None
+        
         elif gene_name=='repeat':
             var_type = 'repeat'
             codon=None
             position_in_codon=None
             fold_count=None
+            position_in_gene=None
+        
         else:
 
+            #position_in_gene = position_in_gene_map[position]
             i = gene_names.index(gene_name)
 
             gene_start_position = gene_start_positions[i]
@@ -170,18 +175,21 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             gene_sequence = gene_sequences[i]
             strand = strands[i]
 
-            if position<gene_start_position or position>gene_end_position:
+            if position < gene_start_position or position>gene_end_position:
                 var_type='noncoding' # (promoter)
                 codon=None
                 position_in_codon=None
                 fold_count=None
+                position_in_gene=None
             else:
 
+                #position_in_gene = position-gene_start_position
                 if gene_name.startswith('tRNA') or gene_name.startswith('rRNA'):
                     var_type='noncoding'
                     codon=None
                     position_in_codon=None
                     fold_count=None
+                    position_in_gene=None
                 else:
 
                     # calculate position in gene
@@ -247,9 +255,10 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                                 amino_acids.append(parse_file.codon_table["".join(new_fold_codon)])
 
                             fold_count=len(set(amino_acids))
+            
+           
 
-
-        print_strings = [str(position), mutation_type, gene_name, alt_allele, var_type, str(codon), str(position_in_codon), str(fold_count)]
+        print_strings = [str(position), mutation_type, gene_name, alt_allele, str(position_in_gene), var_type, str(codon), str(position_in_codon), str(fold_count)]
         # once for frequency
         for transfer in utils.transfers:
             if transfer not in pol_dict[position]['transfers']:
@@ -275,7 +284,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
     output_filename = "%stimecourse_final_breseq/%s_annotated_timecourse.txt" % (config.data_directory, file_name)
 
-    header = ['Position', 'Mutation type', 'Gene', 'Allele', 'Annotation', 'Codon', 'Position in codon', 'AA fold count', 'Freq:1', 'Freq:4', 'Freq:7', 'Freq:10', 'Freq:14', 'Cov:1', 'Cov:4', 'Cov:7', 'Cov:10', 'Cov:14']
+    header = ['Position', 'Mutation type', 'Gene', 'Allele', 'Position in gene', 'Annotation', 'Codon', 'Position in codon', 'AA fold count', 'Freq:1', 'Freq:4', 'Freq:7', 'Freq:10', 'Freq:14', 'Cov:1', 'Cov:4', 'Cov:7', 'Cov:10', 'Cov:14']
     #header = ['Position', 'Gene', 'Allele', 'Annotation', 'Codon', 'Position in codon', 'AA fold count', 'Freq:1', 'Freq:4', 'Freq:7', 'Freq:10', 'Freq:14']
     header = ", ".join(header)
 
@@ -324,8 +333,6 @@ def annotate_all_line():
 
 
 
-
-#samples = utils.get_samples_from_metadata('phage', 'long_seed_bank', 'SPO1', 'filtered_phage', 1)
 
 # Daniel needs to rerun this sample
 #if ('WLO-L3' in samples[0]) and ('_filtered_phage' in samples[0]):

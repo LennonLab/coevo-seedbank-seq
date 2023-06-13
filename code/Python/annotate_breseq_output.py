@@ -148,6 +148,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             position_in_codon=None
             fold_count=None
             position_in_gene=None
+            codon_start=None
 
         elif gene_name=='intergenic':
             var_type = 'noncoding'
@@ -155,6 +156,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             position_in_codon=None
             fold_count=None
             position_in_gene=None
+            codon_start=None
         
         elif gene_name=='repeat':
             var_type = 'repeat'
@@ -162,6 +164,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             position_in_codon=None
             fold_count=None
             position_in_gene=None
+            codon_start=None
         
         else:
 
@@ -181,6 +184,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                 position_in_codon=None
                 fold_count=None
                 position_in_gene=None
+                codon_start=None
             else:
 
                 #position_in_gene = position-gene_start_position
@@ -190,6 +194,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                     position_in_codon=None
                     fold_count=None
                     position_in_gene=None
+                    codon_start=None
                 else:
 
                     # calculate position in gene
@@ -203,12 +208,15 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
                         if alt_allele not in parse_file.base_table:
                             new_base = 'NA'
+
                         else:
                             new_base = parse_file.base_table[alt_allele]
 
-                    if position_in_gene < 0:
-                        continue
 
+           
+                    # for printing to file
+                    alt_allele = new_base
+                    
                     # calculate codon start
                     codon_start = int(position_in_gene/3)*3
                     codon = oriented_gene_sequence[codon_start:codon_start+3]
@@ -255,10 +263,9 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                                 amino_acids.append(parse_file.codon_table["".join(new_fold_codon)])
 
                             fold_count=len(set(amino_acids))
-            
-           
 
-        print_strings = [str(position), mutation_type, gene_name, alt_allele, str(position_in_gene), var_type, str(codon), str(position_in_codon), str(fold_count)]
+
+        print_strings = [str(position), mutation_type, gene_name, alt_allele, str(position_in_gene), str(codon_start), var_type, str(codon), str(position_in_codon), str(fold_count)]
         # once for frequency
         for transfer in utils.transfers:
             if transfer not in pol_dict[position]['transfers']:
@@ -284,7 +291,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
     output_filename = "%stimecourse_final_breseq/%s_annotated_timecourse.txt" % (config.data_directory, file_name)
 
-    header = ['Position', 'Mutation type', 'Gene', 'Allele', 'Position in gene', 'Annotation', 'Codon', 'Position in codon', 'AA fold count', 'Freq:1', 'Freq:4', 'Freq:7', 'Freq:10', 'Freq:14', 'Cov:1', 'Cov:4', 'Cov:7', 'Cov:10', 'Cov:14']
+    header = ['Position', 'Mutation type', 'Gene', 'Allele', 'Position in gene', 'Codon position in gene', 'Annotation', 'Codon', 'Position in codon', 'AA fold count', 'Freq:1', 'Freq:4', 'Freq:7', 'Freq:10', 'Freq:14', 'Cov:1', 'Cov:4', 'Cov:7', 'Cov:10', 'Cov:14']
     #header = ['Position', 'Gene', 'Allele', 'Annotation', 'Codon', 'Position in codon', 'AA fold count', 'Freq:1', 'Freq:4', 'Freq:7', 'Freq:10', 'Freq:14']
     header = ", ".join(header)
 

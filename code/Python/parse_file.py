@@ -626,15 +626,23 @@ def create_annotation_map(reference, gene_data=None):
     # new
     gene_feature_map = {}
 
+    #position_in_gene_map = {}
+
     # then greedily annotate genes at remaining sites
     for gene_name, feature, start, end in zip(gene_names, features, gene_start_positions, gene_end_positions):
         gene_feature_map[gene_name] = feature
+        
         for position in range(start,end+1):
             if position not in position_gene_map:
                 position_gene_map[position] = gene_name
+
                 if gene_name not in gene_position_map:
                     gene_position_map[gene_name]=[]
                 gene_position_map[gene_name].append(position)
+
+            #if position not in position_in_gene_map:
+            #    position_in_gene_map[position] = position-start
+
 
     # remove 'partial' genes that have < 10bp unmasked sites
     for gene_name in list(sorted(gene_position_map.keys())):
@@ -700,7 +708,6 @@ def create_annotation_map(reference, gene_data=None):
 
                 #if position == 2093:
                 #    print(position, codon, strand, start, end, codon_start, position_in_gene, position_in_gene%3)
-
 
                 effective_gene_synonymous_sites[gene_name] += codon_synonymous_opportunity_table[codon][position_in_codon]/3.0
                 effective_gene_nonsynonymous_sites[gene_name] += 1-codon_synonymous_opportunity_table[codon][position_in_codon]/3.0

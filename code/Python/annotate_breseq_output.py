@@ -147,8 +147,32 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             codon=None
             position_in_codon=None
             fold_count=None
-            position_in_gene=None
+            #position_in_gene=None
             codon_position=None
+
+            # find position in insertion/deletion
+
+            if gene_name=='intergenic':
+                position_in_gene=None
+            
+            elif gene_name=='repeat':
+                position_in_gene=None
+            
+            else:
+        
+                i = gene_names.index(gene_name)
+                gene_start_position = gene_start_positions[i]
+                gene_end_position = gene_end_positions[i]
+                strand = strands[i]
+
+                if strand=='forward':
+                    position_in_gene = (position-gene_start_position) -1
+                    #oriented_gene_sequence = gene_sequence
+
+                else:
+                    position_in_gene = (gene_end_position-position) -1
+                    #oriented_gene_sequence = parse_file.calculate_reverse_complement_sequence(gene_sequence)
+                
 
         elif gene_name=='intergenic':
             var_type = 'noncoding'
@@ -193,10 +217,20 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                     codon=None
                     position_in_codon=None
                     fold_count=None
-                    position_in_gene=None
+                    #position_in_gene=None
+                    #position_in_gene = (position-gene_start_position) -1
                     codon_position=None
-                else:
 
+                    if strand=='forward':
+                        position_in_gene = (position-gene_start_position) -1
+                        #oriented_gene_sequence = gene_sequence
+
+                    else:
+                        position_in_gene = (gene_end_position-position) -1
+                        #oriented_gene_sequence = parse_file.calculate_reverse_complement_sequence(gene_sequence)
+
+
+                else:
                     # calculate position in gene
                     if strand=='forward':
                         position_in_gene = (position-gene_start_position) -1

@@ -135,6 +135,8 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
     gene_names, gene_start_positions, gene_end_positions, promoter_start_positions, promoter_end_positions, gene_sequences, strands, genes, features, protein_ids = gene_data
     position_gene_map, effective_gene_lengths, substitution_specific_synonymous_fraction = parse_file.create_annotation_map(reference=reference, gene_data=gene_data)
 
+
+
     annotated_mutations = []
     for position in all_positions:
         # get gene
@@ -147,8 +149,36 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             codon=None
             position_in_codon=None
             fold_count=None
-            position_in_gene=None
+            #position_in_gene=None
             codon_position=None
+
+            # find position in insertion/deletion
+
+            if gene_name=='intergenic':
+                position_in_gene=None
+            
+            elif gene_name=='repeat':
+                position_in_gene=None
+            
+            else:
+        
+                i = gene_names.index(gene_name)
+                gene_start_position = gene_start_positions[i]
+                gene_end_position = gene_end_positions[i]
+                strand = strands[i]
+
+                if strand=='forward':
+                    position_in_gene = (position-gene_start_position) -1
+                    #oriented_gene_sequence = gene_sequence
+
+                else:
+                    position_in_gene = (gene_end_position-position) -1
+                    #oriented_gene_sequence = parse_file.calculate_reverse_complement_sequence(gene_sequence)
+                
+                if position_in_gene < 0:
+                    gene_name = 'possible promotor region for %s' % gene_name
+                #    print(mutation_type, gene_name, position_in_gene, position, gene_start_position, gene_end_position, alt_allele, strand)
+
 
         elif gene_name=='intergenic':
             var_type = 'noncoding'
@@ -165,6 +195,14 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             fold_count=None
             position_in_gene=None
             codon_position=None
+
+        elif 'promotor' in gene_name:
+            var_type = 'repeat'
+            codon=None
+            position_in_codon=None
+            fold_count=None
+            codon_position=None
+
         
         else:
 
@@ -193,10 +231,20 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                     codon=None
                     position_in_codon=None
                     fold_count=None
-                    position_in_gene=None
+                    #position_in_gene=None
+                    #position_in_gene = (position-gene_start_position) -1
                     codon_position=None
-                else:
 
+                    if strand=='forward':
+                        position_in_gene = (position-gene_start_position) -1
+                        #oriented_gene_sequence = gene_sequence
+
+                    else:
+                        position_in_gene = (gene_end_position-position) -1
+                        #oriented_gene_sequence = parse_file.calculate_reverse_complement_sequence(gene_sequence)
+
+
+                else:
                     # calculate position in gene
                     if strand=='forward':
                         position_in_gene = (position-gene_start_position) -1
@@ -211,6 +259,9 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
                         else:
                             new_base = parse_file.base_table[alt_allele]
+
+                        if position_in_gene< 0:
+                            print(position_in_gene)
 
 
            

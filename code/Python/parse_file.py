@@ -629,8 +629,12 @@ def create_annotation_map(reference, gene_data=None):
     #position_in_gene_map = {}
 
     # then greedily annotate genes at remaining sites
+    overlapping_genes = []
     for gene_name, feature, start, end in zip(gene_names, features, gene_start_positions, gene_end_positions):
         gene_feature_map[gene_name] = feature
+
+        if start>end:
+            print(gene_name, feature, start, end)
         
         for position in range(start,end+1):
             if position not in position_gene_map:
@@ -638,11 +642,18 @@ def create_annotation_map(reference, gene_data=None):
 
                 if gene_name not in gene_position_map:
                     gene_position_map[gene_name]=[]
+                
                 gene_position_map[gene_name].append(position)
+
+            #else:
+            #    overlapping_genes.append(gene_name)
+            #    overlapping_genes.append(position_gene_map[position])
 
             #if position not in position_in_gene_map:
             #    position_in_gene_map[position] = position-start
-
+    
+    #print(len(set(overlapping_genes)), len(gene_names))
+    #print(list(set(overlapping_genes)))
 
     # remove 'partial' genes that have < 10bp unmasked sites
     for gene_name in list(sorted(gene_position_map.keys())):
@@ -729,6 +740,7 @@ def create_annotation_map(reference, gene_data=None):
                     # the gene itself has not been annotated
                     # so don't annotate the promoter
                     continue
+                
                 else:
                     position_gene_map[position] = gene_name
                     gene_position_map[gene_name].append(position)

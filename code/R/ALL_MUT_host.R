@@ -29,7 +29,11 @@ d.plot <- tibble()
 for(f in f_freq){
   d <- read_csv((here("data/timecourse_final_breseq/", f))) %>% 
     filter(Gene != "intergenic") %>%
-    filter(Annotation != "synonymous")
+    filter(Annotation != "synonymous") %>% 
+    filter(Annotation != "noncoding") %>% 
+    # unified label for coding and promoter regions
+    mutate(full_gene = Gene, 
+           Gene = str_remove(full_gene, "possible promotor region for"))
   
   # Mutations detected > twice
   mut_3 <- d %>% 
@@ -38,7 +42,6 @@ for(f in f_freq){
     # pull(mut_id) %>%  anyDuplicated(.) # it is sufficient
     mutate(`Freq:0` = 0) %>% 
     select(mut_id, contains("Freq")) %>% 
-    # slice_head(n = 100) %>% 
     pivot_longer(contains("Freq"), names_to = "t_sample", values_to = "freq") %>% 
     mutate(t_sample = parse_number(t_sample))  %>%
     mutate(detected = freq > 0) %>%
@@ -82,13 +85,9 @@ for(f in f_freq){
 }
 
 
-# gene name per hi-freq locus ---------------------------------------------
+# gene name per locus ---------------------------------------------
 
   
-# hi_freq_tags <-
-#   delta6_168 %>% 
-#   filter(locus_tag.d6 %in% unique(hi_freq$Gene)) %>% 
-#   select(locus_tag.d6,locus_tag.168)
 gene_tags <-
   delta6_168 %>% 
   filter(locus_tag.d6 %in% unique(d.plot$Gene)) %>% 
@@ -103,22 +102,22 @@ all_freq <-
   left_join(d.plot,., by = "Gene") 
 
 
-# Plot --------------------------------------------------------------------
+# prepare table  --------------------------------------------------------------------
 
 
 d <- all_freq %>%
   # parse treatments
   mutate(trt = str_extract(f, "^.*_L."),
          seed.bank = if_else(str_detect(trt,"WL."), 
-                             "+ seed bank","- seed bank"),
+                             "seed bank +","seed bank -"),
          phage=if_else(str_detect(trt,"O"), 
-                       "+ phage","- phage"),
+                       "phage +","phage -"),
          pop = parse_number(trt)) %>% 
-  #add T = 0  
-  # mutate(`Freq:0` = 0) %>%
-  select(seed.bank,phage,pop,delta6_locus = Gene, Bs168_locus=locus, gene_tag=Name, description, Function,
-         `Mutation type`, mutation_effect=Annotation, genome_position=Position, `Position in gene`,`Codon position in gene`,
-         Codon, `Position in codon`, reached_hi_freq,observed_3times_or_more,
+  # make codon position 1-3 (rather than 0-2) 
+  mutate(`Position in codon` = parse_number(`Position in codon`)+1) %>%
+  select(seed.bank,phage,pop,delta6_locus = full_gene, Bs168_locus=locus, gene_tag=Name, description, Function,
+         genome_position=Position, `Mutation type`,  `Position in gene`,`Codon position in gene`,
+         Codon, `Position in codon`, mutation_effect=Annotation, new_allele=Allele, reached_hi_freq,observed_3times_or_more,
          contains("Freq")) %>%
     # slice_head(n = 100) %>%
     pivot_longer(contains("Freq:"), names_to = "t_sample", values_to = "freq") %>%

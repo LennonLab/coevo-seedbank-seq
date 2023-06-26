@@ -153,13 +153,17 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             codon_position=None
 
             # find position in insertion/deletion
-
             if gene_name=='intergenic':
                 position_in_gene=None
+                gene_name=None
+                var_type = 'noncoding'
             
+
             elif gene_name=='repeat':
                 position_in_gene=None
-            
+                #gene_name=None
+
+
             else:
         
                 i = gene_names.index(gene_name)
@@ -177,7 +181,6 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                 
                 if position_in_gene < 0:
                     gene_name = 'possible promotor region for %s' % gene_name
-                #    print(mutation_type, gene_name, position_in_gene, position, gene_start_position, gene_end_position, alt_allele, strand)
 
 
         elif gene_name=='intergenic':
@@ -187,7 +190,9 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             fold_count=None
             position_in_gene=None
             codon_position=None
+            gene_name=None
         
+
         elif gene_name=='repeat':
             var_type = 'repeat'
             codon=None
@@ -195,6 +200,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
             fold_count=None
             position_in_gene=None
             codon_position=None
+
 
         elif 'promotor' in gene_name:
             var_type = 'repeat'
@@ -208,7 +214,6 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
 
             #position_in_gene = position_in_gene_map[position]
             i = gene_names.index(gene_name)
-
             gene_start_position = gene_start_positions[i]
             gene_end_position = gene_end_positions[i]
             promoter_start_position = promoter_start_positions[i]
@@ -223,6 +228,9 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                 fold_count=None
                 position_in_gene=None
                 codon_position=None
+                gene_name = 'possible promotor region for %s' % gene_name
+                #gene_name=None
+            
             else:
 
                 #position_in_gene = position-gene_start_position
@@ -260,10 +268,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                         else:
                             new_base = parse_file.base_table[alt_allele]
 
-                        if position_in_gene< 0:
-                            print(position_in_gene)
-
-
+   
            
                     # for printing to file
                     alt_allele = new_base
@@ -317,7 +322,7 @@ def parse_and_annotate_breseq_files_all_timepoints(breseq_samples, samples, tran
                             fold_count=len(set(amino_acids))
 
 
-        print_strings = [str(position), mutation_type, gene_name, alt_allele, str(position_in_gene), str(codon_position), var_type, str(codon), str(position_in_codon), str(fold_count)]
+        print_strings = [str(position), mutation_type, str(gene_name), alt_allele, str(position_in_gene), str(codon_position), var_type, str(codon), str(position_in_codon), str(fold_count)]
         # once for frequency
         for transfer in utils.transfers:
             if transfer not in pol_dict[position]['transfers']:
